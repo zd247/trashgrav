@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent2">#129185</color>
+    <color name="colorAccent3">#16544F</color>
+    <color type="color" name = "colorSignInSignUp">#F44336</color>
+    <color type="color" name = "colorSignInSignUpFade">#F6BEBA</color>
+
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#1AE5E5E5</color>
+    <color name="half_black">#808080</color>
+
+</resources>

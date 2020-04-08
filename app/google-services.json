@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "397971799878",
+    "firebase_url": "https://gravtrash-ca8d6.firebaseio.com",
+    "project_id": "gravtrash-ca8d6",
+    "storage_bucket": "gravtrash-ca8d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397971799878:android:f94c34ab651fb8dc332f47",
+        "android_client_info": {
+          "package_name": "rattclub.gravtrash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397971799878-ggrc98m2nfft700bp9s3bb6qj40eosj3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVGMOLe0kEb7TFPiPFkh7eZ4FTqWN9JM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397971799878-ggrc98m2nfft700bp9s3bb6qj40eosj3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PhoneInputActivity">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/pinput_cont_logo"
+        android:src="@drawable/web_hi_res_512"
+        android:layout_height="45dp"
+        android:layout_width="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:id="@+id/pinput_cont_slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pinput_cont_logo"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="25dp"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:textColor="#405A05"
+        android:text="Let's go green (not ganja)"/>
+
+    <TextView
+        android:id="@+id/login_pinput_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pinput_cont_slogan"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:text="Phone number"/>
+
+    <com.hbb20.CountryCodePicker
+        android:id="@+id/pinput_ccp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ccp_showFullName="true"
+        app:ccp_showPhoneCode="true"
+        app:ccp_showNameCode="true"
+        app:ccpDialog_allowSearch="false"
+        android:layout_below="@+id/login_pinput_text_view"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/pinput_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pinput_ccp"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="number"
+        android:hint="Ex: (012) 345 6789"
+        android:maxLength="10" />
+
+    <Button
+        android:id="@+id/pinput_login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:textAllCaps="false"
+        android:text="Confirm phone number"
+        android:layout_below="@+id/pinput_edit_text"
+        android:layout_marginHorizontal="50dp"
+        android:background="@color/colorSignInSignUpFade"
+        android:theme="@style/GoogleButtonStyle" />
+
+    <!--    Verification fields-->
+
+    <com.raycoarana.codeinputview.CodeInputView
+        android:id="@+id/pinput_verification_code_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/pinput_cont_slogan"
+        android:layout_marginTop="30dp"
+        app:animate_on_complete="false"
+        app:input_type="numeric"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/pinput_verification_code_btn"
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:layout_below="@+id/pinput_verification_code_input"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="50dp"
+        android:background="@color/colorSignInSignUp"
+        android:text="Verify"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:visibility="gone"/>
+
+
+
+</RelativeLayout>

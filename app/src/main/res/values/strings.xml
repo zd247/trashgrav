@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TrashGrav</string>
+    <string name="app_slogan">Welcome to TrashGrav community,
+        are you ready to make a change to the environment and earn ? </string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_settings">Settings</string>
+    <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
+    <string name="dropped_pin">Dropped Pin</string>
+    <string name="poi">poi</string>
+    <string name="already_have_account">Already a member ? Sign in</string>
+    <string name="no_account"> Not a member yet ? Sign up </string>
+    <string name="facebook_app_id">662015067908643</string>
+    <string name="fb_login_protocol_scheme">fb662015067908643</string>
+    <string name="title_activity_driver_main">DriverMainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="home_second">Home Second</string>
+
+
+</resources>
