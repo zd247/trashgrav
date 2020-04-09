@@ -4,6 +4,7 @@ package rattclub.gravtrash.customers.nav
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.AttributeSet
 import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -53,14 +55,12 @@ import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.customer_fragment_home.*
 import kotlinx.android.synthetic.main.request_pop_up_layout.*
-import org.w3c.dom.Text
 import rattclub.gravtrash.PhoneInputActivity
 import rattclub.gravtrash.Prevalent
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.model.Item
 import rattclub.gravtrash.customers.model.ItemViewHolder
 import java.lang.Math.*
-import java.util.*
 import kotlin.collections.HashMap
 
 class CustomerHomeFragment : Fragment(),
@@ -95,10 +95,6 @@ class CustomerHomeFragment : Fragment(),
     private lateinit var requestDialog: Dialog
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
-    // message to driver
-
-    private lateinit var message: String
-
 
 
 
@@ -112,6 +108,16 @@ class CustomerHomeFragment : Fragment(),
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
 
+
+        // chat fab
+        chatDialog = Dialog(root.context)
+        chatDialog.setContentView(R.layout.chat_pop_up_layout)
+        chatDialog.setCanceledOnTouchOutside(true)
+        val chatFab: FloatingActionButton = root.findViewById(R.id.customer_msg_fab)
+        chatFab.setOnClickListener {
+            chatDialog.show()
+            customer_fab_menu.collapse()
+        }
 
         // search fab
         val searchFab = root.findViewById<FloatingActionButton>(R.id.customer_search_fab)
@@ -127,30 +133,27 @@ class CustomerHomeFragment : Fragment(),
 
         }
 
-        // chat fab
-        chatDialog = Dialog(root.context)
-        chatDialog.setContentView(R.layout.chat_pop_up_layout)
-        chatDialog.setCanceledOnTouchOutside(true)
-        val chatFab: FloatingActionButton = root.findViewById(R.id.customer_msg_fab)
-        chatFab.setOnClickListener {
-            chatDialog.show()
-            customer_fab_menu.collapse()
-        }
-
         // request fab
         requestDialog = Dialog(root.context)
         requestDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         requestDialog.setContentView(R.layout.request_pop_up_layout)
         requestDialog.setCanceledOnTouchOutside(true)
-        val callFab: FloatingActionButton = root.findViewById(R.id.customer_request_fab)
-        callFab.setOnClickListener {
+        val sendRequestFab: FloatingActionButton = root.findViewById(R.id.customer_request_fab)
+        sendRequestFab.setOnClickListener {
             customer_fab_menu.collapse()
             if (driverFoundKeyMap.size > 0) {
                 callClosetDriver()
-                Log.i("Test", driverFoundKeyMap.size.toString())}
+            }
             else {
                 Toast.makeText(root.context, "There is no driver nearby", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // cancel request fab
+        val cancelRequestFab: FloatingActionButton = root.findViewById(R.id.customer_cancel_request_fab)
+        cancelRequestFab.setOnClickListener {
+            cancelRequest()
+            customer_fab_menu.collapse()
         }
 
         return root
@@ -172,10 +175,10 @@ class CustomerHomeFragment : Fragment(),
         }
     }
 
-
     override fun onStop() {
         super.onStop()
         disconnectCustomer()
+        cancelRequest()
     }
 
     override fun onConnected(p0: Bundle?) {
@@ -212,8 +215,8 @@ class CustomerHomeFragment : Fragment(),
                 if (driverFoundLocationsMap.isEmpty() && searchRadius <= SEARCH_RADIUS_MAX && searching)
                     searchRadius += 1 ; getClosetDriver()
                 if (driverFoundLocationsMap.isEmpty() && searchRadius > SEARCH_RADIUS_MAX && searching) {
-                    customer_search_fab.visibility = View.VISIBLE
-                    customer_request_fab.visibility = View.GONE
+                    customer_search_fab?.visibility = View.VISIBLE
+                    customer_request_fab?.visibility = View.GONE
                     disconnectCustomer()
                 }
             }
@@ -238,8 +241,8 @@ class CustomerHomeFragment : Fragment(),
                         closetDriverDistance = curDistance
                         closetDriverKey = key
                     }
-                    customer_search_fab.visibility = View.GONE
-                    customer_request_fab.visibility = View.VISIBLE
+                    customer_search_fab?.visibility = View.GONE
+                    customer_request_fab?.visibility = View.VISIBLE
                 }
             }
 
@@ -305,8 +308,7 @@ class CustomerHomeFragment : Fragment(),
         var quantityItemsMap: HashMap<Int, Double?> = HashMap()
         var sparseBooleanArray = SparseBooleanArray()
         var totalAmount = 0.0
-        val sendButton = requestDialog.findViewById<Button>(R.id.request_send_msg_btn)
-        sendButton.setOnClickListener {sendMessageToDriver()}
+
         requestDialog.request_total_earning.text = "${totalAmount}$"
         requestDialog.request_calc_earning.setOnClickListener {
             totalAmount = 0.0
@@ -392,17 +394,81 @@ class CustomerHomeFragment : Fragment(),
         adapter.startListening()
 
         requestDialog.show()
+
+        // handle send request
+        val sendButton = requestDialog.findViewById<Button>(R.id.request_send_msg_btn)
+        sendButton.setOnClickListener {
+            var requestTotalAmount = 0.0
+            var message: String? = "${requestDialog.request_edit_text.text} \n"
+            for ((key,value) in selectedItemsMap) {
+                requestTotalAmount += value.price * quantityItemsMap[key]!!
+                message += "${value.category}: ${quantityItemsMap[key].toString()} kg \n"
+            }
+
+            sendRequest(message, requestTotalAmount)
+        }
+
     }
 
-    private fun sendMessageToDriver() {
-        val msgRef = rootRef.child("Messages")
-        message += "\n ${requestDialog.request_edit_text.text} \n"
-        mAuth.currentUser?.uid?.let {
+    private fun sendRequest(message: String?, requestTotalAmount: Double) {
+        var requestMap: HashMap<String,Any?> = HashMap()
+        requestMap["request_type"] = "sent"
+        requestMap["message"] = message
+        requestMap["price"] = requestTotalAmount
+        val requestRef = rootRef.child("Requests")
+        requestRef.child(mAuth.currentUser?.uid.toString()).child(closetDriverKey.toString())
+            .updateChildren(requestMap)
+            .addOnCompleteListener{task->
+                if (task.isSuccessful) {
+                    requestMap["request_type"] = "received"
+                    requestRef.child(closetDriverKey.toString()).child(mAuth.currentUser?.uid.toString())
+                        .updateChildren(requestMap)
+                        .addOnCompleteListener{task ->
+                            if (task.isSuccessful) {
+                                customer_request_fab?.visibility = View.GONE
+                                customer_cancel_request_fab?.visibility = View.VISIBLE
+                                Toast.makeText(root.context, "Request sent to the closet Collector",
+                                    Toast.LENGTH_LONG).show()
+                            }
+                        }
+                }
+            }
 
-        }
 
 
         requestDialog.dismiss()
+    }
+
+    private fun cancelRequest() {
+        val requestRef = rootRef.child("Requests")
+        requestRef.child(mAuth.currentUser?.uid.toString()).child(closetDriverKey.toString())
+            .removeValue()
+            .addOnCompleteListener{task ->
+                if (task.isSuccessful) {
+                    requestRef.child(closetDriverKey.toString()).child(mAuth.currentUser?.uid.toString())
+                        .removeValue()
+                        .addOnCompleteListener{task->
+                            if (task.isSuccessful){
+                                disconnectCustomer()
+                                customer_cancel_request_fab?.visibility = View.GONE
+                                if (closetDriverKey != null) {
+                                    customer_search_fab?.visibility = View.GONE
+                                    customer_request_fab?.visibility = View.VISIBLE
+                                }else {
+                                    customer_search_fab?.visibility = View.VISIBLE
+                                    customer_request_fab?.visibility = View.GONE
+                                }
+                            }
+                        }
+                }
+            }
+    }
+
+    private fun sendMessageToDriver() {
+
+
+
+
     }
 
     private fun disconnectCustomer() {

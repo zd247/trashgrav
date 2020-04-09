@@ -39,14 +39,25 @@
             app:fab_title="Inbox" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/customer_request_fab"
+        android:id="@+id/customer_request_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fab_colorNormal="@color/colorAccent"
+        app:fab_colorPressed="@color/colorAccent2"
+        app:fab_icon="@drawable/ic_rate_review_black_24dp"
+        app:fab_size="mini"
+        app:fab_title="Request nearest Collector"
+        android:visibility="gone"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/customer_cancel_request_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent2"
-            app:fab_icon="@drawable/ic_rate_review_black_24dp"
+            app:fab_icon="@drawable/ic_close_black_24dp"
             app:fab_size="mini"
-            app:fab_title="Request nearest Collector"
+            app:fab_title="Cancel current request"
             android:visibility="gone"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
