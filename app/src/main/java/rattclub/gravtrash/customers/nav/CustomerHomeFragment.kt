@@ -10,7 +10,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,16 +51,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_account_settings.view.*
-import kotlinx.android.synthetic.main.activity_recycle.*
 import kotlinx.android.synthetic.main.customer_fragment_home.*
 import kotlinx.android.synthetic.main.request_pop_up_layout.*
+import org.w3c.dom.Text
 import rattclub.gravtrash.PhoneInputActivity
 import rattclub.gravtrash.Prevalent
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.model.Item
 import rattclub.gravtrash.customers.model.ItemViewHolder
 import java.lang.Math.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class CustomerHomeFragment : Fragment(),
                             OnMapReadyCallback ,
@@ -90,6 +94,11 @@ class CustomerHomeFragment : Fragment(),
     private lateinit var chatDialog: Dialog
     private lateinit var requestDialog: Dialog
     private lateinit var layoutManager: RecyclerView.LayoutManager
+
+    // message to driver
+
+    private lateinit var message: String
+
 
 
 
@@ -292,42 +301,18 @@ class CustomerHomeFragment : Fragment(),
     }
 
     private fun handleRequestPopUp() {
-        val sendButton = requestDialog.findViewById<Button>(R.id.request_send_msg_btn)
-        sendButton.setOnClickListener {sendMessageToDriver()}
 
-        val recycleItemList = requestDialog.findViewById<RecyclerView>(R.id.request_item_recycler_view)
-        recycleItemList.setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(requestDialog.context)
-        recycleItemList.layoutManager = layoutManager
-
-        // recycler view
-        val options = FirebaseRecyclerOptions.Builder<Item>()
-            .setQuery(rootRef.child("Items"), Item::class.java)
-            .build()
-
-        val adapter = object: FirebaseRecyclerAdapter<Item, ItemViewHolder>(options) {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.recycle_item_display_layout, parent, false)
-                return ItemViewHolder(view)
-            }
-
-            override fun onBindViewHolder(holder: ItemViewHolder, position: Int, model: Item) {
-                holder.itemCategory.text = model.category
-                holder.itemPrice.text = "${model.price.toString()} $"
-                Picasso.get().load(model.image).into(holder.itemImage)
-            }
-
-        }
-
-        recycleItemList.adapter = adapter
-        adapter.startListening()
-
-        requestDialog.show()
     }
 
     private fun sendMessageToDriver() {
+        val msgRef = rootRef.child("Messages")
+        message += "\n ${requestDialog.request_edit_text.text} \n"
+        mAuth.currentUser?.uid?.let {
 
+        }
+
+
+        requestDialog.dismiss()
     }
 
     private fun disconnectCustomer() {

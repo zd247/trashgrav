@@ -11,5 +11,6 @@
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#1AE5E5E5</color>
     <color name="half_black">#808080</color>
+    <color name="white">#FFFFFF</color>
 
 </resources>

@@ -39,19 +39,38 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/request_send_msg_btn"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="12dp"
-            android:text="Send"
-            android:textColor="@android:color/white"
-            android:background="@drawable/request_send_btn"
-            android:layout_marginHorizontal="70dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/request_calc_earning"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAllCaps="false"
+                android:text="Calculate earning"
+                android:layout_marginStart="25dp"
+                android:layout_marginVertical="12dp"
+                android:background="@drawable/color_accent_btn"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/request_total_earning"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="price"
+                android:maxLength="7"
+                android:gravity="center"/>
+            <Button
+                android:id="@+id/request_send_msg_btn"
+                android:layout_width="100dp"
+                android:layout_height="42dp"
+                android:layout_marginLeft="7dp"
+                android:background="@drawable/request_send_btn"
+                android:text="Send"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

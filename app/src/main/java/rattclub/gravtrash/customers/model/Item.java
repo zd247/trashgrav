@@ -1,15 +1,16 @@
 package rattclub.gravtrash.customers.model;
 
 public class Item {
-    private String category, image;
-    private Long price;
+    private String category, image, description;
+    private Double price;
 
     public Item() { }
 
-    public Item(String category, Long price, String image) {
+    public Item(String category, Double price, String image, String description) {
         this.category = category;
         this.price = price;
         this.image = image;
+        this.description = description;
     }
 
     public String getCategory() {
@@ -20,11 +21,11 @@ public class Item {
         this.category = category;
     }
 
-    public Long getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -34,5 +35,13 @@ public class Item {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

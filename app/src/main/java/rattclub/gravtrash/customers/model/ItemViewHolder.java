@@ -3,7 +3,6 @@ package rattclub.gravtrash.customers.model;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import rattclub.gravtrash.R;
 
-public class ItemViewHolder extends RecyclerView.ViewHolder {
+public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView itemCategory, itemPrice;
     public ImageView itemImage;
     public EditText itemQuantity;
     public TextView itemKgText;
+    public ItemClickListener listener;
 
     public ItemViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -26,6 +26,14 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
         itemQuantity = itemView.findViewById(R.id.item_quantity_edit_text);
         itemKgText = itemView.findViewById(R.id.item_kg_text);
 
+    }
 
+    public void setItemClickListener(ItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        listener.onClick(v, getAdapterPosition(), false);
     }
 }

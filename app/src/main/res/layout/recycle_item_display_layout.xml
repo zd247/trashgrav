@@ -57,7 +57,8 @@
                         android:layout_width="60dp"
                         android:layout_height="match_parent"
                         android:hint="Ex: 0.545"
-                        android:inputType="number"
+                        android:text="0.0"
+                        android:inputType="numberDecimal"
                         android:maxLength="5"
                         android:textSize="15sp" />
 
