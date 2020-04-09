@@ -301,7 +301,97 @@ class CustomerHomeFragment : Fragment(),
     }
 
     private fun handleRequestPopUp() {
+        var selectedItemsMap: HashMap<Int, Item> = HashMap()
+        var quantityItemsMap: HashMap<Int, Double?> = HashMap()
+        var sparseBooleanArray = SparseBooleanArray()
+        var totalAmount = 0.0
+        val sendButton = requestDialog.findViewById<Button>(R.id.request_send_msg_btn)
+        sendButton.setOnClickListener {sendMessageToDriver()}
+        requestDialog.request_total_earning.text = "${totalAmount}$"
+        requestDialog.request_calc_earning.setOnClickListener {
+            totalAmount = 0.0
+            requestDialog.request_total_earning.text = "${totalAmount}$"
+            for ((key, value) in selectedItemsMap) {
+                totalAmount += value.price * quantityItemsMap[key]!!
+                requestDialog.request_total_earning.text = "${totalAmount}$"
+            }
+        }
 
+
+        val recycleItemList = requestDialog.findViewById<RecyclerView>(R.id.request_item_recycler_view)
+        recycleItemList.setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(requestDialog.context)
+        recycleItemList.layoutManager = layoutManager
+
+        // recycler view
+        val options = FirebaseRecyclerOptions.Builder<Item>()
+            .setQuery(rootRef.child("Items"), Item::class.java)
+            .build()
+
+        val adapter = object: FirebaseRecyclerAdapter<Item, ItemViewHolder>(options) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.recycle_item_display_layout, parent, false)
+                return ItemViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ItemViewHolder, position: Int, model: Item) {
+                holder.itemCategory.text = model.category
+                holder.itemPrice.text = "${model.price}$/kg"
+                Picasso.get().load(model.image).into(holder.itemImage)
+
+                if (!sparseBooleanArray.get(position)) {
+                    holder.itemView.setBackgroundResource(R.color.colorAccent)
+                    holder.itemQuantity.visibility = View.GONE
+                    holder.itemQuantity.setText("0.0")
+                    holder.itemQuantity.removeTextChangedListener(object: TextWatcher{
+                        override fun afterTextChanged(s: Editable?) {}
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    })
+                    holder.itemKgText.visibility = View.GONE
+
+                }else if (sparseBooleanArray.get(position)){
+                    holder.itemView.setBackgroundResource(R.color.colorAccent2)
+                    holder.itemQuantity.visibility = View.VISIBLE
+                    holder.itemQuantity.setText("0.0")
+                    holder.itemQuantity.addTextChangedListener (object: TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {}
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                            var quantityStr:String? = holder.itemQuantity.text.toString()
+                            if (quantityStr == null || quantityStr == "") {
+                                quantityStr = "0.0"
+                            }
+                            quantityItemsMap[position] = quantityStr.toDouble()
+                        }
+
+                    })
+                    holder.itemKgText.visibility = View.VISIBLE
+
+                }
+
+                holder.itemView.setOnClickListener {
+                    if (!sparseBooleanArray.get(position)) {
+                        sparseBooleanArray.put(position, true)
+                        selectedItemsMap[position] = model
+                        notifyItemChanged(position)
+                    }else if (sparseBooleanArray.get(position)){
+                        sparseBooleanArray.put(position, false)
+                        selectedItemsMap.remove(position)
+                        quantityItemsMap[position] = 0.0
+                        notifyItemChanged(position)
+                    }
+
+                }
+            }
+
+        }
+
+        recycleItemList.adapter = adapter
+        adapter.startListening()
+
+        requestDialog.show()
     }
 
     private fun sendMessageToDriver() {
