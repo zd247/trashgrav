@@ -14,4 +14,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/driver_fab_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fab_addButtonColorNormal="@color/colorAccent2"
+        app:fab_addButtonColorPressed="@color/colorAccent3"
+        app:fab_addButtonPlusIconColor="#FFFFFF"
+        app:fab_labelStyle="@style/custom_fab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.884"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.857">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/driver_msg_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent2"
+            app:fab_icon="@android:drawable/ic_dialog_email"
+            app:fab_size="mini"
+            app:fab_title="Inbox" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/driver_request_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorAccent2"
+            app:fab_icon="@drawable/ic_rate_review_black_24dp"
+            app:fab_size="mini"
+            app:fab_title="Incoming requests" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

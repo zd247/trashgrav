@@ -4,16 +4,15 @@ package rattclub.gravtrash.customers.nav
 
 import android.Manifest
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.AttributeSet
 import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -54,13 +53,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.customer_fragment_home.*
-import kotlinx.android.synthetic.main.request_pop_up_layout.*
+import kotlinx.android.synthetic.main.customer_request_pop_up_layout.*
 import rattclub.gravtrash.PhoneInputActivity
 import rattclub.gravtrash.Prevalent
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.model.Item
 import rattclub.gravtrash.customers.model.ItemViewHolder
 import java.lang.Math.*
+import java.util.*
 import kotlin.collections.HashMap
 
 class CustomerHomeFragment : Fragment(),
@@ -91,7 +91,7 @@ class CustomerHomeFragment : Fragment(),
     private var closetDriverDistance: Double = 9999.99
 
     // FAB dialogs
-    private lateinit var chatDialog: Dialog
+    private lateinit var msgDialog: Dialog
     private lateinit var requestDialog: Dialog
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
@@ -110,12 +110,12 @@ class CustomerHomeFragment : Fragment(),
 
 
         // chat fab
-        chatDialog = Dialog(root.context)
-        chatDialog.setContentView(R.layout.chat_pop_up_layout)
-        chatDialog.setCanceledOnTouchOutside(true)
+        msgDialog = Dialog(root.context)
+        msgDialog.setContentView(R.layout.chat_pop_up_layout)
+        msgDialog.setCanceledOnTouchOutside(true)
         val chatFab: FloatingActionButton = root.findViewById(R.id.customer_msg_fab)
         chatFab.setOnClickListener {
-            chatDialog.show()
+            msgDialog.show()
             customer_fab_menu.collapse()
         }
 
@@ -136,13 +136,13 @@ class CustomerHomeFragment : Fragment(),
         // request fab
         requestDialog = Dialog(root.context)
         requestDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        requestDialog.setContentView(R.layout.request_pop_up_layout)
+        requestDialog.setContentView(R.layout.customer_request_pop_up_layout)
         requestDialog.setCanceledOnTouchOutside(true)
         val sendRequestFab: FloatingActionButton = root.findViewById(R.id.customer_request_fab)
         sendRequestFab.setOnClickListener {
             customer_fab_menu.collapse()
             if (driverFoundKeyMap.size > 0) {
-                callClosetDriver()
+                requestClosetDriver()
             }
             else {
                 Toast.makeText(root.context, "There is no driver nearby", Toast.LENGTH_SHORT).show()
@@ -178,7 +178,6 @@ class CustomerHomeFragment : Fragment(),
     override fun onStop() {
         super.onStop()
         disconnectCustomer()
-        cancelRequest()
     }
 
     override fun onConnected(p0: Bundle?) {
@@ -272,7 +271,7 @@ class CustomerHomeFragment : Fragment(),
         return earthRadius * c // output distance, in MILES
     }
 
-    private fun callClosetDriver() {
+    private fun requestClosetDriver() {
         mAuth.currentUser?.uid?.let {
             rootRef.child("Users").child(it).child("phone")
                 .addListenerForSingleValueEvent(object: ValueEventListener {
@@ -415,6 +414,20 @@ class CustomerHomeFragment : Fragment(),
         requestMap["request_type"] = "sent"
         requestMap["message"] = message
         requestMap["price"] = requestTotalAmount
+        // pick up locality
+        var locationMap: HashMap<String, Double> = HashMap()
+        locationMap["lat"] = lastLocation.latitude; locationMap["lng"] = lastLocation.longitude
+        requestMap["pickup_location"] = locationMap
+
+        val geoCoder = Geocoder(root.context, Locale.ENGLISH)
+        val addresses = geoCoder.getFromLocation(lastLocation.latitude, lastLocation.longitude,1)
+        if (addresses.size > 0) {
+            val fetchedAddress = addresses[0].getAddressLine(0)
+            requestMap["pickup_address"] = fetchedAddress
+        }else {
+            requestMap["pickup_address"] = ""
+        }
+
         val requestRef = rootRef.child("Requests")
         requestRef.child(mAuth.currentUser?.uid.toString()).child(closetDriverKey.toString())
             .updateChildren(requestMap)

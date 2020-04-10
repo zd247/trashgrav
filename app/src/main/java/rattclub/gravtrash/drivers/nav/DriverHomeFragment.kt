@@ -3,17 +3,17 @@
 package rattclub.gravtrash.drivers.nav
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.common.ConnectionResult
@@ -27,11 +27,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.driver_fragment_home.*
 import rattclub.gravtrash.Prevalent
 import rattclub.gravtrash.R
-import rattclub.gravtrash.customers.nav.CustomerHomeFragment
 
 class DriverHomeFragment : Fragment(), OnMapReadyCallback,
                         GoogleApiClient.ConnectionCallbacks,
@@ -47,6 +48,11 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
     private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    // Fab dialogs
+    private lateinit var msgDialog: Dialog
+    private lateinit var requestDialog: Dialog
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
          root = inflater.inflate(R.layout.driver_fragment_home, container, false)
@@ -56,6 +62,24 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
+
+        val msgFab: FloatingActionButton = root.findViewById(R.id.driver_msg_fab)
+        msgFab.setOnClickListener {
+            driver_fab_menu.collapse()
+        }
+
+        // request fab
+        requestDialog = Dialog(root.context)
+        requestDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        requestDialog.setContentView(R.layout.driver_request_pop_up_layout)
+        requestDialog.setCanceledOnTouchOutside(true)
+        driver_request_fab.setOnClickListener{
+            driver_fab_menu.collapse()
+            
+
+            requestDialog.show()
+        }
+
 
         return root
     }
@@ -67,8 +91,10 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
         if (isPermissionGranted()) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->
-                    lastLocation = location!!
-                    val latLng = LatLng(location.latitude, location.longitude)
+                    if (location != null) {
+                        lastLocation = location
+                    }
+                    val latLng = location?.let { LatLng(it.latitude, it.longitude) }
                     map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
                     map.animateCamera(CameraUpdateFactory.zoomTo(Prevalent.CAMERA_ZOOM_VALUE))
                 }

@@ -31,11 +31,6 @@ class DriverMainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val chatFab: FloatingActionButton = findViewById(R.id.driver_msg_fab)
-        chatFab.setOnClickListener { view ->
-            Snackbar.make(view, "Chat log with customers", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.driver_nav_view)
         val navController = findNavController(R.id.nav_host_fragment)

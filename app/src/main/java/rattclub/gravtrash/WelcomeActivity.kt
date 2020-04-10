@@ -123,7 +123,7 @@ class WelcomeActivity : AppCompatActivity() {
             }else {
                 loadingBar.dismiss()
                 Toast.makeText(this@WelcomeActivity,
-                    "Sign in to Google failed",
+                    "Sign in to Facebook failed",
                     Toast.LENGTH_SHORT).show()
             }
         }
