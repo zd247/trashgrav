@@ -9,13 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import rattclub.gravtrash.R;
+import rattclub.gravtrash.model.RecyclerClickListener;
 
 public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView itemCategory, itemPrice;
     public ImageView itemImage;
     public EditText itemQuantity;
     public TextView itemKgText;
-    public ItemClickListener listener;
+    public RecyclerClickListener listener;
 
     public ItemViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -28,7 +29,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     }
 
-    public void setItemClickListener(ItemClickListener listener) {
+    public void setItemClickListener(RecyclerClickListener listener) {
         this.listener = listener;
     }
 

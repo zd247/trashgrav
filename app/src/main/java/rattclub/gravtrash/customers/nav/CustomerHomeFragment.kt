@@ -91,7 +91,7 @@ class CustomerHomeFragment : Fragment(),
     private var closetDriverDistance: Double = 9999.99
 
     // FAB dialogs
-    private lateinit var msgDialog: Dialog
+    private lateinit var inboxDialog: Dialog
     private lateinit var requestDialog: Dialog
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
@@ -110,12 +110,13 @@ class CustomerHomeFragment : Fragment(),
 
 
         // chat fab
-        msgDialog = Dialog(root.context)
-        msgDialog.setContentView(R.layout.chat_pop_up_layout)
-        msgDialog.setCanceledOnTouchOutside(true)
+        inboxDialog = Dialog(root.context)
+        requestDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        inboxDialog.setContentView(R.layout.inbox_pop_up_layout)
+        inboxDialog.setCanceledOnTouchOutside(true)
         val chatFab: FloatingActionButton = root.findViewById(R.id.customer_msg_fab)
         chatFab.setOnClickListener {
-            msgDialog.show()
+            inboxDialog.show()
             customer_fab_menu.collapse()
         }
 
@@ -475,13 +476,6 @@ class CustomerHomeFragment : Fragment(),
                         }
                 }
             }
-    }
-
-    private fun sendMessageToDriver() {
-
-
-
-
     }
 
     private fun disconnectCustomer() {

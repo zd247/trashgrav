@@ -1,7 +1,7 @@
-package rattclub.gravtrash.customers.model
+package rattclub.gravtrash.model
 
 import android.view.View
 
-interface ItemClickListener {
+interface RecyclerClickListener {
     fun onClick(view: View, position: Int, isLongClick: Boolean)
 }

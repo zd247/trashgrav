@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".RecycleActivity"></activity>
+        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".RecycleActivity" />
         <activity android:name=".AccountSettingsActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
