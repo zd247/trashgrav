@@ -111,7 +111,7 @@ class CustomerHomeFragment : Fragment(),
 
         // chat fab
         inboxDialog = Dialog(root.context)
-        requestDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        inboxDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         inboxDialog.setContentView(R.layout.inbox_pop_up_layout)
         inboxDialog.setCanceledOnTouchOutside(true)
         val chatFab: FloatingActionButton = root.findViewById(R.id.customer_msg_fab)

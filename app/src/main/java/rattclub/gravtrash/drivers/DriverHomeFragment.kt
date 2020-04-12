@@ -89,7 +89,7 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
         // inbox fab
         inboxDialog = Dialog(root.context)
         inboxDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        inboxDialog.setContentView(R.layout.inbox_user_display_layout)
+        inboxDialog.setContentView(R.layout.inbox_pop_up_layout)
         inboxDialog.setCanceledOnTouchOutside(true)
         val inboxFab: FloatingActionButton = root.findViewById(R.id.driver_msg_fab)
         inboxFab.setOnClickListener {
@@ -357,11 +357,12 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
 
             override fun onBindViewHolder(holder: InboxViewHolder, position: Int, model: Message) {
                 val listUserID = getRef(position).key.toString()
-                getRef(position).orderByKey().limitToLast(1)
+                getRef(position)
                     .addValueEventListener(object: ValueEventListener {
                         override fun onCancelled(p0: DatabaseError) {}
                         override fun onDataChange(p0: DataSnapshot) {
                             if (p0.exists()) {
+                                Log.i("test", p0.key.toString())
                                 // retrieve from Messages database
                                 holder.userLastMessage.text = p0.child("message").value.toString()
                                 val lastSentTime = p0.child("time").value.toString() +
