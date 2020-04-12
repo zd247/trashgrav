@@ -37,10 +37,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.driver_fragment_home.*
 import rattclub.gravtrash.Prevalent
@@ -357,36 +354,39 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
 
             override fun onBindViewHolder(holder: InboxViewHolder, position: Int, model: Message) {
                 val listUserID = getRef(position).key.toString()
-                getRef(position)
-                    .addValueEventListener(object: ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {}
-                        override fun onDataChange(p0: DataSnapshot) {
-                            if (p0.exists()) {
-                                Log.i("test", p0.key.toString())
-                                // retrieve from Messages database
-                                holder.userLastMessage.text = p0.child("message").value.toString()
-                                val lastSentTime = p0.child("time").value.toString() +
-                                        " " + p0.child("date").value.toString()
-                                holder.userLastSent.text = lastSentTime
+                getRef(position).addChildEventListener(object: ChildEventListener{
+                    override fun onCancelled(p0: DatabaseError) {}
+                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+                    override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                        if (p0.exists()) {
+                            Log.i("test", p0.key.toString())
+                            // retrieve from Messages database
+                            holder.userLastMessage.text = p0.child("message").value.toString()
+                            val lastSentTime = p0.child("time").value.toString() +
+                                    " " + p0.child("date").value.toString()
+                            holder.userLastSent.text = lastSentTime
 
 
-                                rootRef.child("Users")
-                                    .child(listUserID)
-                                    .addListenerForSingleValueEvent(object: ValueEventListener {
-                                        override fun onCancelled(p0: DatabaseError) {}
-                                        override fun onDataChange(p0: DataSnapshot) {
-                                            if (p0.exists()) {
-                                                val fullName = p0.child("first_name").value.toString() +
-                                                        " " + p0.child("last_name").value.toString()
-                                                holder.userName.text = fullName
-                                                Picasso.get().load(p0.child("image").value.toString())
-                                                    .placeholder(R.drawable.profile).into(holder.userProfileImage)
-                                            }
+                            rootRef.child("Users")
+                                .child(listUserID)
+                                .addListenerForSingleValueEvent(object: ValueEventListener {
+                                    override fun onCancelled(p0: DatabaseError) {}
+                                    override fun onDataChange(p0: DataSnapshot) {
+                                        if (p0.exists()) {
+                                            val fullName = p0.child("first_name").value.toString() +
+                                                    " " + p0.child("last_name").value.toString()
+                                            holder.userName.text = fullName
+                                            Picasso.get().load(p0.child("image").value.toString())
+                                                .placeholder(R.drawable.profile).into(holder.userProfileImage)
                                         }
-                                    })
-                            }
+                                    }
+                                })
                         }
-                    })
+                    }
+                    override fun onChildRemoved(p0: DataSnapshot) {}
+
+                })
             }
 
         }
