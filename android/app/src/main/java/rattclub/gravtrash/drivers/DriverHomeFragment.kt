@@ -268,8 +268,8 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
         val messageID = userMessageKeyRef.key
 
 
-        val fullMessage = "${request.message} " +
-                "Price: ${request.price}$ \n " +
+        val fullMessage = "${request.message} "+
+                "Price: ${request.price}$ \n "+
                 "Pick up location: ${request.pickup_address}"
         val calendar = Calendar.getInstance()
         val currentDate = SimpleDateFormat("MMM dd, yyyy")

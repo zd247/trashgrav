@@ -1,10 +1,12 @@
 package rattclub.gravtrash.model
 
 import android.annotation.SuppressLint
-import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -79,12 +81,49 @@ class MessageAdapter: RecyclerView.Adapter<MessageViewHolder> {
             }
 
         }
+        holder.itemView.setOnLongClickListener{
+            holder.itemView.context.let {
+                val builder: AlertDialog.Builder? =
+                    holder.itemView.context.let { AlertDialog.Builder(it) }
+                builder?.setMessage("Delete message ?")
+                builder?.apply {
+                    setPositiveButton("Yes") { _, _ ->
+                        deleteMessage(position, holder)
+                    }
+                    setNegativeButton("No") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                }
+                builder?.create()
+                builder?.show()
+            }
+            true
+        }
+    }
 
-
-
-
-
-
+    private fun deleteMessage(position: Int, holder: MessageViewHolder) {
+        val messagesRef = rootRef.child("Messages")
+        messagesRef.child(userMessagesList[position].from)
+            .child(userMessagesList[position].to)
+            .child(userMessagesList[position].messageID)
+            .removeValue().addOnCompleteListener {task ->
+                if (task.isSuccessful) {
+                    messagesRef.child(userMessagesList[position].to)
+                        .child(userMessagesList[position].from)
+                        .child(userMessagesList[position].messageID)
+                        .removeValue().addOnCompleteListener {task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(holder.itemView.context,
+                                    "Message Deleted", Toast.LENGTH_SHORT).show()
+                            }else {
+                                Log.i ("error", "${task.exception}")
+                                Toast.makeText(holder.itemView.context,
+                                    "Unable to delete message", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }else {Toast.makeText(holder.itemView.context,
+                    "Unable to delete message", Toast.LENGTH_SHORT).show()}
+            }
     }
 
     override fun getItemCount(): Int {

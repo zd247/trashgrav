@@ -4,8 +4,10 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -99,7 +101,7 @@ object Prevalent {
                                     builder?.setMessage("Delete message ?")
                                     builder?.apply {
                                         setPositiveButton("Yes") { _, _ ->
-                                            deleteMessage()
+                                            deleteMessage(listUserID)
                                         }
                                         setNegativeButton("No") { dialog, _ ->
                                             dialog.cancel()
@@ -125,7 +127,19 @@ object Prevalent {
         inboxDialog.show()
     }
 
-    private fun deleteMessage() {
-
+    private fun deleteMessage(listUserID: String) {
+        val messagesRef = rootRef.child("Messages")
+        messagesRef.child(mAuth.currentUser?.uid.toString())
+            .child(listUserID).removeValue().addOnCompleteListener {task ->
+                if (task.isSuccessful) {
+                    messagesRef.child(listUserID)
+                        .child(mAuth.currentUser?.uid.toString())
+                        .removeValue()
+                        .addOnCompleteListener {task ->
+                            if (!task.isSuccessful)
+                                Log.i ("error", "${task.exception}")
+                        }
+                }
+            }
     }
 }

@@ -165,10 +165,12 @@ class CustomerHomeFragment : Fragment(),
         if (isPermissionGranted()) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->
-                    lastLocation = location!!
-                    val latLng = LatLng(location.latitude, location.longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                    map.animateCamera(CameraUpdateFactory.zoomTo(Prevalent.CAMERA_ZOOM_VALUE))
+                    if (location != null) {
+                        lastLocation = location
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                        map.animateCamera(CameraUpdateFactory.zoomTo(Prevalent.CAMERA_ZOOM_VALUE))
+                    }
                 }
         }
     }
