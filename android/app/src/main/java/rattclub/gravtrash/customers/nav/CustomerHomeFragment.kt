@@ -47,15 +47,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.customer_fragment_home.*
 import kotlinx.android.synthetic.main.customer_request_pop_up_layout.*
 import rattclub.gravtrash.PhoneInputActivity
-import rattclub.gravtrash.Prevalent
+import rattclub.gravtrash.model.Prevalent
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.model.Item
 import rattclub.gravtrash.customers.model.ItemViewHolder
@@ -109,14 +106,14 @@ class CustomerHomeFragment : Fragment(),
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
 
 
-        // chat fab
+        // inbox fab
         inboxDialog = Dialog(root.context)
         inboxDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         inboxDialog.setContentView(R.layout.inbox_pop_up_layout)
         inboxDialog.setCanceledOnTouchOutside(true)
         val chatFab: FloatingActionButton = root.findViewById(R.id.customer_msg_fab)
         chatFab.setOnClickListener {
-            inboxDialog.show()
+            Prevalent.handlePopUpInbox(root.context, inboxDialog)
             customer_fab_menu.collapse()
         }
 
@@ -477,6 +474,8 @@ class CustomerHomeFragment : Fragment(),
                 }
             }
     }
+
+
 
     private fun disconnectCustomer() {
         if (searching)geoQuery.removeAllListeners()

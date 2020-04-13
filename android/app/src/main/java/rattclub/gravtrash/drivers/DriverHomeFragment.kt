@@ -4,6 +4,7 @@ package rattclub.gravtrash.drivers
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +42,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.driver_fragment_home.*
-import rattclub.gravtrash.Prevalent
+import rattclub.gravtrash.ChatActivity
+import rattclub.gravtrash.model.Prevalent
 import rattclub.gravtrash.R
 import rattclub.gravtrash.model.Message
 import rattclub.gravtrash.drivers.model.Request
@@ -91,7 +94,7 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
         val inboxFab: FloatingActionButton = root.findViewById(R.id.driver_msg_fab)
         inboxFab.setOnClickListener {
             driver_fab_menu.collapse()
-            handlePopUpInbox()
+            Prevalent.handlePopUpInbox(root.context, inboxDialog)
         }
 
 
@@ -287,8 +290,8 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
         rootRef.updateChildren(messageRefMap).addOnCompleteListener{task ->
             if (task.isSuccessful) {
                 focusToPickUpLocation(request.pickup_location)
-//                deleteRequest(senderUserID)
-//                disconnectDriver()
+                deleteRequest(senderUserID)
+                disconnectDriver()
 
             }else { Log.i("error_messages", "${task.exception}") }
 
@@ -324,6 +327,7 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)))
     }
 
+
     private fun disconnectDriver() {
         isAvailable = false
         val aDriversRef = FirebaseDatabase.getInstance().reference.child("Available Drivers")
@@ -332,75 +336,8 @@ class DriverHomeFragment : Fragment(), OnMapReadyCallback,
             GeoFire.CompletionListener { _, _ ->})
     }
 
-    private fun handlePopUpInbox() {
-        val inboxRecycleList = inboxDialog.findViewById<RecyclerView>(R.id.inbox_recycler_view)
-        inboxRecycleList.setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(root.context)
-        inboxRecycleList.layoutManager = layoutManager
-
-        val options = FirebaseRecyclerOptions.Builder<Message>()
-            .setQuery(rootRef.child("Messages")
-                .child(mAuth.currentUser?.uid.toString()),
-                Message::class.java)
-            .build()
-
-        val adapter = object: FirebaseRecyclerAdapter<Message, InboxViewHolder> (options) {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InboxViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.inbox_user_display_layout, parent, false)
-                view.setBackgroundResource(R.color.colorAccent)
-                return InboxViewHolder(view)
-            }
-
-            override fun onBindViewHolder(holder: InboxViewHolder, position: Int, model: Message) {
-                val listUserID = getRef(position).key.toString()
-                getRef(position).addChildEventListener(object: ChildEventListener{
-                    override fun onCancelled(p0: DatabaseError) {}
-                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
-                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
-                    override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                        if (p0.exists()) {
-                            Log.i("test", p0.key.toString())
-                            // retrieve from Messages database
-                            holder.userLastMessage.text = p0.child("message").value.toString()
-                            val lastSentTime = p0.child("time").value.toString() +
-                                    " " + p0.child("date").value.toString()
-                            holder.userLastSent.text = lastSentTime
-
-
-                            rootRef.child("Users")
-                                .child(listUserID)
-                                .addListenerForSingleValueEvent(object: ValueEventListener {
-                                    override fun onCancelled(p0: DatabaseError) {}
-                                    override fun onDataChange(p0: DataSnapshot) {
-                                        if (p0.exists()) {
-                                            val fullName = p0.child("first_name").value.toString() +
-                                                    " " + p0.child("last_name").value.toString()
-                                            holder.userName.text = fullName
-                                            Picasso.get().load(p0.child("image").value.toString())
-                                                .placeholder(R.drawable.profile).into(holder.userProfileImage)
-                                        }
-                                    }
-                                })
-                        }
-                    }
-                    override fun onChildRemoved(p0: DataSnapshot) {}
-
-                })
-            }
-
-        }
-
-        inboxRecycleList.adapter = adapter
-        adapter.startListening()
-
-
-
-        inboxDialog.show()
-    }
-
 
     // Unused interfaces
-    override fun onConnectionSuspended(p0: Int) {}
-    override fun onConnectionFailed(p0: ConnectionResult) {}
+    override fun onConnectionSuspended(p0: Int) {isAvailable = false}
+    override fun onConnectionFailed(p0: ConnectionResult) {isAvailable = false}
 }
