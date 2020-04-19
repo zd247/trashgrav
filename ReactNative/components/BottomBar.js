@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 const BottomBar = ({ title, count }) => (
   <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-    <Text style={{ fontSize: 20 }}>{count}</Text>
-    <Text>{title}</Text>
+    <Text style={{ color: "white" }}>{title}</Text>
+    <Text style={{ fontSize: 20, color: "white" }}>{count}</Text>
   </View>
 );
 

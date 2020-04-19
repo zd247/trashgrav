@@ -10,12 +10,19 @@ import {
   Alert,
 } from "react-native";
 
+import TrashGrav from "./TrashGrav";
 import WelcomeScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import HomeScreen from "./screens/HomeScreen";
 import UserProfileScreen from "./screens/UserProfileScreen";
+import AdminHomeScreen from "./screens/Admin/AdminHomeScreen";
+import CustomerCart from "./screens/Customer/CustomerCart";
 import SettingScreen from "./screens/SettingScreen";
 import SecurityCheck from "./screens/AppSwitchNavigator/SecurityCheck";
+import LoadingScreen from "./screens/LoadingScreen";
+
+import CustomDrawerNavigator from "./screens/DrawerNavigator/CustomDrawerNavigator";
+import CartContainer from "./redux/containers/CartContainer";
 
 import {
   createAppContainer,
@@ -23,13 +30,14 @@ import {
   createStackNavigator,
   createDrawerNavigator,
   createBottomTabNavigator,
-  DrawerItems,
 } from "react-navigation";
 
-import CustomDrawerNavigator from "./screens/DrawerNavigator/CustomDrawerNavigator";
-
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import colors from "./assets/colors";
 import { Ionicons } from "@expo/vector-icons";
+
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 import * as firebase from "firebase/app";
 import { firebaseConfig } from "./config/config";
@@ -43,46 +51,105 @@ class App extends React.Component {
     firebase.initializeApp(firebaseConfig);
   };
 
-  signOut = async () => {
-    try {
-      await firebase.auth().signOut();
-      this.props.navigation.navigate("HomeScreen");
-    } catch (error) {
-      alert("Unable to sign out right now");
-    }
-  };
-
   render() {
-    return <AppContainer />;
+    return (
+      <Provider store={store}>
+        <TrashGrav />
+      </Provider>
+    );
   }
 }
 
-const LoginStackNavigator = createStackNavigator({
-  WelcomeScreen: {
-    screen: WelcomeScreen,
-    navigationOptions: {
-      header: null,
+const LoginStackNavigator = createStackNavigator(
+  {
+    WelcomeScreen: {
+      screen: WelcomeScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SignUpScreen: {
+      screen: SignUpScreen,
+      navigationOptions: {
+        header: null,
+      },
     },
   },
-  SignUpScreen: {
-    screen: SignUpScreen,
-  },
-});
+  {
+    mode: "modal",
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: colors.bgMain,
+      },
+    },
+  }
+);
 
-const AppDrawerNavigator = createDrawerNavigator(
+const HomeTabNavigator = createBottomTabNavigator(
   {
     HomeScreen: {
       screen: HomeScreen,
       navigationOptions: {
-        title: "Home",
+        tabBarLabel: "Recycle Item List",
+        tabBarIcon: ({ tintColor }) => (
+          <CartContainer color={tintColor} type="recycleItemList" />
+        ),
+      },
+    },
+    CustomerCartScreen: {
+      screen: CustomerCart,
+      navigationOptions: {
+        tabBarLabel: "Customer Cart",
+        tabBarIcon: ({ tintColor }) => (
+          <CartContainer color={tintColor} type="recycleCart" />
+        ),
+      },
+    },
+  },
+  {
+    tabBarOptions: {
+      style: {
+        backgroundColor: colors.bgMain,
+      },
+      activeTintColor: colors.logoColor,
+      inactiveTintColor: colors.bgTextInput,
+    },
+  }
+);
+
+HomeTabNavigator.navigationOptions = ({ navigation }) => {
+  const { routeName } = navigation.state.routes[navigation.state.index];
+
+  switch (routeName) {
+    case "HomeScreen":
+      return {
+        headerTitle: "Home Screen",
+      };
+    case "CustomerCartScreen":
+      return {
+        headerTitle: "Recycle Cart Screen",
+      };
+    default:
+      return {
+        headerTitle: "Home Screen",
+      };
+  }
+};
+
+const AppDrawerNavigator = createDrawerNavigator(
+  {
+    HomeTabNavigator: {
+      screen: HomeScreen,
+      navigationOptions: {
+        title: "Home Screen",
         drawerIcon: () => <Ionicons name="ios-home" size={24} />,
       },
     },
     UserProfileScreen: {
       screen: UserProfileScreen,
       navigationOptions: {
-        title: "Settings",
-        drawerIcon: () => <Ionicons name="ios-user" size={24} />,
+        title: "User Profile",
+        drawerIcon: () => <Ionicons name="ios-person" size={24} />,
       },
     },
     SettingsScreen: {
@@ -108,29 +175,10 @@ const AppContainer = createAppContainer(AppSwitchNavigator);
 
 export default App;
 
-/* contentComponent: (props) => (
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
-          <DrawerItems {...props} />
-          <TouchableOpacity
-            onPress={() => {
-              this.props.signOut();
-            }}
-          >
-            <Ionicons name="ios-log-out" size={24} />
-            <Text
-              style={{
-                margin: 16,
-                fontWeight: "bold",
-                color: colors.textColor,
-              }}
-            >
-              Logout
-            </Text>
-          </TouchableOpacity>
-        </SafeAreaView>
-      </View>
-    ),
-    drawerOpenRoute: "DrawerOpen",
-    drawerCloseRoute: "DrawerClose",
-    drawerToggleRoute: "DrawerToggle",*/
+{
+  /*
+  <Provider store={store}>
+        <TrashGrav />
+      </Provider> 
+*/
+}

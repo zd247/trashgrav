@@ -7,13 +7,23 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  Image,
 } from "react-native";
 import { render } from "react-dom";
 
 import BottomBar from "../components/BottomBar";
 import CustomTempButton from "../components/CustomTempButton";
+import ListItem from "../components/ItemList";
+import { snapshotToArray } from "../helpers/firebaseHelpers";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../assets/colors";
+
+import { connect } from "react-redux";
+import { compose } from "redux";
+//import { connectActionSheet } from "@expo/react-native-action-sheet";
+
+import * as firebase from "firebase/app";
+import "firebase/storage";
 
 class HomeScreen extends React.Component {
   constructor() {
@@ -23,8 +33,35 @@ class HomeScreen extends React.Component {
       textInputData: "",
       recycleItemList: [],
       recycleCart: [],
+      currentUser: {},
     };
   }
+
+  componentDidMount = async () => {
+    const user = this.props.currentUser;
+
+    //const { navigation } = this.props;
+    //const user = navigation.getParam("user");
+
+    const currentUserData = await firebase
+      .database()
+      .ref("Users")
+      .child(user.uid)
+      .once("value");
+
+    const recycleItems = await firebase.database().ref("Items").once("value");
+    const recycleItemsArray = snapshotToArray(recycleItems);
+
+    this.setState({
+      currentUser: currentUserData.val(),
+      recycleItemList: recycleItemsArray,
+    });
+
+    this.props.loadUser(currentUserData.val());
+    this.props.loadRecycleItem(recycleItemsArray);
+    //console.log(currentUserData.val());
+    //console.log(this.props.user);
+  };
 
   showSearchRecycleItem = () => {
     this.setState({ isSearchRecycleItem: true });
@@ -49,79 +86,51 @@ class HomeScreen extends React.Component {
     let newList = this.state.recycleItemList.filter(
       (recycleItem) => recycleItem == selectedItem
     );
-    console.log(newList);
-    this.setState(
-      (state, props) => ({
-        recycleCart: [...state.recycleCart, newList],
-      }),
-      () => {
-        console.log(this.state.recycleCart);
-      }
-    );
+
+    //console.log(newList[0]);
+
+    this.props.moveItemToCart(newList[0]);
+    //console.log(this.state.recycleCart);
   };
 
   renderRecycleItemList = (item, index) => (
-    <View style={{ height: 50, flexDirection: "row" }}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          paddingLeft: 5,
-          paddingRight: 5,
-        }}
+    <ListItem item={item}>
+      <TouchableOpacity
+        style={{ paddingRight: 20 }}
+        onPress={() => this.chooseItem(item, index)}
       >
-        <Text>{item}</Text>
-      </View>
-      <TouchableOpacity onPress={() => this.chooseItem(item, index)}>
-        <View
-          style={{
-            width: 100,
-            height: 50,
-            backgroundColor: "#a5deba",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <View style={styles.addingButton}>
           <Text>Add To Cart</Text>
         </View>
       </TouchableOpacity>
-    </View>
+    </ListItem>
   );
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <SafeAreaView />
-        <View
-          style={{
-            height: 70,
-            borderBottomWidth: 0.5,
-            borderBottomColor: "#E9E9E9",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text> Trash Grav</Text>
-        </View>
+
+        {/*<View style={styles.header}>
+          <Text style={styles.headerTitle}>
+            Welcome {this.props.recycleItemList.user.first_name} !!
+          </Text>
+        </View> */}
 
         <View style={{ flex: 1 }}>
-          {this.state.isSearchRecycleItem && (
-            <View style={{ height: 50, flexDirection: "row" }}>
-              <TextInput
-                onChangeText={(text) => this.setState({ textInputData: text })}
-                style={{ flex: 1, backgroundColor: "#ececec", paddingLeft: 5 }}
-                placeholder="Enter Recycling Item"
-              />
-              <CustomTempButton
-                onPress={() => this.addRecycleItem(this.state.textInputData)}
-                style={{ backgroundColor: "#a5deba" }}
-              >
-                <Ionicons name="ios-checkmark" color="white" size={40} />
-              </CustomTempButton>
-            </View>
-          )}
+          <View style={styles.textInputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Search Recycle Items"
+              placeholderTextColor={colors.txtPlaceholder}
+              onChangeText={(text) => this.setState({ textInputData: text })}
+              ref={(component) => {
+                this.textInputRef = component;
+              }}
+            />
+          </View>
           <FlatList
-            data={this.state.recycleItemList}
+            data={this.props.recycleItemList.recycleItemList}
             renderItem={({ item, index }) =>
               this.renderRecycleItemList(item, index)
             }
@@ -134,37 +143,47 @@ class HomeScreen extends React.Component {
               </View>
             }
           />
-          <CustomTempButton
+
+          {/*<CustomTempButton
             position="right"
             style={{ backgroundColor: "#CAF1DE", borderRadius: 25 }}
             onPress={this.showSearchRecycleItem}
           >
             <Text style={{ color: "white", fontSize: 30 }}>+</Text>
-          </CustomTempButton>
+          </CustomTempButton> */}
         </View>
-        <View
-          style={{
-            height: 70,
-            borderTopWidth: 0.5,
-            borderTopColor: "#E9E9E9",
-            flexDirection: "row",
-          }}
-        >
-          <BottomBar
-            count={this.state.recycleItemList.length}
-            title="Recycle Item List"
-          />
-          <BottomBar
-            count={this.state.recycleCart.length}
-            title="Recycle Cart"
-          />
-          <BottomBar title="User Profile" />
-        </View>
+
         <SafeAreaView />
       </View>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    recycleItemList: state.recycleItemList,
+    currentUser: state.auth.currentUser,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadRecycleItem: (recycleItemList) =>
+      dispatch({
+        type: "LOAD_RECYCLE_ITEMS_FROM_SERVER",
+        payload: recycleItemList,
+      }),
+    loadUser: (user) =>
+      dispatch({
+        type: "LOAD_USER_FROM_SERVER",
+        payload: user,
+      }),
+    moveItemToCart: (item) =>
+      dispatch({ type: "ADD_RECYCLE_ITEMS_TO_CART", payload: item }),
+    toggleIsLoadingItems: (bool) =>
+      dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -180,6 +199,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
+    color: "white",
   },
   textInputContainer: {
     height: 50,
@@ -193,7 +213,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 5,
     fontSize: 22,
     fontWeight: "200",
-    color: colors.txtWhite,
+    color: "white",
   },
   checkmarkButton: {
     backgroundColor: colors.bgSuccess,
@@ -213,20 +233,40 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  addNewBookButton: {
-    backgroundColor: colors.bgPrimary,
-    borderRadius: 25,
-  },
-  addNewBookButtonText: {
-    color: "white",
-    fontSize: 30,
-  },
   footer: {
     height: 70,
     flexDirection: "row",
     borderTopWidth: 0.5,
     borderTopColor: colors.borderColor,
+    color: "white",
+  },
+  listItemContainer: {
+    minHeight: 100,
+    flexDirection: "row",
+    backgroundColor: "white",
+    alignItems: "center",
+  },
+  imageContainer: {
+    height: 70,
+    width: 70,
+    marginLeft: 10,
+  },
+  addingButton: {
+    width: 100,
+    height: 50,
+    backgroundColor: "#a5deba",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
-export default HomeScreen;
+{
+  /*const wrapper = compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  connectActionSheet
+); */
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
+//export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

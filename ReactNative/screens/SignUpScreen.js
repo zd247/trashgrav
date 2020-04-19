@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bgMain,
-    paddingTop: Platform.OS == "web" ? 50 : 0,
+    paddingTop: Platform.OS == "android" ? 50 : 0,
   },
   textInput: {
     height: 50,

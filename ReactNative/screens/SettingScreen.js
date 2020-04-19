@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 
 import CustomActionButton from "../components/CustomTempButton";
 import colors from "../assets/colors";
+import { connect } from "react-redux";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 class SettingScreen extends Component {
@@ -34,7 +35,15 @@ class SettingScreen extends Component {
     );
   }
 }
-export default SettingScreen;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signIn: (user) => dispatch({ type: "SIGN_IN", payload: user }),
+    onsignOut: () => dispatch({ type: "SIGN_OUT" }),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SettingScreen);
 
 const styles = StyleSheet.create({
   container: {

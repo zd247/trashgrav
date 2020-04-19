@@ -8,7 +8,8 @@ import {
   Platform,
 } from "react-native";
 
-import { DrawerItems } from "react-navigation";
+import { DrawerItemList } from "@react-navigation/drawer";
+//import { DrawerItems } from "react-navigation";
 import colors from "../../assets/colors";
 import { Ionicons } from "@expo/vector-icons";
 class CustomDrawerNavigator extends Component {
@@ -30,7 +31,7 @@ class CustomDrawerNavigator extends Component {
             Trash Grav
           </Text>
         </View>
-        <DrawerItems {...this.props} />
+        <DrawerItemList {...this.props} />
       </ScrollView>
     );
   }
