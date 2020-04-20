@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import TrashGrav from "./TrashGrav";
-import WelcomeScreen from "./screens/LoginScreen";
+import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import HomeScreen from "./screens/HomeScreen";
 import UserProfileScreen from "./screens/UserProfileScreen";
@@ -62,8 +62,8 @@ class App extends React.Component {
 
 const LoginStackNavigator = createStackNavigator(
   {
-    WelcomeScreen: {
-      screen: WelcomeScreen,
+    LoginScreen: {
+      screen: LoginScreen,
       navigationOptions: {
         header: null,
       },
@@ -139,7 +139,7 @@ HomeTabNavigator.navigationOptions = ({ navigation }) => {
 const AppDrawerNavigator = createDrawerNavigator(
   {
     HomeTabNavigator: {
-      screen: HomeScreen,
+      screen: HomeTabNavigator,
       navigationOptions: {
         title: "Home Screen",
         drawerIcon: () => <Ionicons name="ios-home" size={24} />,
@@ -174,11 +174,3 @@ const AppSwitchNavigator = createSwitchNavigator({
 const AppContainer = createAppContainer(AppSwitchNavigator);
 
 export default App;
-
-{
-  /*
-  <Provider store={store}>
-        <TrashGrav />
-      </Provider> 
-*/
-}

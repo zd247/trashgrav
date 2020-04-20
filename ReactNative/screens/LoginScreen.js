@@ -36,8 +36,8 @@ class LoginScreen extends Component {
           .signInWithEmailAndPassword(this.state.email, this.state.password);
         if (response) {
           this.setState({ isLoading: false });
-          //this.props.signIn(response.user);
-          this.props.navigation.navigate("LoadingScreen");
+          this.props.signIn(response.user);
+          //this.props.navigation.navigate("HomeScreen");
         }
       } catch (error) {
         this.setState({ isLoading: false });

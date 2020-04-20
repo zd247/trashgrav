@@ -13,6 +13,7 @@ class SecurityCheck extends Component {
     this.unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         //navigate to home screen
+        //this.props.navigation.navigate("HomeScreen");
         this.props.navigation.navigate("HomeScreen", { user });
       } else {
         //login screen

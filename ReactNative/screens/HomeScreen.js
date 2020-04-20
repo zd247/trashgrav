@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -25,7 +25,7 @@ import { compose } from "redux";
 import * as firebase from "firebase/app";
 import "firebase/storage";
 
-class HomeScreen extends React.Component {
+class HomeScreen extends Component {
   constructor() {
     super();
     this.state = {
@@ -185,6 +185,10 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+//export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -259,14 +263,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-{
-  /*const wrapper = compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  connectActionSheet
-); */
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
-
-//export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
