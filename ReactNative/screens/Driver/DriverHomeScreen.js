@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-class AdminHomeScreeen extends Component {
+class DriverHomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -10,13 +10,13 @@ class AdminHomeScreeen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> Admin Home Screen Wooohooo !!!! </Text>
+        <Text> DriverHomeScreen </Text>
       </View>
     );
   }
 }
 
-export default AdminHomeScreeen;
+export default DriverHomeScreen;
 
 const styles = StyleSheet.create({
   container: {
