@@ -12,6 +12,8 @@ import { Ionicons } from "@expo/vector-icons";
 import colors from "../assets/colors";
 import CustomActionButton from "../components/CustomTempButton";
 
+import { connect } from "react-redux";
+
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
@@ -57,7 +59,8 @@ class SignUpScreen extends Component {
               uid: response.user.uid,
             });
 
-          this.props.navigation.navigate("SecurityCheck");
+          //this.props.navigation.navigate("SecurityCheck");
+          this.props.signIn(response.user);
           //automatically signs in the user
         }
       } catch (error) {
@@ -156,7 +159,14 @@ class SignUpScreen extends Component {
   }
 }
 
-export default SignUpScreen;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signIn: (user) => dispatch({ type: "SIGN_IN", payload: user }),
+    signOut: () => dispatch({ type: "SIGN_OUT" }),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SignUpScreen);
 
 const styles = StyleSheet.create({
   container: {
