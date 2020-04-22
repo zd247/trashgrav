@@ -13,12 +13,12 @@
 - If the project compiles successfully, your default webbrowswer should launch a new tab display the terminal to control the project
 
 ### Required packages
-`npm install @react-navigation/native` 
-`expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view`
-`npm install react-native-linear-gradient`
-`npm install react-native-animatable`
-`npm install react-native-vector-icons`
-`npm install react-navigation-stack`
+- `npm install @react-navigation/native` 
+- `expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view`
+- `npm install react-native-linear-gradient`
+- `npm install react-native-animatable`
+- `npm install react-native-vector-icons`
+- `npm install react-navigation-stack`
 
 
 ### Overview technical requirements
