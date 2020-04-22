@@ -32,6 +32,8 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
+
+
 class TrashGrav extends Component {
   constructor(props) {
     super(props);

@@ -42,13 +42,17 @@ import store from "./redux/store";
 import * as firebase from "firebase/app";
 import { firebaseConfig } from "./config/config";
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.initializeFirebase();
   }
   initializeFirebase = () => {
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length){
+      firebase.initializeApp(firebaseConfig);
+    }
+    
   };
 
   render() {
