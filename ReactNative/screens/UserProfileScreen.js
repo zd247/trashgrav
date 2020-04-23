@@ -14,6 +14,7 @@ import {
 
 import CustomActionButton from "../components/CustomTempButton";
 import colors from "../assets/colors";
+import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { connectActionSheet } from "@expo/react-native-action-sheet";
@@ -193,6 +194,17 @@ class UserProfileScreen extends Component {
         <SafeAreaView />
 
         <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.openDrawer()}
+            style={{ flex: 1 }}
+          >
+            <Ionicons
+              name="ios-menu"
+              size={30}
+              color="white"
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>
             {this.props.recycleItemList.user.first_name}'s Profile !!
           </Text>
@@ -311,13 +323,17 @@ const styles = StyleSheet.create({
     height: 70,
     borderBottomWidth: 0.5,
     borderBottomColor: colors.borderColor,
-    marginBottom: 50,
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
   },
   headerTitle: {
     fontSize: 24,
     color: "white",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
   },
   textInputContainer: {
     //flexDirection: "row",
