@@ -1,4 +1,6 @@
 const colors = {
+  bgPopUp: '#03fc6b',
+  bgUserLogin: '#768758',
   bgSuccess: "#89b99b",
   bgSuccessDark: "#3C6E47DA",
   bgError: "#deada5",
@@ -14,6 +16,7 @@ const colors = {
   logoColor: "#bada55",
   txtWhite: "white",
   listItemBg: "#354D58DA",
+  textLinkStd: '#0000EE',
 };
 
 export default colors;
