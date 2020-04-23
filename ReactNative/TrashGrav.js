@@ -245,4 +245,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//
+//git push --set-upstream origin master

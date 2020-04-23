@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 
 import CustomActionButton from "../../components/CustomTempButton";
 
@@ -7,6 +13,7 @@ import colors from "../../assets/colors";
 import ItemList from "../../components/ItemList";
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
+import MapView from "react-native-maps";
 
 class DriverHomeScreen extends Component {
   constructor(props) {
@@ -32,7 +39,7 @@ class DriverHomeScreen extends Component {
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
         <View style={styles.body}>
-          <Text>Body</Text>
+          <MapView style={styles.mapStyle} />
         </View>
       </View>
     );
@@ -72,7 +79,9 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+  },
+  mapStyle: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
