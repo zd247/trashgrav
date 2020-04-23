@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-import WelcomeScreen from "./screens/LoginScreen";
+import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import HomeScreen from "./screens/HomeScreen";
 import UserProfileScreen from "./screens/UserProfileScreen";
@@ -78,9 +78,14 @@ class TrashGrav extends Component {
               headerTintColor: "white",
             }}
           >
-            <Stack.Screen
-              name="Welcome Screen"
+            {/* <Stack.Screen
+              name="WelcomeScreen"
               component={WelcomeScreen}
+              options={{ headerShown: false }}
+            /> */}
+            <Stack.Screen
+              name="LoginScreen"
+              component={LoginScreen}
               options={{ headerShown: false }}
             />
             <Stack.Screen
