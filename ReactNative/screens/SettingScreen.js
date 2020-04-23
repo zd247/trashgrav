@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 
 import CustomActionButton from "../components/CustomTempButton";
 import colors from "../assets/colors";
@@ -21,6 +27,7 @@ class SettingScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <SafeAreaView />
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => this.props.navigation.openDrawer()}
@@ -65,6 +72,7 @@ class SettingScreen extends Component {
             <Text style={{ fontWeight: "100", color: "white" }}>Logout</Text>
           </CustomActionButton>
         </View>
+        <SafeAreaView />
       </View>
     );
   }
