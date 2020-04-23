@@ -42,17 +42,15 @@ import store from "./redux/store";
 import * as firebase from "firebase/app";
 import { firebaseConfig } from "./config/config";
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.initializeFirebase();
   }
   initializeFirebase = () => {
-    if (!firebase.apps.length){
+    if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-    
   };
 
   render() {
@@ -63,118 +61,5 @@ class App extends React.Component {
     );
   }
 }
-
-const LoginStackNavigator = createStackNavigator(
-  {
-    LoginScreen: {
-      screen: LoginScreen,
-      navigationOptions: {
-        header: null,
-      },
-    },
-    SignUpScreen: {
-      screen: SignUpScreen,
-      navigationOptions: {
-        header: null,
-      },
-    },
-  },
-  {
-    mode: "modal",
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: colors.bgMain,
-      },
-    },
-  }
-);
-
-const HomeTabNavigator = createBottomTabNavigator(
-  {
-    HomeScreen: {
-      screen: HomeScreen,
-      navigationOptions: {
-        tabBarLabel: "Recycle Item List",
-        tabBarIcon: ({ tintColor }) => (
-          <CartContainer color={tintColor} type="recycleItemList" />
-        ),
-      },
-    },
-    CustomerCartScreen: {
-      screen: CustomerCart,
-      navigationOptions: {
-        tabBarLabel: "Customer Cart",
-        tabBarIcon: ({ tintColor }) => (
-          <CartContainer color={tintColor} type="recycleCart" />
-        ),
-      },
-    },
-  },
-  {
-    tabBarOptions: {
-      style: {
-        backgroundColor: colors.bgMain,
-      },
-      activeTintColor: colors.logoColor,
-      inactiveTintColor: colors.bgTextInput,
-    },
-  }
-);
-
-HomeTabNavigator.navigationOptions = ({ navigation }) => {
-  const { routeName } = navigation.state.routes[navigation.state.index];
-
-  switch (routeName) {
-    case "HomeScreen":
-      return {
-        headerTitle: "Home Screen",
-      };
-    case "CustomerCartScreen":
-      return {
-        headerTitle: "Recycle Cart Screen",
-      };
-    default:
-      return {
-        headerTitle: "Home Screen",
-      };
-  }
-};
-
-const AppDrawerNavigator = createDrawerNavigator(
-  {
-    HomeTabNavigator: {
-      screen: HomeTabNavigator,
-      navigationOptions: {
-        title: "Home Screen",
-        drawerIcon: () => <Ionicons name="ios-home" size={24} />,
-      },
-    },
-    UserProfileScreen: {
-      screen: UserProfileScreen,
-      navigationOptions: {
-        title: "User Profile",
-        drawerIcon: () => <Ionicons name="ios-person" size={24} />,
-      },
-    },
-    SettingsScreen: {
-      screen: SettingScreen,
-      navigationOptions: {
-        title: "Settings",
-        drawerIcon: () => <Ionicons name="ios-settings" size={24} />,
-      },
-    },
-  },
-  {
-    contentComponent: CustomDrawerNavigator,
-  }
-);
-
-const AppSwitchNavigator = createSwitchNavigator({
-  SecurityCheck,
-  LoginStackNavigator,
-  AppDrawerNavigator,
-});
-
-const AppContainer = createAppContainer(AppSwitchNavigator);
 
 export default App;

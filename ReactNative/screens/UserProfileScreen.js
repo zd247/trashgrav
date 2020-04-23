@@ -357,14 +357,6 @@ const styles = StyleSheet.create({
   listEmptyComponentText: {
     fontWeight: "bold",
   },
-  markAsReadButton: {
-    width: 100,
-    backgroundColor: colors.bgSuccess,
-  },
-  markAsReadButtonText: {
-    fontWeight: "bold",
-    color: "white",
-  },
   footer: {
     height: 70,
     flexDirection: "row",

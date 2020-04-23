@@ -10,7 +10,6 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../assets/colors";
 import CustomActionButton from "../components/CustomTempButton";
-import ErrorBoundary from '../components/ErrorBoundary'
 
 import { connect } from "react-redux";
 

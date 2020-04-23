@@ -20,13 +20,29 @@ class SettingScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        {!this.props.auth.isDriver ? (
+          <CustomActionButton
+            style={styles.changeMode}
+            title="Change To Driver Mode"
+            onPress={this.props.changeDriverMode}
+          >
+            <Text style={{ fontWeight: "100", color: "white" }}>
+              Change To Driver Mode
+            </Text>
+          </CustomActionButton>
+        ) : (
+          <CustomActionButton
+            style={styles.changeMode}
+            title="Change To Customer Mode"
+            onPress={this.props.changeCustomerMode}
+          >
+            <Text style={{ fontWeight: "100", color: "white" }}>
+              Change To Customer Mode
+            </Text>
+          </CustomActionButton>
+        )}
         <CustomActionButton
-          style={{
-            width: 200,
-            backgroundColor: "transparent",
-            borderWidth: 0.5,
-            borderColor: colors.bgError,
-          }}
+          style={styles.changeMode}
           title="Sign Up"
           onPress={this.signOut}
         >
@@ -37,14 +53,22 @@ class SettingScreen extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     signIn: (user) => dispatch({ type: "SIGN_IN", payload: user }),
     onsignOut: () => dispatch({ type: "SIGN_OUT" }),
+    changeDriverMode: () => dispatch({ type: "CHANGE_TO_DRIVER_MODE" }),
+    changeCustomerMode: () => dispatch({ type: "CHANGE_TO_CUSTOMER_MODE" }),
   };
 };
 
-export default connect(null, mapDispatchToProps)(SettingScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SettingScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -52,5 +76,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.bgMain,
+  },
+  changeMode: {
+    width: 200,
+    backgroundColor: "transparent",
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginBottom: 20,
   },
 });

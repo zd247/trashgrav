@@ -7,9 +7,11 @@ import HomeScreen from "./screens/HomeScreen";
 import UserProfileScreen from "./screens/UserProfileScreen";
 import AdminHomeScreen from "./screens/Admin/AdminHomeScreen";
 import CustomerCart from "./screens/Customer/CustomerCart";
+import CustomerMapScreen from "./screens/Customer/CustomerMapScreen";
 import SettingScreen from "./screens/SettingScreen";
 import SecurityCheck from "./screens/AppSwitchNavigator/SecurityCheck";
 import LoadingScreen from "./screens/LoadingScreen";
+import DriverHomeScreen from "./screens/Driver/DriverHomeScreen";
 
 import CustomDrawerNavigator from "./screens/DrawerNavigator/CustomDrawerNavigator";
 import CartContainer from "./redux/containers/CartContainer";
@@ -31,8 +33,6 @@ import { firebaseConfig } from "./config/config";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-
-
 
 class TrashGrav extends Component {
   constructor(props) {
@@ -89,15 +89,17 @@ class TrashGrav extends Component {
               options={{ headerBackTitleVisible: false }}
             />
           </Stack.Navigator>
+        ) : !this.props.auth.isDriver ? (
+          <CustomerDrawerNavigator />
         ) : (
-          <AppDrawerNavigator />
+          <DriverDrawerNavigator />
         )}
       </NavigationContainer>
     );
   }
 }
 
-const HomeTabNavigator = ({ route }) => (
+const CustomerTabNavigator = ({ route }) => (
   <Tab.Navigator
     tabBarOptions={{
       style: {
@@ -132,10 +134,12 @@ const getHeaderTitle = (route) => {
       return "Recycle Item List";
     case "Recycle Cart":
       return "Recycle Cart";
+    case "CustomerMapScreen":
+      return "Book A Driver";
   }
 };
 
-const HomeStackNavigator = ({ navigation }) => (
+const CustomerStackNavigator = ({ navigation }) => (
   <Stack.Navigator
     screenOptions={{
       headerStyle: {
@@ -151,19 +155,42 @@ const HomeStackNavigator = ({ navigation }) => (
           style={{ marginLeft: 10 }}
         />
       ),
+      gestureEnabled: true,
     }}
+    initialRouteName="Recycle Item List"
   >
     <Stack.Screen
       options={({ route }) => ({
         title: getHeaderTitle(route),
       })}
       name="Recycle Item List"
-      component={HomeTabNavigator}
+      component={CustomerTabNavigator}
+    />
+
+    <Stack.Screen
+      options={{ title: "Customer Map Screen" }}
+      name="CustomerMapScreen"
+      component={CustomerMapScreen}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.bgMain,
+        },
+        headerTintColor: "white",
+        headerLeft: () => (
+          <Ionicons
+            onPress={() => navigation.goBack()}
+            name="ios-arrow-round-back"
+            size={30}
+            color="white"
+            style={{ marginLeft: 10 }}
+          />
+        ),
+      }}
     />
   </Stack.Navigator>
 );
 
-const AppDrawerNavigator = () => (
+const CustomerDrawerNavigator = () => (
   <ActionSheetProvider>
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerNavigator {...props} />}
@@ -171,7 +198,7 @@ const AppDrawerNavigator = () => (
       <Drawer.Screen
         options={{ drawerIcon: () => <Ionicons name="ios-home" size={24} /> }}
         name="Home"
-        component={HomeStackNavigator}
+        component={CustomerStackNavigator}
       />
       <Drawer.Screen
         options={{ drawerIcon: () => <Ionicons name="ios-person" size={24} /> }}
@@ -189,6 +216,34 @@ const AppDrawerNavigator = () => (
         options={{ drawerIcon: () => <Ionicons name="ios-people" size={24} /> }}
         name="Admin"
         component={AdminHomeScreen}
+      />
+    </Drawer.Navigator>
+  </ActionSheetProvider>
+);
+
+const DriverDrawerNavigator = () => (
+  <ActionSheetProvider>
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerNavigator {...props} />}
+    >
+      <Drawer.Screen
+        options={{
+          drawerIcon: () => <Ionicons name="ios-bicycle" size={24} />,
+        }}
+        name="Home"
+        component={DriverHomeScreen}
+      />
+      <Drawer.Screen
+        options={{ drawerIcon: () => <Ionicons name="ios-person" size={24} /> }}
+        name="User Profile"
+        component={UserProfileScreen}
+      />
+      <Drawer.Screen
+        options={{
+          drawerIcon: () => <Ionicons name="ios-settings" size={24} />,
+        }}
+        name="Setting"
+        component={SettingScreen}
       />
     </Drawer.Navigator>
   </ActionSheetProvider>
