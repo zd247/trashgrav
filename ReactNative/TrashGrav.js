@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
+import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -82,10 +83,16 @@ class TrashGrav extends Component {
               name="WelcomeScreen"
               component={WelcomeScreen}
               options={{ headerShown: false }}
-            /> */}
+            /> 
             <Stack.Screen
               name="LoginScreen"
               component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+            */}
+            <Stack.Screen
+              name="WelcomeScreen"
+              component={WelcomeScreen}
               options={{ headerShown: false }}
             />
             <Stack.Screen

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 
 import CustomActionButton from "../../components/CustomTempButton";
@@ -24,6 +25,7 @@ class DriverHomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <SafeAreaView />
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => this.props.navigation.openDrawer()}
@@ -41,6 +43,7 @@ class DriverHomeScreen extends Component {
         <View style={styles.body}>
           <MapView style={styles.mapStyle} />
         </View>
+        <SafeAreaView />
       </View>
     );
   }
