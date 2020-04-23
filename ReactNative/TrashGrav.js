@@ -140,29 +140,9 @@ const getHeaderTitle = (route) => {
 };
 
 const CustomerStackNavigator = ({ navigation }) => (
-  <Stack.Navigator
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: colors.bgMain,
-      },
-      headerTintColor: "white",
-      headerLeft: () => (
-        <Ionicons
-          onPress={() => navigation.openDrawer()}
-          name="ios-menu"
-          size={30}
-          color="white"
-          style={{ marginLeft: 10 }}
-        />
-      ),
-      gestureEnabled: true,
-    }}
-    initialRouteName="Recycle Item List"
-  >
+  <Stack.Navigator>
     <Stack.Screen
-      options={({ route }) => ({
-        title: getHeaderTitle(route),
-      })}
+      options={{ headerShown: false }}
       name="Recycle Item List"
       component={CustomerTabNavigator}
     />
@@ -171,21 +151,6 @@ const CustomerStackNavigator = ({ navigation }) => (
       options={{ title: "Customer Map Screen" }}
       name="CustomerMapScreen"
       component={CustomerMapScreen}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: colors.bgMain,
-        },
-        headerTintColor: "white",
-        headerLeft: () => (
-          <Ionicons
-            onPress={() => navigation.goBack()}
-            name="ios-arrow-round-back"
-            size={30}
-            color="white"
-            style={{ marginLeft: 10 }}
-          />
-        ),
-      }}
     />
   </Stack.Navigator>
 );
@@ -279,3 +244,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+//

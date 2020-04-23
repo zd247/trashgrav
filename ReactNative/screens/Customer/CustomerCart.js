@@ -14,6 +14,7 @@ import CustomActionButton from "../../components/CustomTempButton";
 
 import colors from "../../assets/colors";
 import ItemList from "../../components/ItemList";
+import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 
 class CustomerCart extends Component {
@@ -57,11 +58,22 @@ class CustomerCart extends Component {
       <View style={styles.container}>
         <SafeAreaView />
 
-        {/*<View style={styles.header}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.openDrawer()}
+            style={{ flex: 1 }}
+          >
+            <Ionicons
+              name="ios-menu"
+              size={30}
+              color="white"
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>
             {this.props.recycleItemList.user.first_name}'s Recycle Cart !!
           </Text>
-        </View> */}
+        </View>
         <View style={{ flex: 1 }}>
           <FlatList
             data={this.props.recycleItemList.recycleCart}
@@ -114,10 +126,15 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderColor,
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
   },
   headerTitle: {
     fontSize: 24,
     color: "white",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
   },
   removingButton: {
     width: 150,

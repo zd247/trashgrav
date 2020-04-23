@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import CustomActionButton from "../components/CustomTempButton";
 import colors from "../assets/colors";
+import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -20,34 +21,50 @@ class SettingScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {!this.props.auth.isDriver ? (
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.openDrawer()}
+            style={{ flex: 1 }}
+          >
+            <Ionicons
+              name="ios-menu"
+              size={30}
+              color="white"
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Setting Screen</Text>
+        </View>
+        <View style={styles.body}>
+          {!this.props.auth.isDriver ? (
+            <CustomActionButton
+              style={styles.changeMode}
+              title="Change To Driver Mode"
+              onPress={this.props.changeDriverMode}
+            >
+              <Text style={{ fontWeight: "100", color: "white" }}>
+                Change To Driver Mode
+              </Text>
+            </CustomActionButton>
+          ) : (
+            <CustomActionButton
+              style={styles.changeMode}
+              title="Change To Customer Mode"
+              onPress={this.props.changeCustomerMode}
+            >
+              <Text style={{ fontWeight: "100", color: "white" }}>
+                Change To Customer Mode
+              </Text>
+            </CustomActionButton>
+          )}
           <CustomActionButton
             style={styles.changeMode}
-            title="Change To Driver Mode"
-            onPress={this.props.changeDriverMode}
+            title="Sign Up"
+            onPress={this.signOut}
           >
-            <Text style={{ fontWeight: "100", color: "white" }}>
-              Change To Driver Mode
-            </Text>
+            <Text style={{ fontWeight: "100", color: "white" }}>Logout</Text>
           </CustomActionButton>
-        ) : (
-          <CustomActionButton
-            style={styles.changeMode}
-            title="Change To Customer Mode"
-            onPress={this.props.changeCustomerMode}
-          >
-            <Text style={{ fontWeight: "100", color: "white" }}>
-              Change To Customer Mode
-            </Text>
-          </CustomActionButton>
-        )}
-        <CustomActionButton
-          style={styles.changeMode}
-          title="Sign Up"
-          onPress={this.signOut}
-        >
-          <Text style={{ fontWeight: "100", color: "white" }}>Logout</Text>
-        </CustomActionButton>
+        </View>
       </View>
     );
   }
@@ -73,8 +90,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(SettingScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+
     backgroundColor: colors.bgMain,
   },
   changeMode: {
@@ -83,5 +99,26 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colors.bgError,
     marginBottom: 20,
+  },
+  header: {
+    height: 70,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.borderColor,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  headerTitle: {
+    fontSize: 24,
+    color: "white",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+  },
+  body: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
