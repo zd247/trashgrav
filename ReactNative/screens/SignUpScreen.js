@@ -1,192 +1,248 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
+	View,
+	Text,
+	TextInput,
+	StyleSheet,
+	Platform,
+	ActivityIndicator,
+	ScrollView,
+} from 'react-native'
 
-import { Ionicons } from "@expo/vector-icons";
-import colors from "../assets/colors";
-import CustomActionButton from "../components/CustomTempButton";
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Feather from 'react-native-vector-icons/Feather'
+import * as Animatable from 'react-native-animatable'
 
-import { connect } from "react-redux";
+import colors from '../assets/colors'
+import strings from '../assets/strings'
 
-import * as firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+import CustomActionButton from '../components/CustomTempButton'
+import { connect } from 'react-redux'
+
+import * as firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
 
 class SignUpScreen extends Component {
-  constructor() {
-    super();
-    this.state = {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
+	constructor() {
+		super()
+		this.state = {
+			firstName: '',
+			lastName: '',
       isLoading: false,
-    };
+      checkPhoneInputChange: false,
+      checkFNameInputChange: false,
+      checkLNameInputChange: false,
+		}
+  }
+  
+  phoneTextInputChange = value => {
+		if (value.length >= 9) {
+			this.setState({ checkPhoneInputChange: true })
+		} else {
+			this.setState({ checkPhoneInputChange: false })
+		}
+  }
+  
+  FNameTextInputChange = value => {
+		if (value.length >= 1) {
+			this.setState({ checkFNameInputChange: true })
+		} else {
+			this.setState({ checkFNameInputChange: false })
+		}
   }
 
-  onSignUp = async () => {
-    if (
-      this.state.email &&
-      this.state.password &&
-      this.state.firstName &&
-      this.state.lastName
-    ) {
-      this.setState({ isLoading: true });
-      try {
-        const response = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(
-            this.state.email,
-            this.state.password
-          );
-
-        if (response) {
-          this.setState({ isLoading: false });
-          const user = await firebase
-            .database()
-            .ref("Users")
-            .child(response.user.uid)
-            .set({
-              email: response.user.email,
-              first_name: this.state.firstName,
-              last_name: this.state.lastName,
-              uid: response.user.uid,
-            });
-
-          //this.props.navigation.navigate("SecurityCheck");
-          this.props.signIn(response.user);
-          //automatically signs in the user
-        }
-      } catch (error) {
-        this.setState({ isLoading: false });
-        if (error.code == "auth/email-already-in-use") {
-          alert("User already exists.Try loggin in");
-        }
-        console.log(error);
-      }
-    } else {
-      alert("All fields are required to sign up");
-    }
-  };
-
-  render() {
-    return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        {this.state.isLoading ? (
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1000,
-                elevation: 1000,
-              },
-            ]}
-          >
-            <ActivityIndicator size="large" color={colors.logoColor} />
-          </View>
-        ) : null}
-        <View
-          style={{
-            flex: 1,
-            borderColor: "white",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Ionicons name="ios-nuclear" size={150} color={colors.logoColor} />
-          <Text style={{ fontSize: 50, fontWeight: "100", color: "green" }}>
-            Trash Grav
-          </Text>
-        </View>
-
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            marginTop: 30,
-          }}
-        >
-          <TextInput
-            style={styles.textInput}
-            placeholder={"First Name"}
-            placeholderTextColor={colors.bgTextInputDark}
-            keyboardType="default"
-            onChangeText={(firstName) => this.setState({ firstName })}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder={"Last Name"}
-            placeholderTextColor={colors.bgTextInputDark}
-            keyboardType="default"
-            onChangeText={(lastName) => this.setState({ lastName })}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder={"abc@example.com"}
-            placeholderTextColor={colors.bgTextInputDark}
-            keyboardType="email-address"
-            onChangeText={(email) => this.setState({ email })}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="enter password"
-            placeholderTextColor={colors.bgTextInputDark}
-            secureTextEntry
-            onChangeText={(password) => this.setState({ password })}
-          />
-          <View style={{ alignItems: "center" }}>
-            <CustomActionButton
-              style={[styles.loginButtons, { borderColor: colors.bgPrimary }]}
-              title="Sign Up"
-              onPress={this.onSignUp}
-            >
-              <Text style={{ fontWeight: "100", color: "green" }}>
-                Sign Up Now!!
-              </Text>
-            </CustomActionButton>
-          </View>
-        </View>
-      </View>
-    );
+  LNameTextInputChange = value => {
+		if (value.length >= 1) {
+			this.setState({ checkLNameInputChange: true })
+		} else {
+			this.setState({ checkLNameInputChange: false })
+		}
   }
+
+	render() {
+		return (
+			<View style={{ flex: 1, backgroundColor: 'white' }}>
+				{this.state.isLoading ? (
+					<View
+						style={[
+							StyleSheet.absoluteFill,
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								zIndex: 1000,
+								elevation: 1000,
+							},
+						]}>
+						<ActivityIndicator size='large' color={colors.logoColor} />
+					</View>
+				) : null}
+				{/* ----------[[screen]---------- */}
+				<View style={{ flex: 1 }}>
+					<ScrollView style={{ flex: 1 }}>
+						<View style={styles.container}>
+							{/* -------header------- */}
+							<Animatable.View style={styles.header} animation='flipInX'>
+								<Text style={styles.textHeader}>Join our community</Text>
+							</Animatable.View>
+
+							{/* -------footer------- */}
+							<Animatable.View animation='fadeInUpBig' style={styles.footer}>
+
+								{/* ---------inputs-------- */}
+								<Text style={styles.textFooter}>Phone number</Text>
+								<View style={styles.action}>
+									<FontAwesome
+										name='phone-square'
+										color={colors.bgUserLogin}
+										size={20}
+									/>
+									<TextInput
+										placeholder='Ex: (012) 345-6789'
+										style={styles.textInput}
+										blurOnSubmit
+										autoCapitalize='none'
+										autoCorrect={false}
+										keyboardType='phone-pad'
+										maxLength={13}
+										onChangeText={text => this.phoneTextInputChange(text)}
+									/>
+									{this.state.checkPhoneInputChange ? (
+										<Animatable.View animation='bounceIn'>
+											<Feather name='check-circle' color='green' size={20} />
+										</Animatable.View>
+									) : null}
+								</View>
+
+                <Text style={styles.textFooter}>First name</Text>
+								<View style={styles.action}>
+									<FontAwesome
+										name='address-card'
+										color={colors.bgUserLogin}
+										size={20}
+									/>
+									<TextInput
+										placeholder='Ex: Marcus'
+										style={styles.textInput}
+										blurOnSubmit
+										autoCapitalize='sentences'
+										autoCorrect={false}
+										keyboardType='default'
+										maxLength={15}
+										onChangeText={text => this.FNameTextInputChange(text)}
+									/>
+									{this.state.checkFNameInputChange ? (
+										<Animatable.View animation='bounceIn'>
+											<Feather name='check-circle' color='green' size={20} />
+										</Animatable.View>
+									) : null}
+								</View>
+
+                <Text style={styles.textFooter}>Last name</Text>
+								<View style={styles.action}>
+									<FontAwesome
+										name='address-card'
+										color={colors.bgUserLogin}
+										size={20}
+									/>
+									<TextInput
+										placeholder='Ex: Aurelius'
+										style={styles.textInput}
+										blurOnSubmit
+										autoCapitalize='sentences'
+										autoCorrect={false}
+										keyboardType='default'
+										maxLength={13}
+										onChangeText={text => this.LNameTextInputChange(text)}
+									/>
+									{this.state.checkLNameInputChange ? (
+										<Animatable.View animation='bounceIn'>
+											<Feather name='check-circle' color='green' size={20} />
+										</Animatable.View>
+									) : null}
+								</View>
+
+                {/* --------buttons------- */}
+								<View style={{ flex: 1, marginTop: 30 }}>
+									<CustomActionButton
+										style={[
+											styles.button,
+											{ backgroundColor: colors.bgUserLogin },
+                    ]}
+										title='Continue'>
+										<Text style={{ fontWeight: 'bold', color: 'white' }}>
+											Continue
+										</Text>
+									</CustomActionButton>
+								</View>
+							</Animatable.View>
+							{/* --------------EOB-------------- */}
+						</View>
+					</ScrollView>
+				</View>
+			</View>
+		)
+	}
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    signIn: (user) => dispatch({ type: "SIGN_IN", payload: user }),
-    signOut: () => dispatch({ type: "SIGN_OUT" }),
-  };
-};
+const mapDispatchToProps = dispatch => {
+	return {
+		signIn: user => dispatch({ type: 'SIGN_IN', payload: user }),
+		signOut: () => dispatch({ type: 'SIGN_OUT' }),
+	}
+}
 
-export default connect(null, mapDispatchToProps)(SignUpScreen);
+export default connect(null, mapDispatchToProps)(SignUpScreen)
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bgMain,
-    paddingTop: Platform.OS == "android" ? 50 : 0,
-  },
-  textInput: {
-    height: 50,
-    borderWidth: 0.5,
-    borderColor: colors.borderColor,
-    marginHorizontal: 40,
-    marginBottom: 10,
-    color: "black",
-    paddingHorizontal: 10,
-  },
-  loginButtons: {
-    borderWidth: 0.5,
-    backgroundColor: "transparent",
-    marginBottom: 10,
-    width: 200,
-  },
-});
+	container: {
+		flex: 1,
+		backgroundColor: colors.bgUserLogin,
+		paddingTop: Platform.OS == 'android' ? 50 : 0,
+	},
+	header: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		paddingHorizontal: 20,
+		paddingVertical: 50,
+	},
+	footer: {
+    flex: 3,
+		backgroundColor: 'white',
+		borderTopLeftRadius: 30,
+		borderTopRightRadius: 30,
+		paddingHorizontal: 20,
+		paddingVertical: 30,
+	},
+	textHeader: {
+		color: 'white',
+		fontSize: 30,
+		fontWeight: 'bold',
+	},
+	textFooter: {
+		color: colors.bgUserLogin,
+		fontSize: 18,
+		fontWeight: 'bold',
+	},
+	action: {
+		flexDirection: 'row',
+    marginTop: 10,
+    marginBottom: 30,
+		borderBottomWidth: 1,
+		borderBottomColor: '#f2f2f2',
+		paddingBottom: 5,
+	},
+	textInput: {
+		flex: 1,
+		paddingLeft: 10,
+		color: colors.bgUserLogin,
+	},
+	button: {
+		borderColor: colors.bgPrimary,
+		borderWidth: 0.5,
+		borderRadius: 20,
+		marginBottom: 10,
+		alignSelf: 'center',
+		width: '80%',
+	},
+})
