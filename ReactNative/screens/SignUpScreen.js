@@ -12,13 +12,6 @@ import {
 	YellowBox,
 } from 'react-native'
 
-import {
-	CodeField,
-	Cursor,
-	useBlurOnFulfill,
-	useClearByFocusCell,
-} from 'react-native-confirmation-code-field'
-
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
