@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import {
 	View,
 	Text,
@@ -19,17 +19,79 @@ import strings from '../assets/strings'
 import { connect } from 'react-redux'
 import ErrorBoundary from '../components/ErrorBoundary'
 import CustomActionButton from '../components/CustomTempButton'
+import PopUpPolicy from '../components/PopUpPolicy'
 
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
 
+function Policy() {
+	const [showTermsPolicy, setShowTermPolicy] = useState(false)
+	const [showCookiePolicy, setShowCookiePolicy] = useState(false)
+
+	const openTermPolicy = () => {
+    setShowTermPolicy(true)
+	}
+
+	const openCookiePolicy = () => {
+		setShowCookiePolicy(true)
+	}
+
+	const cancelTermsPolicy = () => {
+		setShowTermPolicy(false)
+	}
+
+	const cancelCookiePolicy = () => {
+		setShowCookiePolicy(false)
+	}
+
+	return (
+		<View>
+			<View
+				style={{
+					alignSelf: 'center',
+					marginTop: 50,
+					marginBottom: '20%',
+					marginHorizontal: 20,
+				}}>
+				<Text>
+					By using our application, you agree to our
+					<Text> </Text>
+					<Text
+						style={{ color: colors.textLinkStd }}
+						onPress={openTermPolicy}>
+						Terms, Data policy
+					</Text>
+					<Text> </Text>
+					and
+					<Text> </Text>
+					<Text
+						style={{ color: colors.textLinkStd }}
+						onPress={openCookiePolicy}>
+						Cookie Policy
+					</Text>
+					. You may receive SMS notifications from and can opt out at any time
+				</Text>
+			</View>
+			{/* terms and policy modal pop up */}
+			<PopUpPolicy visible={showTermsPolicy} onClosePolicy={cancelTermsPolicy}>
+				<Text>{strings.termsPolicy}</Text>
+			</PopUpPolicy>
+
+			{/* cookie policy pop up  */}
+			<PopUpPolicy
+				visible={showCookiePolicy}
+				onClosePolicy={cancelCookiePolicy}>
+				<Text>{strings.cookiePolicy}</Text>
+			</PopUpPolicy>
+		</View>
+	)
+}
+
 class LoginScreen extends Component {
 	constructor() {
 		super()
 		this.state = {
-			showTermsPolicy: false,
-			showCookiePolicy: false,
 			checkTextInputChange: false,
 			isLoading: false,
 		}
@@ -41,7 +103,7 @@ class LoginScreen extends Component {
 		} else {
 			this.setState({ checkTextInputChange: false })
 		}
-  }
+	}
 
 	render() {
 		return (
@@ -67,10 +129,14 @@ class LoginScreen extends Component {
 					<View style={{ flex: 1 }}>
 						<ScrollView style={{ flex: 1 }}>
 							<View style={styles.container}>
-								<View style={styles.header}>
+								{/* -------header------- */}
+								<Animatable.View
+									style={styles.header}
+									animation='fadeInDownBig'>
 									<Text style={styles.textHeader}>Recycle with us!</Text>
-								</View>
+								</Animatable.View>
 
+								{/* -------footer------- */}
 								<Animatable.View animation='fadeInUpBig' style={styles.footer}>
 									{/* inputs */}
 									<Text style={styles.textFooter}>Phone number</Text>
@@ -114,7 +180,10 @@ class LoginScreen extends Component {
 												styles.button,
 												{ backgroundColor: 'transparent' },
 											]}
-											title='Login'>
+											title='Register'
+											onPress={() =>
+												this.props.navigation.navigate('SignUpScreen')
+											}>
 											<Text
 												style={{
 													fontWeight: 'bold',
@@ -125,94 +194,9 @@ class LoginScreen extends Component {
 										</CustomActionButton>
 									</View>
 
-									<View
-										style={{
-											alignSelf: 'center',
-											marginTop: 50,
-											marginHorizontal: 20,
-										}}>
-										<Text>
-											By using our application, you agree to our
-											<Text> </Text>
-											<Text
-												style={{ color: colors.textLinkStd }}
-												onPress={() => {
-													this.setState({ showTermsPolicy: true })
-												}}>
-												Terms, Data policy
-											</Text>
-											<Text> </Text>
-											and
-											<Text> </Text>
-											<Text
-												style={{ color: colors.textLinkStd }}
-												onPress={() => {
-													this.setState({ showCookiePolicy: true })
-												}}>
-												Cookie Policy
-											</Text>
-											. You may receive SMS notifications from and can opt out
-											at any time
-										</Text>
-									</View>
+									<Policy />
+                  
 								</Animatable.View>
-
-								{/* terms and policy modal pop up */}
-								<Modal
-									transparent={true}
-									visible={this.state.showTermsPolicy}
-									animationType='fade'>
-									<View style={styles.modalContainer}>
-										<ScrollView style={{ flex: 1 }}>
-											<Text>{strings.termsPolicy}</Text>
-										</ScrollView>
-										<CustomActionButton
-											style={[
-												styles.button,
-												{ backgroundColor: 'transparent' },
-											]}
-											onPress={() => {
-												this.setState({ showTermsPolicy: false })
-											}}>
-											<Text
-												style={{
-													fontWeight: 'bold',
-													color: colors.bgUserLogin,
-												}}>
-												Close
-											</Text>
-										</CustomActionButton>
-									</View>
-								</Modal>
-
-								{/* cookie policy pop up  */}
-								<Modal
-									transparent={true}
-									visible={this.state.showCookiePolicy}
-									animationType='fade'>
-									<View style={styles.modalContainer}>
-										<ScrollView style={{ flex: 1 }}>
-											<Text>{strings.cookiePolicy}</Text>
-										</ScrollView>
-										<CustomActionButton
-											style={[
-												styles.button,
-												{ backgroundColor: 'transparent' },
-											]}
-											onPress={() => {
-												this.setState({ showCookiePolicy: false })
-											}}>
-											<Text
-												style={{
-													fontWeight: 'bold',
-													color: colors.bgUserLogin,
-												}}>
-												Close
-											</Text>
-										</CustomActionButton>
-									</View>
-								</Modal>
-
 								{/* --------------EOB-------------- */}
 							</View>
 						</ScrollView>
@@ -253,10 +237,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		paddingVertical: 30,
 	},
-	logo: {
-		width: 40,
-		height: 40,
-	},
 	textHeader: {
 		color: 'white',
 		fontSize: 30,
@@ -269,7 +249,7 @@ const styles = StyleSheet.create({
 	},
 	action: {
 		flexDirection: 'row',
-		marginTop: 10,
+		marginVertical: 10,
 		borderBottomWidth: 1,
 		borderBottomColor: '#f2f2f2',
 		paddingBottom: 5,
