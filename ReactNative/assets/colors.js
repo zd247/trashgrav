@@ -1,5 +1,6 @@
 const colors = {
   bgPopUp: '#03fc6b',
+  bgAdminLogin: '#EC6848',
   bgUserLogin: '#768758',
   bgSuccess: "#89b99b",
   bgSuccessDark: "#3C6E47DA",

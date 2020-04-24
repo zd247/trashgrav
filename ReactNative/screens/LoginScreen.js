@@ -6,7 +6,8 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 	ScrollView,
-	Modal,
+	StatusBar,
+	Image,
 } from 'react-native'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -30,7 +31,7 @@ function Policy() {
 	const [showCookiePolicy, setShowCookiePolicy] = useState(false)
 
 	const openTermPolicy = () => {
-    setShowTermPolicy(true)
+		setShowTermPolicy(true)
 	}
 
 	const openCookiePolicy = () => {
@@ -51,15 +52,12 @@ function Policy() {
 				style={{
 					alignSelf: 'center',
 					marginTop: 50,
-					marginBottom: '20%',
 					marginHorizontal: 20,
 				}}>
 				<Text>
 					By using our application, you agree to our
 					<Text> </Text>
-					<Text
-						style={{ color: colors.textLinkStd }}
-						onPress={openTermPolicy}>
+					<Text style={{ color: colors.textLinkStd }} onPress={openTermPolicy}>
 						Terms, Data policy
 					</Text>
 					<Text> </Text>
@@ -94,14 +92,30 @@ class LoginScreen extends Component {
 		this.state = {
 			checkTextInputChange: false,
 			isLoading: false,
+			phoneNumber: '',
+		}
+		this.textInputChange = this.textInputChange.bind(this)
+	}
+
+	textInputChange = (text, event = {}) => {
+		const phoneNoWithoutSigns = /^\d{10}$/
+		const phoneNoWithSigns = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+		if (text.length >= 9) {
+			if (text.match(phoneNoWithoutSigns) || text.match(phoneNoWithSigns)) {
+				this.setState({ checkTextInputChange: true })
+				this.setState({ phoneNumber: text })
+			}
+		} else {
+			this.setState({ checkTextInputChange: false })
+			this.setState({ phoneNumber: '' })
 		}
 	}
 
-	textInputChange = value => {
-		if (value.length >= 9) {
-			this.setState({ checkTextInputChange: true })
-		} else {
-			this.setState({ checkTextInputChange: false })
+	onContinue = async () => {
+		if (this.state.phoneNumber) {
+			let phone = this.state.phoneNumber.replace(/\D/g, '')
+			phone = phone.replace(phone[0], '+84')
+			
 		}
 	}
 
@@ -109,6 +123,7 @@ class LoginScreen extends Component {
 		return (
 			<ErrorBoundary>
 				<View style={{ flex: 1, backgroundColor: 'white' }}>
+					<StatusBar barStyle='light-content' />
 					{/* ----------[loading indicator]----------*/}
 					{this.state.isLoading ? (
 						<View
@@ -130,14 +145,12 @@ class LoginScreen extends Component {
 						<ScrollView style={{ flex: 1 }}>
 							<View style={styles.container}>
 								{/* -------header------- */}
-								<Animatable.View
-									style={styles.header}
-									animation='fadeInDownBig'>
+								<Animatable.View style={styles.header} animation='fadeInUpBig'>
 									<Text style={styles.textHeader}>Recycle with us!</Text>
 								</Animatable.View>
 
 								{/* -------footer------- */}
-								<Animatable.View animation='fadeInUpBig' style={styles.footer}>
+								<View style={styles.footer}>
 									{/* inputs */}
 									<Text style={styles.textFooter}>Phone number</Text>
 									<View style={styles.action}>
@@ -146,6 +159,11 @@ class LoginScreen extends Component {
 											color={colors.bgUserLogin}
 											size={20}
 										/>
+										<Image
+											style={{ marginStart: 5 }}
+											source={require('../assets/vn_flag.png')}
+										/>
+
 										<TextInput
 											placeholder='Ex: (012) 345-6789'
 											style={styles.textInput}
@@ -169,7 +187,8 @@ class LoginScreen extends Component {
 												styles.button,
 												{ backgroundColor: colors.bgUserLogin },
 											]}
-											title='Login'>
+											title='Login'
+											onPress={this.onContinue}>
 											<Text style={{ fontWeight: 'bold', color: 'white' }}>
 												Continue
 											</Text>
@@ -195,8 +214,7 @@ class LoginScreen extends Component {
 									</View>
 
 									<Policy />
-                  
-								</Animatable.View>
+								</View>
 								{/* --------------EOB-------------- */}
 							</View>
 						</ScrollView>
@@ -227,7 +245,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		paddingHorizontal: 20,
-		paddingVertical: 70,
+		paddingVertical: 90,
 	},
 	footer: {
 		flex: 3,
