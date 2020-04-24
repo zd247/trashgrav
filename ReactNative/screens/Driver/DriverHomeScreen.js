@@ -41,7 +41,7 @@ class DriverHomeScreen extends Component {
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
         <View style={styles.body}>
-          <MapView style={styles.mapStyle} />
+          <MapView style={styles.mapStyle} provider="google" />
         </View>
         <SafeAreaView />
       </View>

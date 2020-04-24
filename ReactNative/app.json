@@ -2,11 +2,7 @@
   "expo": {
     "name": "TrashGrav",
     "slug": "TrashGrav",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,11 +14,19 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.DTP.TrashGrav",
+      "config": {
+        "googleMapsApiKey": "AIzaSyD66J475xDS2TaEPzdwlAEYK9AsxOp-UEo"
+      }
+    },
+    "android": {
+      "package": "com.DTP.TrashGrav",
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyD66J475xDS2TaEPzdwlAEYK9AsxOp-UEo" }
+      }
     }
   }
 }
