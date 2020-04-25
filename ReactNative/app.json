@@ -26,7 +26,8 @@
       "package": "com.DTP.TrashGrav",
       "config": {
         "googleMaps": { "apiKey": "AIzaSyD66J475xDS2TaEPzdwlAEYK9AsxOp-UEo" }
-      }
+      },
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     }
   }
 }

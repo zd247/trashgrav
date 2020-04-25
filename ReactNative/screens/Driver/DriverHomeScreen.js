@@ -8,6 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 
+import Constants from "expo-constants";
+import * as Location from "expo-location";
+
 import CustomActionButton from "../../components/CustomTempButton";
 
 import colors from "../../assets/colors";
@@ -19,8 +22,25 @@ import MapView from "react-native-maps";
 class DriverHomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      location: null,
+      errorMessage: null,
+    };
   }
+
+  findCurrentLocationAsync = async () => {
+    let { status } = await Location.requestPermissionsAsync();
+
+    if (status !== "granted") {
+      this.setState({
+        errorMessage: "Permission to access location was denied",
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+    console.log(JSON.stringify(location));
+  };
 
   render() {
     return (
@@ -41,7 +61,14 @@ class DriverHomeScreen extends Component {
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
         <View style={styles.body}>
-          <MapView style={styles.mapStyle} provider="google" />
+          <MapView style={styles.mapStyle} provider="google">
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={this.findCurrentLocationAsync}
+            >
+              <Text> Request Location</Text>
+            </TouchableOpacity>
+          </MapView>
         </View>
         <SafeAreaView />
       </View>
