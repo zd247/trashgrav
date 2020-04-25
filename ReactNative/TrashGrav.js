@@ -1,39 +1,39 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { Component } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 
-import WelcomeScreen from "./screens/WelcomeScreen";
-import LoginScreen from "./screens/LoginScreen";
-import SignUpScreen from "./screens/SignUpScreen";
-import HomeScreen from "./screens/HomeScreen";
-import UserProfileScreen from "./screens/UserProfileScreen";
-import AdminHomeScreen from "./screens/Admin/AdminHomeScreen";
-import CustomerCart from "./screens/Customer/CustomerCart";
-import CustomerMapScreen from "./screens/Customer/CustomerMapScreen";
-import SettingScreen from "./screens/SettingScreen";
-import SecurityCheck from "./screens/AppSwitchNavigator/SecurityCheck";
-import LoadingScreen from "./screens/LoadingScreen";
-import DriverHomeScreen from "./screens/Driver/DriverHomeScreen";
+import StartScreen from './screens/StartScreen'
+import LoginScreen from './screens/LoginScreen'
+import SignUpScreen from './screens/SignUpScreen'
+import HomeScreen from './screens/HomeScreen'
+import UserProfileScreen from './screens/UserProfileScreen'
+import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
+import CustomerCart from './screens/Customer/CustomerCart'
+import CustomerMapScreen from './screens/Customer/CustomerMapScreen'
+import SettingScreen from './screens/SettingScreen'
+import SecurityCheck from './screens/AppSwitchNavigator/SecurityCheck'
+import LoadingScreen from './screens/LoadingScreen'
+import DriverHomeScreen from './screens/Driver/DriverHomeScreen'
 
-import CustomDrawerNavigator from "./screens/DrawerNavigator/CustomDrawerNavigator";
-import CartContainer from "./redux/containers/CartContainer";
+import CustomDrawerNavigator from './screens/DrawerNavigator/CustomDrawerNavigator'
+import CartContainer from './redux/containers/CartContainer'
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator, HeaderTitle } from '@react-navigation/stack'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 
-import colors from "./assets/colors";
-import { Ionicons } from "@expo/vector-icons";
+import colors from './assets/colors'
+import { Ionicons } from '@expo/vector-icons'
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux'
 
-import * as firebase from "firebase/app";
-import { firebaseConfig } from "./config/config";
+import * as firebase from 'firebase/app'
+import { firebaseConfig } from './config/config'
 
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator()
+const Drawer = createDrawerNavigator()
+const Tab = createBottomTabNavigator()
 
 class TrashGrav extends Component {
   constructor(props) {
@@ -67,48 +67,49 @@ class TrashGrav extends Component {
       /*if (this.props.auth.isLoading) {
       return <LoadingScreen />;
     } */
-    }
-    return (
-      <NavigationContainer>
-        {!this.props.auth.isSignedIn ? (
-          <Stack.Navigator
-            screenOptions={{
-              headerStyle: {
-                backgroundColor: colors.bgMain,
-              },
-              headerTintColor: "white",
-            }}
-          >
-            {/* <Stack.Screen
-              name="WelcomeScreen"
-              component={WelcomeScreen}
-              options={{ headerShown: false }}
-            /> 
-            <Stack.Screen
-              name="LoginScreen"
-              component={LoginScreen}
-              options={{ headerShown: false }}
-            />
-            */}
-            <Stack.Screen
-              name="WelcomeScreen"
-              component={WelcomeScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SignUpScreen"
-              component={SignUpScreen}
-              options={{ headerBackTitleVisible: false }}
-            />
-          </Stack.Navigator>
-        ) : !this.props.auth.isDriver ? (
-          <CustomerDrawerNavigator />
-        ) : (
-          <DriverDrawerNavigator />
-        )}
-      </NavigationContainer>
-    );
-  }
+		}
+		return (
+			<NavigationContainer>
+				{!this.props.auth.isSignedIn ? (
+					<Stack.Navigator
+						screenOptions={{
+							headerStyle: {
+								backgroundColor: colors.bgMain,
+							},
+							headerTintColor: 'white',
+						}}>
+						<Stack.Screen
+							name='StartScreen'
+							component={StartScreen}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name='LoginScreen'
+							component={LoginScreen}
+							options={{
+								headerBackTitleVisible: false,
+								headerTransparent: true,
+								headerTitle: '',
+							}}
+						/>
+						<Stack.Screen
+							name='SignUpScreen'
+							component={SignUpScreen}
+							options={{
+								headerBackTitleVisible: false,
+								headerTransparent: true,
+								headerTitle: '',
+							}}
+						/>
+					</Stack.Navigator>
+				) : !this.props.auth.isDriver ? (
+					<CustomerDrawerNavigator />
+				) : (
+					<DriverDrawerNavigator />
+				)}
+			</NavigationContainer>
+		)
+	}
 }
 
 const CustomerTabNavigator = ({ route }) => (

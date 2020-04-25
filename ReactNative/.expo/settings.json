@@ -1,8 +1,12 @@
 {
   "dev": true,
   "minify": false,
+<<<<<<< HEAD
   "hostType": "lan",
   "lanType": "ip",
   "urlRandomness": "xw-3a7",
+=======
+  "urlRandomness": "d5-6ej",
+>>>>>>> 5e49d680db48d4f257e22f9d9403ce8ca6512eb4
   "https": false
 }
