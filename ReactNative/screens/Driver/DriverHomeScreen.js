@@ -6,18 +6,24 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
+  Keyboard,
+  TextInput,
+  TouchableHighlight,
 } from "react-native";
 
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 
 import CustomActionButton from "../../components/CustomTempButton";
-
-import colors from "../../assets/colors";
 import ItemList from "../../components/ItemList";
+import colors from "../../assets/colors";
+
+import apiKey from "../../helpers/googleAPIkey";
+
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import MapView from "react-native-maps";
+import _ from "lodash";
 
 class DriverHomeScreen extends Component {
   constructor(props) {
@@ -25,6 +31,9 @@ class DriverHomeScreen extends Component {
     this.state = {
       location: null,
       errorMessage: null,
+      latitude: 0,
+      longitude: 0,
+      locationPredictions: [],
     };
   }
 
@@ -39,7 +48,7 @@ class DriverHomeScreen extends Component {
 
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
-    console.log(JSON.stringify(location));
+    console.log(JSON.stringify(location.coords.latitude));
   };
 
   render() {
@@ -61,14 +70,7 @@ class DriverHomeScreen extends Component {
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
         <View style={styles.body}>
-          <MapView style={styles.mapStyle} provider="google">
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              onPress={this.findCurrentLocationAsync}
-            >
-              <Text> Request Location</Text>
-            </TouchableOpacity>
-          </MapView>
+          <MapView style={styles.mapStyle} provider="google"></MapView>
         </View>
         <SafeAreaView />
       </View>
