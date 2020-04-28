@@ -37,20 +37,6 @@ class DriverHomeScreen extends Component {
     };
   }
 
-  findCurrentLocationAsync = async () => {
-    let { status } = await Location.requestPermissionsAsync();
-
-    if (status !== "granted") {
-      this.setState({
-        errorMessage: "Permission to access location was denied",
-      });
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
-    console.log(JSON.stringify(location.coords.latitude));
-  };
-
   render() {
     return (
       <View style={styles.container}>
@@ -67,10 +53,7 @@ class DriverHomeScreen extends Component {
               style={{ marginLeft: 10 }}
             />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Driver Screen</Text>
-        </View>
-        <View style={styles.body}>
-          <MapView style={styles.mapStyle} provider="google"></MapView>
+          <Text style={styles.headerTitle}>Driver Home Screen !!</Text>
         </View>
         <SafeAreaView />
       </View>

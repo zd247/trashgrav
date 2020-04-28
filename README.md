@@ -21,6 +21,7 @@
 - `npm install react-native-vector-icons`
 - `npm install react-navigation-stack`
 - `npm install react-native-maps`
+- `npm install lodash`
 
 
 ### Overview technical requirements

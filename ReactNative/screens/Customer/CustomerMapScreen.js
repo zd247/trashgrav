@@ -43,7 +43,17 @@ class CustomerMapScreen extends Component {
 
   componentDidMount() {
     //Get current location and set initial region to this
-    this.findCurrentLocationAsync();
+    //this.findCurrentLocationAsync();
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      (error) => console.error(error),
+      { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
+    );
   }
 
   findCurrentLocationAsync = async () => {
@@ -111,20 +121,19 @@ class CustomerMapScreen extends Component {
             longitudeDelta: 0.0121,
           }}
           showsUserLocation={true}
-        >
-          <View style={{ flex: 1 }}>
-            <TextInput
-              placeholder="Enter location.."
-              style={styles.destinationInput}
-              onChangeText={(destination) => {
-                this.setState({ destination });
-                this.onChangeDestinationDebounced(destination);
-              }}
-              value={this.state.destination}
-            />
-            {locationPredictions}
-          </View>
-        </MapView>
+        />
+        <View style={{ flex: 1, position: "absolute" }}>
+          <TextInput
+            placeholder="Enter location.."
+            style={styles.destinationInput}
+            onChangeText={(destination) => {
+              this.setState({ destination });
+              this.onChangeDestinationDebounced(destination);
+            }}
+            value={this.state.destination}
+          />
+          {locationPredictions}
+        </View>
 
         <SafeAreaView />
       </View>
@@ -178,6 +187,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     padding: 5,
     backgroundColor: "white",
+    width: Dimensions.get("window").width,
   },
   locationSuggestion: {
     backgroundColor: "white",

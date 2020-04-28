@@ -14,6 +14,7 @@ import SettingScreen from "./screens/SettingScreen";
 import SecurityCheck from "./screens/AppSwitchNavigator/SecurityCheck";
 import LoadingScreen from "./screens/LoadingScreen";
 import DriverHomeScreen from "./screens/Driver/DriverHomeScreen";
+import DriverMapScreen from "./screens/Driver/DriverMapScreen";
 
 import CustomDrawerNavigator from "./screens/DrawerNavigator/CustomDrawerNavigator";
 import CartContainer from "./redux/containers/CartContainer";
@@ -208,6 +209,21 @@ const CustomerDrawerNavigator = () => (
   </ActionSheetProvider>
 );
 
+const DriverTabNavigator = ({ route }) => (
+  <Tab.Navigator
+    tabBarOptions={{
+      style: {
+        backgroundColor: colors.bgMain,
+      },
+      activeTintColor: colors.logoColor,
+      inactiveTintColor: colors.bgTextInput,
+    }}
+  >
+    <Tab.Screen name="Pick Up Request" component={DriverHomeScreen} />
+    <Tab.Screen name="Driver Map Screen" component={DriverMapScreen} />
+  </Tab.Navigator>
+);
+
 const DriverDrawerNavigator = () => (
   <ActionSheetProvider>
     <Drawer.Navigator
@@ -218,7 +234,7 @@ const DriverDrawerNavigator = () => (
           drawerIcon: () => <Ionicons name="ios-bicycle" size={24} />,
         }}
         name="Home"
-        component={DriverHomeScreen}
+        component={DriverTabNavigator}
       />
       <Drawer.Screen
         options={{ drawerIcon: () => <Ionicons name="ios-person" size={24} /> }}
