@@ -77,7 +77,7 @@ class UserProfileScreen extends Component {
       await firebase
         .database()
         .ref("Users")
-        .child(this.props.recycleItemList.user.uid)
+        .child(this.props.recycleItemList.user.key)
         .update({
           email: this.state.email,
           first_name: this.state.firstName,

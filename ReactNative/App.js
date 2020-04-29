@@ -1,65 +1,44 @@
-import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-  Alert,
-} from "react-native";
+import React from 'react'
+import { YellowBox } from 'react-native'
 
-import TrashGrav from "./TrashGrav";
-import LoginScreen from "./screens/LoginScreen";
-import SignUpScreen from "./screens/SignUpScreen";
-import HomeScreen from "./screens/HomeScreen";
-import UserProfileScreen from "./screens/UserProfileScreen";
-import AdminHomeScreen from "./screens/Admin/AdminHomeScreen";
-import CustomerCart from "./screens/Customer/CustomerCart";
-import SettingScreen from "./screens/SettingScreen";
-import SecurityCheck from "./screens/AppSwitchNavigator/SecurityCheck";
-import LoadingScreen from "./screens/LoadingScreen";
+import _ from 'lodash'
+import TrashGrav from './TrashGrav'
+import { Provider } from 'react-redux'
+import store from './redux/store'
 
-import CustomDrawerNavigator from "./screens/DrawerNavigator/CustomDrawerNavigator";
-import CartContainer from "./redux/containers/CartContainer";
-
-import {
-  createAppContainer,
-  createSwitchNavigator,
-  createStackNavigator,
-  createDrawerNavigator,
-  createBottomTabNavigator,
-} from "react-navigation";
-
-import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-import colors from "./assets/colors";
-import { Ionicons } from "@expo/vector-icons";
-
-import { Provider } from "react-redux";
-import store from "./redux/store";
-
-import * as firebase from "firebase/app";
-import { firebaseConfig } from "./config/config";
+import * as firebase from 'firebase/app'
+import { firebaseConfig } from './config/config'
+import ErrorBoundary from './components/ErrorBoundary'
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.initializeFirebase();
-  }
-  initializeFirebase = () => {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-  };
+	constructor(props) {
+		super(props)
+		this.initializeFirebase()
 
-  render() {
-    return (
-      <Provider store={store}>
-        <TrashGrav />
-      </Provider>
-    );
-  }
+		// to ignore the linking warning message
+		YellowBox.ignoreWarnings(['Linking requires that'])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('Linking requires that') <= -1) {
+				_console.warn(message)
+			}
+		}
+	}
+	initializeFirebase = () => {
+		if (!firebase.apps.length) {
+			firebase.initializeApp(firebaseConfig)
+		}
+	}
+
+	render() {
+		return (
+			<Provider store={store}>
+				<ErrorBoundary>
+					<TrashGrav />
+				</ErrorBoundary>
+			</Provider>
+		)
+	}
 }
 
-export default App;
+export default App

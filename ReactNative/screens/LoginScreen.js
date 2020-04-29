@@ -2,31 +2,33 @@ import React, { Component, useState } from 'react'
 import {
 	View,
 	Text,
-	TextInput,
 	StyleSheet,
 	ActivityIndicator,
 	ScrollView,
 	StatusBar,
-	Image,
+	SafeAreaView,
+	YellowBox,
 } from 'react-native'
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
 
 import colors from '../assets/colors'
 import strings from '../assets/strings'
 
+import _ from 'lodash'
 import { connect } from 'react-redux'
 import ErrorBoundary from '../components/ErrorBoundary'
 import CustomActionButton from '../components/CustomTempButton'
 import PopUpPolicy from '../components/PopUpPolicy'
+import InputField from '../components/InputField'
+import PwdField from '../components/PwdField'
 
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
 
-function Policy() {
+const Policy = () => {
 	const [showTermsPolicy, setShowTermPolicy] = useState(false)
 	const [showCookiePolicy, setShowCookiePolicy] = useState(false)
 
@@ -47,7 +49,7 @@ function Policy() {
 	}
 
 	return (
-		<View>
+		<View style={{ flex: 1, justifyContent: 'flex-end' }}>
 			<View
 				style={{
 					alignSelf: 'center',
@@ -93,11 +95,18 @@ class LoginScreen extends Component {
 			checkTextInputChange: false,
 			isLoading: false,
 			phoneNumber: '',
+			password: '',
 		}
-		this.textInputChange = this.textInputChange.bind(this)
+		YellowBox.ignoreWarnings(['Setting a timer'])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('Setting a timer') <= -1) {
+				_console.warn(message)
+			}
+		}
 	}
 
-	textInputChange = (text, event = {}) => {
+	textInputChange = text => {
 		const phoneNoWithoutSigns = /^\d{10}$/
 		const phoneNoWithSigns = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 		if (text.length >= 9) {
@@ -111,11 +120,47 @@ class LoginScreen extends Component {
 		}
 	}
 
-	onContinue = async () => {
-		if (this.state.phoneNumber) {
+	passwordInputChange = text => {
+		this.setState({ password: text })
+	}
+
+	onResetPassword = () => {
+		// TODO: reset password just by confirming new one.
+	}
+
+
+	onContinue = () => {
+		this.setState({ loading: true })
+		if (this.state.checkTextInputChange && this.state.password.length >= 6) {
 			let phone = this.state.phoneNumber.replace(/\D/g, '')
 			phone = phone.replace(phone[0], '+84')
-			
+			this.setState({ phoneNumber: phone })
+
+			//verify user info
+			firebase
+				.database()
+				.ref('Users')
+				.orderByChild('phone')
+				.equalTo(phone)
+				.on('value', snapshot => {
+					if (snapshot.exists()) {
+						snapshot.forEach(data => {
+							if (data.child('password').val() === this.state.password) {
+								this.props.signIn(data)
+								this.setState({ loading: false })
+								//TODO: navigate to UserHomeScreen
+							} else {
+								alert('Password is invalid, please re-enter')
+								this.setState({ password: '' })
+								this.setState({ loading: false })
+							}
+						})
+					} else {
+						alert('Phone number is invalid, please re-enter')
+						this.setState({ password: '' })
+						this.setState({ loading: false })
+					}
+				})
 		}
 	}
 
@@ -123,6 +168,7 @@ class LoginScreen extends Component {
 		return (
 			<ErrorBoundary>
 				<View style={{ flex: 1, backgroundColor: 'white' }}>
+					<SafeAreaView />
 					<StatusBar barStyle='light-content' />
 					{/* ----------[loading indicator]----------*/}
 					{this.state.isLoading ? (
@@ -152,35 +198,35 @@ class LoginScreen extends Component {
 								{/* -------footer------- */}
 								<View style={styles.footer}>
 									{/* inputs */}
-									<Text style={styles.textFooter}>Phone number</Text>
-									<View style={styles.action}>
-										<FontAwesome
-											name='phone-square'
-											color={colors.bgUserLogin}
-											size={20}
-										/>
-										<Image
-											style={{ marginStart: 5 }}
-											source={require('../assets/vn_flag.png')}
-										/>
-
-										<TextInput
-											placeholder='Ex: (012) 345-6789'
-											style={styles.textInput}
-											blurOnSubmit
-											autoCapitalize='none'
-											autoCorrect={false}
-											keyboardType='phone-pad'
-											maxLength={13}
-											onChangeText={text => this.textInputChange(text)}
-										/>
+									<InputField
+										title='Phone number'
+										fontAwesomeIcon='phone-square'
+										color={colors.bgUserLogin}
+										image={true}
+										placeHolder='Ex: (012) 345-6789'
+										autoCapitalize='none'
+										keyboardType='phone-pad'
+										onInputChange={this.textInputChange}>
 										{this.state.checkTextInputChange ? (
 											<Animatable.View animation='bounceIn'>
 												<Feather name='check-circle' color='green' size={20} />
 											</Animatable.View>
 										) : null}
-									</View>
+									</InputField>
 
+									<PwdField
+										color={colors.bgUserLogin}
+										value={this.state.password}
+										onInputChange={this.passwordInputChange}
+									/>
+
+									<Text
+										onPress={this.onResetPassword}
+										style={{ color: '#009bd1' }}>
+										Forgot password ?
+									</Text>
+
+									{/* buttons */}
 									<View style={{ flex: 1, marginTop: 30 }}>
 										<CustomActionButton
 											style={[
@@ -212,13 +258,14 @@ class LoginScreen extends Component {
 											</Text>
 										</CustomActionButton>
 									</View>
+									{/* end of buttons */}
 
 									<Policy />
 								</View>
-								{/* --------------EOB-------------- */}
 							</View>
 						</ScrollView>
 					</View>
+					<SafeAreaView />
 				</View>
 			</ErrorBoundary>
 		)
@@ -226,6 +273,15 @@ class LoginScreen extends Component {
 }
 
 // redux
+
+const mapStateToProps = (state) => {
+	return {
+		recycleItemList: state.recycleItemList,
+		currentUser: state.auth.currentUser,
+		//temp: state.recycleCart,
+	};
+};
+
 const mapDispatchToProps = dispatch => {
 	return {
 		signIn: user => dispatch({ type: 'SIGN_IN', payload: user }),
@@ -234,7 +290,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 // navigation
-export default connect(null, mapDispatchToProps)(LoginScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
 
 const styles = StyleSheet.create({
 	container: {
@@ -245,7 +301,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		paddingHorizontal: 20,
-		paddingVertical: 90,
+		paddingVertical: 50,
 	},
 	footer: {
 		flex: 3,
@@ -259,23 +315,6 @@ const styles = StyleSheet.create({
 		color: 'white',
 		fontSize: 30,
 		fontWeight: 'bold',
-	},
-	textFooter: {
-		color: colors.bgUserLogin,
-		fontSize: 18,
-		fontWeight: 'bold',
-	},
-	action: {
-		flexDirection: 'row',
-		marginVertical: 10,
-		borderBottomWidth: 1,
-		borderBottomColor: '#f2f2f2',
-		paddingBottom: 5,
-	},
-	textInput: {
-		flex: 1,
-		paddingLeft: 10,
-		color: colors.bgUserLogin,
 	},
 	button: {
 		borderColor: colors.bgPrimary,
