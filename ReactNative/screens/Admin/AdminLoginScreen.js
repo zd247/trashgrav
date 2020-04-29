@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
 	View,
 	Text,
@@ -7,13 +7,13 @@ import {
 	SafeAreaView,
 	Dimensions,
 	TouchableOpacity,
+	YellowBox,
 } from 'react-native'
-import Carousel, { ParallaxImage } from 'react-native-snap-carousel'
 import Feather from 'react-native-vector-icons/Feather'
 
+import _ from 'lodash'
 import colors from '../../assets/colors'
 import * as Animatable from 'react-native-animatable'
-import CustomActionButton from '../../components/CustomTempButton'
 import InputField from '../../components/InputField'
 import PwdField from '../../components/PwdField'
 
@@ -24,50 +24,54 @@ import 'firebase/auth'
 
 const screenWidth = Dimensions.get('screen').width
 
-const AdminLoginScreen = () => {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [checkEmailInputText, setCheckEmailInputText] = useState(false)
-	const [entries, setEntries] = useState([
-		{
-			thumbnail: '',
-		},
-		{
-			thumbnail: '',
-		},
-	])
+class AdminLoginScreen extends React.Component {
+	constructor() {
+		super()
+		this.state = {
+			email: '',
+			password: '',
+			checkEmailInputText: false,
+		}
 
-	const handleEmailTextInputChange = text => {
-		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-		if (re.test(text.toLowerCase())) {
-			setCheckEmailInputText(true)
-			setEmail(text)
-		} else {
-			setCheckEmailInputText(false)
-			setEmail('')
+		YellowBox.ignoreWarnings(['Setting a timer'])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('Setting a timer') <= -1) {
+				_console.warn(message)
+			}
 		}
 	}
 
-	const handlePasswordInputChange = text => {
-		setPassword(text)
+	handleEmailTextInputChange = text => {
+		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		if (re.test(text.toLowerCase())) {
+			this.setState({ checkEmailInputText: true })
+			this.setState({ email: text })
+		} else {
+			this.setState({ checkEmailInputText: false })
+			this.setState({ email: '' })
+		}
 	}
 
-	const onContinue = async () => {
-		if (checkEmailInputText && password.length >= 6) {
+	handlePasswordInputChange = text => {
+		this.setState({ password: text })
+	}
+
+	componentWillUnmount() {
+		console.log('[AdminLoginScreen] component umounted')
+	}
+
+	onContinue = async () => {
+		if (this.state.checkEmailInputText && this.state.password.length >= 6) {
 			try {
 				const response = await firebase
 					.auth()
-					.signInWithEmailAndPassword(email, password)
+					.signInWithEmailAndPassword(this.state.email, this.state.password)
 				if (response) {
-					console.log(response.user)
-					props.changeAdminMode
-					console.log(props.currentUser.isAdmin)
+					this.props.changeAdminMode()
 					console.log('admin logged in !')
-					const userID = response.user.uid
-					console.log(userID)
-
-					// this.props.signIn(response.user)
-					props.navigation.navigate('AdminHomeScreen')
+					this.props.signIn(response.user)
+					// this.props.navigation.navigate('AdminHomeScreen')
 				}
 			} catch (e) {
 				console.log(e)
@@ -76,18 +80,17 @@ const AdminLoginScreen = () => {
 		}
 	}
 
-	const _renderItem = ({ item, index }, parallaxProps) => {
+	render() {
 		return (
-			<View style={styles.item}>
-				<ParallaxImage
-					containerStyle={styles.imageContainer}
-					style={styles.image}
-					parallaxFactor={0.4}
-					{...parallaxProps}
-				/>
-				{index === 0 ? (
-					<View style={styles.absolute}>
-						<View style={styles.box}>
+			<View style={styles.container}>
+				<SafeAreaView />
+				<View style={{ flex: 1 }}>
+					<ScrollView style={{ flex: 1 }}>
+						{/* -------header------- */}
+						<Animatable.View style={styles.header} animation='fadeInUpBig'>
+							<Text style={styles.textHeader}>Start managing !</Text>
+						</Animatable.View>
+						<View style={styles.footer}>
 							<InputField
 								title='Email'
 								fontAwesomeIcon='envelope'
@@ -95,8 +98,8 @@ const AdminLoginScreen = () => {
 								placeHolder='Ex: admin@trash.grav'
 								autoCapitalize='none'
 								keyboardType='email-address'
-								onInputChange={handleEmailTextInputChange}>
-								{checkEmailInputText ? (
+								onInputChange={this.handleEmailTextInputChange}>
+								{this.state.checkEmailInputText ? (
 									<Animatable.View animation='bounceIn'>
 										<Feather name='check-circle' color='green' size={20} />
 									</Animatable.View>
@@ -105,67 +108,29 @@ const AdminLoginScreen = () => {
 
 							<PwdField
 								color={'#009bd1'}
-								value={password}
-								onInputChange={handlePasswordInputChange}
+								value={this.state.password}
+								onInputChange={this.handlePasswordInputChange}
 							/>
 
 							<TouchableOpacity
 								style={{ alignItems: 'flex-end' }}
-								onPress={onContinue}>
+								onPress={this.onContinue}>
 								<View style={styles.button}>
 									<Feather name='arrow-right' color='white' size={25} />
 								</View>
 							</TouchableOpacity>
 						</View>
-					</View>
-				) : (
-					<View style={styles.absolute}>
-						<View
-							style={{
-								flex: 1,
-								justifyContent: 'center',
-								paddingHorizontal: 40,
-							}}>
-							<Text style={{ fontSize: 20, color: '#009bd1' }}>
-								Want to be one of us? Call 180042069
-							</Text>
-						</View>
-					</View>
-				)}
+					</ScrollView>
+				</View>
+				<SafeAreaView />
 			</View>
 		)
 	}
-
-	return (
-		<View style={styles.container}>
-			<SafeAreaView />
-			<View style={{ flex: 1 }}>
-				<ScrollView style={{ flex: 1 }}>
-					{/* -------header------- */}
-					<Animatable.View style={styles.header} animation='fadeInUpBig'>
-						<Text style={styles.textHeader}>Start managing !</Text>
-					</Animatable.View>
-					<View style={styles.footer}>
-						<Carousel
-							sliderWidth={screenWidth}
-							sliderHeight={screenWidth}
-							itemWidth={screenWidth - 60}
-							data={entries}
-							renderItem={_renderItem}
-							hasParallaxImages={true}
-						/>
-					</View>
-				</ScrollView>
-			</View>
-			<SafeAreaView />
-		</View>
-	)
 }
 
 const mapStateToProps = state => {
 	return {
-		recycleItemList: state.recycleItemList,
-		currentUser: state.auth.currentUser,
+		auth: state.auth,
 	}
 }
 
@@ -191,31 +156,20 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		paddingHorizontal: 30,
-		paddingVertical: 50,
+		paddingVertical: 60,
 	},
 	footer: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
+		backgroundColor: 'white',
+		borderRadius: 35,
+		marginHorizontal: 15,
+		paddingHorizontal: 20,
+		paddingVertical: 30,
 	},
 	textHeader: {
 		color: 'white',
 		fontSize: 30,
 		fontWeight: 'bold',
-	},
-	item: {
-		width: screenWidth - 60,
-		height: screenWidth - 60,
-	},
-	imageContainer: {
-		flex: 1,
-		marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
-		backgroundColor: 'white',
-		borderRadius: 8,
-	},
-	image: {
-		...StyleSheet.absoluteFillObject,
-		resizeMode: 'cover',
 	},
 	absolute: {
 		position: 'absolute',

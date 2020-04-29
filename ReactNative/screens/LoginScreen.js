@@ -128,8 +128,11 @@ class LoginScreen extends Component {
 		// TODO: reset password just by confirming new one.
 	}
 
+	componentWillUnmount = () => {
+		console.log('[LoginScreen] component umounted')
+	}
 
-	onContinue = () => {
+	onContinue = async () => {
 		this.setState({ loading: true })
 		if (this.state.checkTextInputChange && this.state.password.length >= 6) {
 			let phone = this.state.phoneNumber.replace(/\D/g, '')
@@ -200,7 +203,7 @@ class LoginScreen extends Component {
 									{/* inputs */}
 									<InputField
 										title='Phone number'
-										fontAwesomeIcon = 'phone-square'
+										fontAwesomeIcon='phone-square'
 										color={colors.bgUserLogin}
 										image={true}
 										placeHolder='Ex: (012) 345-6789'

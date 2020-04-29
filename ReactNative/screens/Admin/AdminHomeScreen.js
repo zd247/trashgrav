@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     backgroundColor:'white'
   },
   header: {
-    marginTop:20,
     position:'absolute'
   },
   tabbar: {
