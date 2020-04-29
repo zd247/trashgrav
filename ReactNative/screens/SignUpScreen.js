@@ -2,17 +2,15 @@ import React, { Component } from 'react'
 import {
 	View,
 	Text,
-	TextInput,
 	StyleSheet,
 	Platform,
 	ActivityIndicator,
 	ScrollView,
 	StatusBar,
-	Image,
 	YellowBox,
+	SafeAreaView,
 } from 'react-native'
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
 import _ from 'lodash'
@@ -21,11 +19,18 @@ import colors from '../assets/colors'
 
 import CodeInputLayout from '../components/CodeInputLayout'
 import CustomActionButton from '../components/CustomTempButton'
+import InputField from '../components/InputField'
+import PwdField from '../components/PwdField'
+
 import { connect } from 'react-redux'
+import { signInWithPhoneNumber } from '../helpers/phoneAuthentication'
 
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
+
+// https://medium.com/@danielkrom/react-set-state-after-async-task-8d2997a26c57
+// or write this in native code.
 
 class SignUpScreen extends Component {
 	constructor() {
@@ -34,6 +39,7 @@ class SignUpScreen extends Component {
 			firstName: '',
 			lastName: '',
 			phoneNumber: '',
+			password: '',
 			isLoading: false,
 			checkPhoneInputChange: false,
 			checkFNameInputChange: false,
@@ -65,29 +71,38 @@ class SignUpScreen extends Component {
 		}
 	}
 
-	FNameTextInputChange = value => {
+	passwordInputChange = text => {
+		this.setState({ password: text })
+	}
+
+	nameTextInputChange = (firstName, value) => {
 		if (value.length >= 1) {
-			this.setState({ checkFNameInputChange: true })
+			this.setState(
+				firstName
+					? { checkFNameInputChange: true }
+					: { checkLNameInputChange: true }
+			)
 		} else {
-			this.setState({ checkFNameInputChange: false })
+			this.setState(
+				firstName
+					? { checkFNameInputChange: false }
+					: { checkLNameInputChange: false }
+			)
 		}
 	}
 
-	LNameTextInputChange = value => {
-		if (value.length >= 1) {
-			this.setState({ checkLNameInputChange: true })
-		} else {
-			this.setState({ checkLNameInputChange: false })
-		}
+	componentWillUnmount = () => {
+		console.log('[SignUpScreen] components unmounted')
 	}
 
 	onContinue = () => {
 		if (
 			this.state.checkPhoneInputChange &&
 			this.state.checkFNameInputChange &&
-			this.state.checkLNameInputChange
+			this.state.checkLNameInputChange &&
+			this.state.password.length >= 6
 		) {
-			// this.setState({ isLoading: true })
+			this.setState({ isLoading: true })
 			let phone = this.state.phoneNumber.replace(/\D/g, '')
 			phone = phone.replace(phone[0], '+84')
 
@@ -103,58 +118,64 @@ class SignUpScreen extends Component {
 							'Phone number has already existed' +
 								'please re-enter a new phone number'
 						)
+						this.setState({ loading: false })
 					} else {
-						this.confirmPhoneNumber(phone)
+						this.handleConfirmPhoneNumber(phone)
 					}
 				})
 		} else {
-			Alert('Please fill in the required fields')
+			alert(
+				'Please fill in the required fields and password length must be no less than 6 characters'
+			)
 		}
 	}
 
-	confirmPhoneNumber = phone => {
-		firebase
-			.auth()
-			.signInWithPhoneNumber(phone, true)
-			.then(confirmation => {
+	handleConfirmPhoneNumber = async phone => {
+		try {
+			const confirmation = await signInWithPhoneNumber(phone)
+			if (confirmation) {
+				this.setState({ loading: false })
 				this.setState({ confirm: confirmation })
 				this.setState({ phoneNumber: phone })
-			})
-			.catch(error => {
-				alert(error.message)
-				console.log(error)
-			})
+			} else {
+				console.log('Error verifying phone number')
+			}
+		} catch (e) {
+			console.log(e.message)
+			alert(e.message)
+		}
 	}
 
-	confirmVerificationCode = async code => {
+	handleConfirmVerificationCode = code => {
 		try {
-			const response = await this.state.confirm.confirm(code)
-			if (response) {
-				const user = await firebase
-					.database()
-					.ref('Users')
-					.child(response.user.uid)
-					.set({
-						phone: this.state.phoneNumber,
-						uid: response.user.uid,
-						first_name: this.state.firstName,
-						last_name: this.state.lastName,
-					})
-				if (user) {
-					// store in the redux
-					console.log('stored')
-				}
+			this.setState({ loading: true })
+			let user = this.state.confirm(code)
+			if (user !== null) {
+				this.setState({ loading: false })
+				console.log(user.uid)
+				firebase.database().ref('Users').child(user.uid).set({
+					uid: user.uid,
+					phone: this.state.phoneNumber,
+					password: this.state.password,
+					first_name: this.state.firstName,
+					last_name: this.state.lastName,
+				})
+				// this.props.signIn(user) // store user in redux
+			} else {
+				console.log('Error verifying object code')
 			}
 		} catch (error) {
-			Alert('Invalid code')
+			alert('Error verifying code')
+			console.log(error.message)
 		}
 	}
 
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
+				<SafeAreaView />
 				<StatusBar barStyle='light-content' />
-				{this.state.isLoading ? (
+				{/* {this.state.isLoading ? (
 					<View
 						style={[
 							StyleSheet.absoluteFill,
@@ -167,7 +188,7 @@ class SignUpScreen extends Component {
 						]}>
 						<ActivityIndicator size='large' color={colors.logoColor} />
 					</View>
-				) : null}
+				) : null} */}
 				{/* ----------[[screen]---------- */}
 				<View style={{ flex: 1 }}>
 					<ScrollView style={{ flex: 1 }}>
@@ -180,30 +201,20 @@ class SignUpScreen extends Component {
 							{/* -------footer------- */}
 							<View style={styles.footer}>
 								{this.state.confirm ? (
-									<CodeInputLayout onInput={this.confirmVerificationCode} />
+									<CodeInputLayout
+										onInput={this.handleConfirmVerificationCode}
+									/>
 								) : (
 									<View>
-										<Text style={styles.textFooter}>Phone number</Text>
-										<View style={styles.action}>
-											<FontAwesome
-												name='phone-square'
-												color={colors.bgUserLogin}
-												size={20}
-											/>
-											<Image
-												style={{ marginStart: 5 }}
-												source={require('../assets/vn_flag.png')}
-											/>
-											<TextInput
-												placeholder='Ex: (012) 345-6789'
-												style={styles.textInput}
-												blurOnSubmit
-												autoCapitalize='none'
-												autoCorrect={false}
-												keyboardType='phone-pad'
-												maxLength={13}
-												onChangeText={text => this.phoneTextInputChange(text)}
-											/>
+										<InputField
+											title='Phone number'
+											fontAwesomeIcon='phone-square'
+											color={colors.bgUserLogin}
+											image={true}
+											placeHolder='Ex: (012) 345-6789'
+											autoCapitalize='none'
+											keyboardType='phone-pad'
+											onInputChange={this.phoneTextInputChange}>
 											{this.state.checkPhoneInputChange ? (
 												<Animatable.View animation='bounceIn'>
 													<Feather
@@ -213,24 +224,24 @@ class SignUpScreen extends Component {
 													/>
 												</Animatable.View>
 											) : null}
-										</View>
-										<Text style={styles.textFooter}>First name</Text>
-										<View style={styles.action}>
-											<FontAwesome
-												name='address-card'
-												color={colors.bgUserLogin}
-												size={20}
-											/>
-											<TextInput
-												placeholder='Ex: Marcus'
-												style={styles.textInput}
-												blurOnSubmit
-												autoCapitalize='sentences'
-												autoCorrect={false}
-												keyboardType='default'
-												maxLength={15}
-												onChangeText={text => this.FNameTextInputChange(text)}
-											/>
+										</InputField>
+
+										<PwdField
+											color={colors.bgUserLogin}
+											value={this.state.password}
+											onInputChange={this.passwordInputChange}
+										/>
+
+										<InputField
+											title='First name'
+											color={colors.bgUserLogin}
+											fontAwesomeIcon='address-card'
+											placeHolder='Ex: Marcus'
+											autoCapitalize='sentences'
+											keyboardType='default'
+											onInputChange={text => {
+												this.nameTextInputChange(true, text)
+											}}>
 											{this.state.checkFNameInputChange ? (
 												<Animatable.View animation='bounceIn'>
 													<Feather
@@ -240,25 +251,18 @@ class SignUpScreen extends Component {
 													/>
 												</Animatable.View>
 											) : null}
-										</View>
+										</InputField>
 
-										<Text style={styles.textFooter}>Last name</Text>
-										<View style={styles.action}>
-											<FontAwesome
-												name='address-card'
-												color={colors.bgUserLogin}
-												size={20}
-											/>
-											<TextInput
-												placeholder='Ex: Aurelius'
-												style={styles.textInput}
-												blurOnSubmit
-												autoCapitalize='sentences'
-												autoCorrect={false}
-												keyboardType='default'
-												maxLength={13}
-												onChangeText={text => this.LNameTextInputChange(text)}
-											/>
+										<InputField
+											title='First name'
+											color={colors.bgUserLogin}
+											fontAwesomeIcon='address-card'
+											placeHolder='Ex: Aurelius'
+											autoCapitalize='sentences'
+											keyboardType='default'
+											onInputChange={text => {
+												this.nameTextInputChange(false, text)
+											}}>
 											{this.state.checkLNameInputChange ? (
 												<Animatable.View animation='bounceIn'>
 													<Feather
@@ -268,10 +272,10 @@ class SignUpScreen extends Component {
 													/>
 												</Animatable.View>
 											) : null}
-										</View>
+										</InputField>
 
 										{/* --------buttons------- */}
-										<View style={{ flex: 1, marginTop: 30 }}>
+										<View style={{ flex: 1, marginTop: 20 }}>
 											<CustomActionButton
 												style={[
 													styles.button,
@@ -291,6 +295,7 @@ class SignUpScreen extends Component {
 						</View>
 					</ScrollView>
 				</View>
+				<SafeAreaView />
 			</View>
 		)
 	}
@@ -315,7 +320,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		paddingHorizontal: 20,
-		paddingVertical: 50,
+		paddingVertical: 40,
 	},
 	footer: {
 		flex: 3,
@@ -337,8 +342,7 @@ const styles = StyleSheet.create({
 	},
 	action: {
 		flexDirection: 'row',
-		marginTop: 10,
-		marginBottom: 30,
+		marginVertical: 10,
 		borderBottomWidth: 1,
 		borderBottomColor: '#f2f2f2',
 		paddingBottom: 5,
