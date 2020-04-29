@@ -37,6 +37,7 @@ class WelcomeScreen extends Component {
 					.signInWithEmailAndPassword(this.state.email, this.state.password)
 				if (response) {
 					this.setState({ isLoading: false })
+					console.log(response.user)
 					this.props.signIn(response.user)
 					//this.props.navigation.navigate("HomeScreen");
 				}

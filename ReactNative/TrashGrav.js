@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 
 import StartScreen from './screens/StartScreen'
+import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import HomeScreen from './screens/HomeScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
+
 
 import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
@@ -73,40 +75,7 @@ class TrashGrav extends Component {
 		}
 		return (
 			<NavigationContainer>
-				{!this.props.auth.isAdmin ? (
-					<Stack.Navigator
-						screenOptions={{
-							headerStyle: {
-								backgroundColor: colors.bgMain,
-							},
-							headerTintColor: 'white',
-						}}>
-						<Stack.Screen
-							name='AdminHomeScreen'
-							component={AdminHomeScreen}
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name='StartScreen'
-							component={StartScreen}
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name='AdminLoginScreen'
-							component={AdminLoginScreen}
-							options={{
-								headerBackTitleVisible: false,
-								headerTransparent: true,
-								headerTitle: '',
-							}}
-						/>
-						{/* <Stack.Screen
-							name='AdminHomeScreen'
-							component={AdminHomeScreen}
-							options={{ headerShown: false }}
-						/> */}
-					</Stack.Navigator>
-				) : !this.props.auth.isSignedIn ? (
+				{!this.props.auth.isSignedIn ? (
 					<Stack.Navigator
 						screenOptions={{
 							headerStyle: {
@@ -137,7 +106,24 @@ class TrashGrav extends Component {
 								headerTitle: '',
 							}}
 						/>
+						<Stack.Screen
+							name='AdminLoginScreen'
+							component={AdminLoginScreen}
+							options={{
+								headerBackTitleVisible: false,
+								headerTransparent: true,
+								headerTitle: '',
+							}}
+						/>
 					</Stack.Navigator>
+				) : this.props.auth.isAdmin ? (
+					
+					<Stack.Screen
+						name='AdminHomeScreen'
+						component={AdminHomeScreen}
+						options={{ headerShown: false }}
+					/>
+					
 				) : !this.props.auth.isDriver ? (
 					<CustomerDrawerNavigator />
 				) : (
@@ -231,6 +217,20 @@ const CustomerDrawerNavigator = () => (
 			/>
 		</Drawer.Navigator>
 	</ActionSheetProvider>
+)
+
+const DriverTabNavigator = ({ route }) => (
+	<Tab.Navigator
+		tabBarOptions={{
+			style: {
+				backgroundColor: colors.bgMain,
+			},
+			activeTintColor: colors.logoColor,
+			inactiveTintColor: colors.bgTextInput,
+		}}>
+		<Tab.Screen name='Pick Up Request' component={DriverHomeScreen} />
+		<Tab.Screen name='Driver Map Screen' component={DriverMapScreen} />
+	</Tab.Navigator>
 )
 
 const DriverDrawerNavigator = () => (

@@ -22,6 +22,7 @@
 - `npm install react-navigation-stack`
 - `npm install react-native-maps`
 - `npm install react-native-scrollable-tab-view`
+- `npm install lodash`
 
 
 ### Overview technical requirements

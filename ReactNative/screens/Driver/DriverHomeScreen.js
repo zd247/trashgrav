@@ -6,20 +6,35 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
+  Keyboard,
+  TextInput,
+  TouchableHighlight,
 } from "react-native";
 
-import CustomActionButton from "../../components/CustomTempButton";
+import Constants from "expo-constants";
+import * as Location from "expo-location";
 
-import colors from "../../assets/colors";
+import CustomActionButton from "../../components/CustomTempButton";
 import ItemList from "../../components/ItemList";
+import colors from "../../assets/colors";
+
+import apiKey from "../../helpers/googleAPIkey";
+
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import MapView from "react-native-maps";
+import _ from "lodash";
 
 class DriverHomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      location: null,
+      errorMessage: null,
+      latitude: 0,
+      longitude: 0,
+      locationPredictions: [],
+    };
   }
 
   render() {
@@ -38,10 +53,7 @@ class DriverHomeScreen extends Component {
               style={{ marginLeft: 10 }}
             />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Driver Screen</Text>
-        </View>
-        <View style={styles.body}>
-          <MapView style={styles.mapStyle} provider="google" />
+          <Text style={styles.headerTitle}>Driver Home Screen !!</Text>
         </View>
         <SafeAreaView />
       </View>

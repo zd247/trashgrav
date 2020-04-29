@@ -10,19 +10,17 @@ import {
 } from 'react-native'
 import * as Animatable from 'react-native-animatable'
 
-import ErrorBoundary from '../components/ErrorBoundary'
-import CustomActionButton from '../components/CustomTempButton'
+import ErrorBoundary from "../components/ErrorBoundary";
+import CustomActionButton from "../components/CustomTempButton";
 
-import colors from '../assets/colors'
+import colors from "../assets/colors";
 
 import { connect } from 'react-redux'
 
 const screenWidth = Dimensions.get('screen').width
 
-class StartScreen extends React.Component {
+export default class StartScreen extends React.Component {
 	handleAdminLogin = () => {
-		this.props.changeAdminMode
-		console.log(this.props.auth.isAdmin)
 		this.props.navigation.navigate('AdminLoginScreen')
 	}
 
@@ -92,22 +90,6 @@ class StartScreen extends React.Component {
 	}
 }
 
-const mapStateToProps = (state) => {
-	return {
-	  auth: state.auth,
-	};
- };
- 
- const mapDispatchToProps = (dispatch) => {
-	return {
-	  signIn: (user) => dispatch({ type: "SIGN_IN", payload: user }),
-	  signOut: () => dispatch({ type: "SIGN_OUT" }),
-	  changeAdminMode: () => dispatch({ type: "CHANGE_TO_ADMIN_MODE" }),
-	  changeBackFromAdminMode: () => dispatch({ type: "CHANGE_BACK_FROM_ADMIN_MODE" }),
-	};
- };
-
-export default connect(mapStateToProps, mapDispatchToProps)(StartScreen)
 
 const styles = StyleSheet.create({
 	container: {

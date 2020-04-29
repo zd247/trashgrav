@@ -146,10 +146,7 @@ class LoginScreen extends Component {
 					if (snapshot.exists()) {
 						snapshot.forEach(data => {
 							if (data.child('password').val() === this.state.password) {
-								// this.props.signIn(data)
-								console.log(data.child('phone'))
-								console.log(data.key)
-								console.log(data)
+								this.props.signIn(data)
 								this.setState({ loading: false })
 								//TODO: navigate to UserHomeScreen
 							} else {

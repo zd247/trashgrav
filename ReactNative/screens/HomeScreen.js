@@ -46,7 +46,7 @@ class HomeScreen extends Component {
     const currentUserData = await firebase
       .database()
       .ref("Users")
-      .child(user.uid)
+      .child(user.key)
       .once("value");
 
     const recycleItems = await firebase.database().ref("Items").once("value");
@@ -87,10 +87,11 @@ class HomeScreen extends Component {
       (recycleItem) => recycleItem == selectedItem
     );
 
-    //console.log(newList[0]);
-
+    console.log(newList[0]);
+    //console.log(this.state.recycleItemList)
     this.props.moveItemToCart(newList[0]);
-    //console.log(this.state.recycleCart);
+    console.log(this.props.recycleItemList.recycleCart);
+    //console.log(this.props.recycleItemList);
   };
 
   renderRecycleItemList = (item, index) => (
@@ -174,6 +175,7 @@ const mapStateToProps = (state) => {
   return {
     recycleItemList: state.recycleItemList,
     currentUser: state.auth.currentUser,
+    //temp: state.recycleCart,
   };
 };
 

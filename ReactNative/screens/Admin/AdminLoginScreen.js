@@ -24,7 +24,7 @@ import 'firebase/auth'
 
 const screenWidth = Dimensions.get('screen').width
 
-const AdminLoginScreen = (props) => {
+const AdminLoginScreen = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [checkEmailInputText, setCheckEmailInputText] = useState(false)
@@ -55,17 +55,21 @@ const AdminLoginScreen = (props) => {
 	const onContinue = async () => {
 		if (checkEmailInputText && password.length >= 6) {
 			try {
-				const user = await firebase
+				const response = await firebase
 					.auth()
 					.signInWithEmailAndPassword(email, password)
-				if (user) {
-					console.log(user.user)
-					// console.log (user.uid)
+				if (response) {
+					console.log(response.user)
+					props.changeAdminMode
+					console.log(props.currentUser.isAdmin)
 					console.log('admin logged in !')
-					this.props.signIn(user.user)
+					const userID = response.user.uid
+					console.log(userID)
+
+					// this.props.signIn(response.user)
 					props.navigation.navigate('AdminHomeScreen')
 				}
-			}catch(e) {
+			} catch (e) {
 				console.log(e)
 				alert(e)
 			}
@@ -158,23 +162,24 @@ const AdminLoginScreen = (props) => {
 	)
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
-	  recycleItemList: state.recycleItemList,
-	  currentUser: state.auth.currentUser,
-	};
- };
+		recycleItemList: state.recycleItemList,
+		currentUser: state.auth.currentUser,
+	}
+}
 
 const mapDispatchToProps = dispatch => {
 	return {
 		signIn: user => dispatch({ type: 'LOAD_USER_FROM_SERVER', payload: user }),
 		signOut: () => dispatch({ type: 'SIGN_OUT' }),
+		changeAdminMode: () => dispatch({ type: 'CHANGE_TO_ADMIN_MODE' }),
+		changeBackFromAdminMode: () =>
+			dispatch({ type: 'CHANGE_BACK_FROM_ADMIN_MODE' }),
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdminLoginScreen);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(AdminLoginScreen)
 
 const styles = StyleSheet.create({
 	container: {
