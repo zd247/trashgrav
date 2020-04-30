@@ -54,6 +54,7 @@ class CustomerCart extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    //{ console.log(this.props.recycleItemList.recycleCart) }
     return (
       <View style={styles.container}>
         <SafeAreaView />

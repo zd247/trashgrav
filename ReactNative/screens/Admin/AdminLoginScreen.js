@@ -69,9 +69,9 @@ class AdminLoginScreen extends React.Component {
 					.signInWithEmailAndPassword(this.state.email, this.state.password)
 				if (response) {
 					this.props.changeAdminMode()
+					console.log(this.props.auth.isAdmin)
 					console.log('admin logged in !')
 					this.props.signIn(response.user)
-					// this.props.navigation.navigate('AdminHomeScreen')
 				}
 			} catch (e) {
 				console.log(e)

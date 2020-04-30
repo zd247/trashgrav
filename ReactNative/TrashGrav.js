@@ -17,6 +17,7 @@ import SecurityCheck from './screens/AppSwitchNavigator/SecurityCheck'
 import LoadingScreen from './screens/LoadingScreen'
 
 import DriverHomeScreen from './screens/Driver/DriverHomeScreen'
+import DriverMapScreen from './screens/Driver/DriverMapScreen'
 
 import CustomDrawerNavigator from './screens/DrawerNavigator/CustomDrawerNavigator'
 import CartContainer from './redux/containers/CartContainer'
@@ -240,7 +241,7 @@ const DriverDrawerNavigator = () => (
 					drawerIcon: () => <Ionicons name='ios-bicycle' size={24} />,
 				}}
 				name='Home'
-				component={DriverHomeScreen}
+				component={DriverTabNavigator}
 			/>
 			<Drawer.Screen
 				options={{ drawerIcon: () => <Ionicons name='ios-person' size={24} /> }}
@@ -261,6 +262,7 @@ const DriverDrawerNavigator = () => (
 const mapStateToProps = state => {
 	return {
 		auth: state.auth,
+		recycleItemList: state.recycleItemList,
 	}
 }
 

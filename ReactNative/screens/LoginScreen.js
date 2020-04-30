@@ -151,7 +151,6 @@ class LoginScreen extends Component {
 							if (data.child('password').val() === this.state.password) {
 								this.props.signIn(data)
 								this.setState({ loading: false })
-								//TODO: navigate to UserHomeScreen
 							} else {
 								alert('Password is invalid, please re-enter')
 								this.setState({ password: '' })
@@ -276,6 +275,15 @@ class LoginScreen extends Component {
 }
 
 // redux
+
+const mapStateToProps = (state) => {
+	return {
+		recycleItemList: state.recycleItemList,
+		currentUser: state.auth.currentUser,
+		//temp: state.recycleCart,
+	};
+};
+
 const mapDispatchToProps = dispatch => {
 	return {
 		signIn: user => dispatch({ type: 'SIGN_IN', payload: user }),
@@ -284,7 +292,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 // navigation
-export default connect(null, mapDispatchToProps)(LoginScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
 
 const styles = StyleSheet.create({
 	container: {
