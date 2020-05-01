@@ -6,27 +6,51 @@ import {
 	SafeAreaView,
 	ImageBackground,
 	Dimensions,
+	TouchableOpacity,
 } from 'react-native'
 import ScrollableTabView, {
 	DefaultTabBar,
 } from 'react-native-scrollable-tab-view'
 
 import colors from '../../assets/colors'
+import { Ionicons } from '@expo/vector-icons'
 
 import Items from './NavTabs/Items'
 import Requests from './NavTabs/Requests'
 import Activities from './NavTabs/Activities'
 
-
+import { connect } from 'react-redux'
+import * as firebase from 'firebase/app'
+import 'firebase/auth'
 
 const screenWidth = Dimensions.get('screen').width
 
 class AdminHomeScreen extends React.Component {
+	adminLogOut = async () => {
+		try {
+			await firebase.auth().signOut()
+			this.props.signOut()
+			console.log('admin logged out')
+		} catch (error) {
+			alert('Unable to sign out right now')
+		}
+	}
+
 	render() {
 		return (
 			<View style={styles.container}>
 				<SafeAreaView />
 				<View style={styles.header}>
+					<TouchableOpacity
+						onPress={this.adminLogOut}
+						style={{
+							paddingHorizontal: 10,
+							position: 'absolute',
+							left: '200%',
+							top: 35,
+						}}>
+						<Ionicons name='md-power' color={colors.bgAdminLogin} size={30} />
+					</TouchableOpacity>
 					<ImageBackground
 						source={require('../../assets/admin_header_bg.png')}
 						style={styles.imageBackground}
@@ -56,7 +80,19 @@ class AdminHomeScreen extends React.Component {
 	}
 }
 
-export default AdminHomeScreen
+const mapStateToProps = state => {
+	return {
+		auth: state.auth,
+	}
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		signOut: () => dispatch({ type: 'SIGN_OUT' }),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminHomeScreen)
 
 const styles = StyleSheet.create({
 	container: {

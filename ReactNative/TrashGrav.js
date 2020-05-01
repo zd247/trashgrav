@@ -7,8 +7,9 @@ import SignUpScreen from './screens/SignUpScreen'
 import HomeScreen from './screens/HomeScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
 
-import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
+import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
+import AdminItemScreen from './screens/Admin/AdminItemScreen'
 
 import CustomerCart from './screens/Customer/CustomerCart'
 import CustomerMapScreen from './screens/Customer/CustomerMapScreen'
@@ -121,6 +122,15 @@ class TrashGrav extends Component {
 							name='AdminHomeScreen'
 							component={AdminHomeScreen}
 							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name='AdminItemScreen'
+							component={AdminItemScreen}
+							options={{
+								headerBackTitleVisible: false,
+								headerTransparent: true,
+								headerTitle: '',
+							}}
 						/>
 					</Stack.Navigator>
 				) : !this.props.auth.isDriver ? (
