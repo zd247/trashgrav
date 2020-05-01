@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
 	View,
 	Text,
@@ -14,13 +14,11 @@ import {
 	Dimensions,
 } from 'react-native'
 
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import colors from '../../../assets/colors'
 import Feather from 'react-native-vector-icons/Feather'
 
 import { connect } from 'react-redux'
-import { compose } from 'redux'
 import ListItem from '../../../components/ItemList'
 
 import * as ImageHelpers from '../../../helpers/imageHelpers'
@@ -46,15 +44,19 @@ class Items extends React.Component {
 	}
 
 	loadDataFromServer = async () => {
+		this.props.toggleIsLoadingItems(true)
 		const recycleItems = await firebase.database().ref('Items').once('value') // retrieve data from server
 		const recycleItemsArray = snapshotToArray(recycleItems) // arrayed the data
 		this.props.loadRecycleItem(recycleItemsArray) // store into redux
 		this.setState({ data_temp: recycleItemsArray })
 		this.setState({ data: recycleItemsArray })
+		this.props.toggleIsLoadingItems(false)
 	}
 
 	componentDidMount = () => {
 		this.loadDataFromServer()
+		this.props.toggleIsLoadingItems(false)
+		
 	}
 
 	componentWillUnmount() {
@@ -69,7 +71,7 @@ class Items extends React.Component {
 						this.onDeleteItem(item, index)
 					}}
 					style={{ marginBottom: 50, paddingHorizontal: 10 }}>
-					<Ionicons name='ios-close' color='gray' size={30} />
+					<Ionicons name='ios-trash' color='gray' size={30} />
 				</TouchableOpacity>
 
 				<TouchableOpacity
@@ -77,7 +79,7 @@ class Items extends React.Component {
 					onPress={() => {
 						this.onItemDetail(item, index)
 					}}>
-					<AntDesign name='arrowright' color='white' size={15} />
+					<Ionicons name='ios-brush' color='white' size={15} />
 				</TouchableOpacity>
 			</View>
 		</ListItem>
@@ -88,13 +90,14 @@ class Items extends React.Component {
 	}
 
 	onItemDetail = (item, index) => {
-		this.props.props.navigation.navigate('AdminItemScreen', { item })
+		this.props.props.navigation.replace('AdminItemScreen', { item })
 	}
-	resetNewItemState = ()=> {
-		this.setState({newItemImage: ''})
-		this.setState({newItemName: ''})
-		this.setState({newItemPrice: ''})
-		this.setState({newItemDescription: ''})
+	resetNewItemState = () => {
+		this.setState({ newItemImage: '' })
+		this.setState({ newItemName: '' })
+		this.setState({ newItemPrice: '' })
+		this.setState({ newItemDescription: '' })
+		this.props.toggleIsLoadingItems(false)
 	}
 
 	searchData = text => {
@@ -111,6 +114,7 @@ class Items extends React.Component {
 	}
 
 	uploadImage = async image => {
+		this.props.toggleIsLoadingItems(true)
 		const ref = firebase
 			.storage()
 			.ref('Profile Pictures')
@@ -125,6 +129,8 @@ class Items extends React.Component {
 
 			blob.close()
 
+			this.props.toggleIsLoadingItems(false)
+
 			return downloadUrl
 		} catch (error) {
 			console.log(error)
@@ -132,20 +138,24 @@ class Items extends React.Component {
 	}
 
 	openImageLibrary = async () => {
+		this.props.toggleIsLoadingItems(true)
 		const result = await ImageHelpers.openImageLibrary()
 
 		if (result) {
 			const downloadUrl = await this.uploadImage(result)
 			this.setState({ newItemImage: downloadUrl })
+			this.props.toggleIsLoadingItems(false)
 		}
 	}
 
 	openCamera = async () => {
+		this.props.toggleIsLoadingItems(true)
 		const result = await ImageHelpers.openCamera()
 
 		if (result) {
 			const downloadUrl = await this.uploadImage(result)
 			this.setState({ newItemImage: downloadUrl })
+			this.props.toggleIsLoadingItems(false)
 		}
 	}
 
@@ -176,6 +186,7 @@ class Items extends React.Component {
 	}
 
 	onAddNewItem = () => {
+		this.props.toggleIsLoadingItems(true)
 		const price = this.state.newItemPrice
 		const category = this.state.newItemName.toLowerCase()
 		const description = this.state.newItemDescription
@@ -189,6 +200,7 @@ class Items extends React.Component {
 				image,
 			})
 			this.loadDataFromServer() // store data in redux from firebase
+			this.props.toggleIsLoadingItems(false)
 			this.setPopUpVisibility(false)
 		} else {
 			alert('Please fill in necessary fields')
@@ -196,6 +208,7 @@ class Items extends React.Component {
 	}
 
 	onDeleteItem = (item, index) => {
+		this.props.toggleIsLoadingItems(true)
 		Alert.alert(
 			'Deleting item...',
 			'Are you sure you want to remove this item from the recycle list ?',
@@ -209,6 +222,7 @@ class Items extends React.Component {
 					onPress: () => {
 						firebase.database().ref('Items').child(item.key).remove()
 						this.loadDataFromServer()
+						this.props.toggleIsLoadingItems(false)
 					},
 				},
 			],
@@ -403,11 +417,12 @@ const mapDispatchToProps = dispatch => {
 				type: 'LOAD_RECYCLE_ITEMS_FROM_SERVER',
 				payload: recycleItemList,
 			}),
+		toggleIsLoadingItems: bool =>
+			dispatch({ type: 'TOGGLE_IS_LOADING_ITEMS', payload: bool }),
 	}
 }
-const wrapper = compose(connect(mapStateToProps, mapDispatchToProps))
 
-export default wrapper(Items)
+export default connect(mapStateToProps, mapDispatchToProps)(Items)
 
 const height = Dimensions.get('screen').height
 const height_image = height * 0.5 * 0.5

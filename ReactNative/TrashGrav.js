@@ -126,11 +126,7 @@ class TrashGrav extends Component {
 						<Stack.Screen
 							name='AdminItemScreen'
 							component={AdminItemScreen}
-							options={{
-								headerBackTitleVisible: false,
-								headerTransparent: true,
-								headerTitle: '',
-							}}
+							options={{ headerShown: false }}
 						/>
 					</Stack.Navigator>
 				) : !this.props.auth.isDriver ? (
