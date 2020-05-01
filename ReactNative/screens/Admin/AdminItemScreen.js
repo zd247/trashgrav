@@ -200,7 +200,7 @@ class AdminItemScreen extends React.Component {
 									marginTop: 15,
 									marginStart: 20,
 								}}>
-								<Feather name='arrow-left' color='black' size={35} />
+								<Feather name='arrow-left' color='white' size={35} />
 							</TouchableOpacity>
 							<View style={styles.image_container}>
 								<TouchableOpacity

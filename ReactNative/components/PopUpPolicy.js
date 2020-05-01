@@ -34,6 +34,7 @@ export default class PopUpPolicy extends React.Component {
 	}
 }
 
+
 const styles = StyleSheet.create({
 	modalContainer: {
 		backgroundColor: colors.bgPrimary,

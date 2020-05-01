@@ -8,8 +8,13 @@ import {
 	StatusBar,
 	SafeAreaView,
 	YellowBox,
+	ImageBackground,
+	Modal,
+	Dimensions,
+	TouchableOpacity,
 } from 'react-native'
 
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
 
@@ -95,7 +100,12 @@ class LoginScreen extends Component {
 			checkTextInputChange: false,
 			isLoading: false,
 			phoneNumber: '',
+			rspwdPhoneNumber: '',
 			password: '',
+			resetPassword: false,
+			rspwdNewPassword: '',
+			rspwdConfirmPassword: '',
+			checkRspwdTextInputChange: false,
 		}
 		YellowBox.ignoreWarnings(['Setting a timer'])
 		const _console = _.clone(console)
@@ -104,6 +114,10 @@ class LoginScreen extends Component {
 				_console.warn(message)
 			}
 		}
+	}
+
+	componentWillUnmount = () => {
+		console.log('[LoginScreen] component umounted')
 	}
 
 	textInputChange = text => {
@@ -120,16 +134,71 @@ class LoginScreen extends Component {
 		}
 	}
 
+	rspwdTextInputChange = text => {
+		const phoneNoWithoutSigns = /^\d{10}$/
+		const phoneNoWithSigns = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+		if (text.length >= 9) {
+			if (text.match(phoneNoWithoutSigns) || text.match(phoneNoWithSigns)) {
+				this.setState({ checkRspwdTextInputChange: true })
+				this.setState({ rspwdPhoneNumber: text })
+			}
+		} else {
+			this.setState({ checkRspwdTextInputChange: false })
+			this.setState({ rspwdPhoneNumber: '' })
+		}
+	}
+
 	passwordInputChange = text => {
 		this.setState({ password: text })
 	}
 
-	onResetPassword = () => {
-		// TODO: reset password just by confirming new one.
-	}
-
-	componentWillUnmount = () => {
-		console.log('[LoginScreen] component umounted')
+	onResetPassword = async () => {
+		this.setState({ loading: true })
+		if (this.state.checkRspwdTextInputChange) {
+			let phone = this.state.rspwdPhoneNumber.replace(/\D/g, '')
+			phone = phone.replace(phone[0], '+84')
+			firebase
+				.database()
+				.ref('Users')
+				.orderByChild('phone')
+				.equalTo(phone)
+				.once('value', snapshot => {
+					if (snapshot.exists()) {
+						snapshot.forEach(data => {
+							if (
+								this.state.rspwdNewPassword ===
+									this.state.rspwdConfirmPassword &&
+								this.state.rspwdNewPassword.length >= 6
+							) {
+								firebase
+									.database()
+									.ref('Users')
+									.child(data.key)
+									.child('password')
+									.set(this.state.rspwdNewPassword)
+									.then(res => {
+										alert('Your password has been reset')
+										this.setState({ resetPassword: false })
+										this.setState({ loading: false })
+									})
+							} else {
+								alert(
+									'Please make sure both the password fields are entered correctly'
+								)
+								this.setState({ rspwdNewPassword: '' })
+								this.setState({ rspwdConfirmPassword: '' })
+								this.setState({ loading: false })
+							}
+						})
+					} else {
+						alert('Phone number is invalid, please re-enter')
+						this.setState({ password: '' })
+						this.setState({ loading: false })
+					}
+				})
+		} else {
+			alert('Invalid phone number format entered')
+		}
 	}
 
 	onContinue = async () => {
@@ -145,7 +214,7 @@ class LoginScreen extends Component {
 				.ref('Users')
 				.orderByChild('phone')
 				.equalTo(phone)
-				.on('value', snapshot => {
+				.once('value', snapshot => {
 					if (snapshot.exists()) {
 						snapshot.forEach(data => {
 							if (data.child('password').val() === this.state.password) {
@@ -221,12 +290,10 @@ class LoginScreen extends Component {
 										value={this.state.password}
 										onInputChange={this.passwordInputChange}
 									/>
-
-									<Text
-										onPress={this.onResetPassword}
-										style={{ color: '#009bd1' }}>
-										Forgot password ?
-									</Text>
+									<TouchableOpacity
+										onPress={() => this.setState({ resetPassword: true })}>
+										<Text style={{ color: '#009bd1' }}>Forgot password ?</Text>
+									</TouchableOpacity>
 
 									{/* buttons */}
 									<View style={{ flex: 1, marginTop: 30 }}>
@@ -263,6 +330,97 @@ class LoginScreen extends Component {
 									{/* end of buttons */}
 
 									<Policy />
+
+									{/* reset password modals*/}
+									<Modal
+										animationType='fade'
+										transparent={true}
+										visible={this.state.resetPassword}>
+										<View style={{ flex: 1 }}>
+											<ScrollView style={{ flex: 1 }}>
+												<View style={styles.modalContainer}>
+													<ImageBackground
+														source={require('../assets/header_detail.png')}
+														style={{ flex: 1, alignItems: 'center' }}
+														resizeMode={'stretch'}>
+														<TouchableOpacity
+															onPress={() => {
+																this.setState({ resetPassword: false })
+															}}
+															style={{
+																alignSelf: 'flex-start',
+																marginTop: 10,
+																marginStart: 15,
+															}}>
+															<Ionicons
+																name='ios-close'
+																color='white'
+																size={40}
+															/>
+														</TouchableOpacity>
+														<View style={styles.image_container}>
+															<Text style={{ fontSize: 35, color: 'white' }}>
+																Reset Password
+															</Text>
+														</View>
+													</ImageBackground>
+													<View style={{ padding: 15 }}>
+														<InputField
+															title='Phone number'
+															fontAwesomeIcon='phone-square'
+															color={colors.bgUserLogin}
+															image={true}
+															placeHolder='Ex: (012) 345-6789'
+															autoCapitalize='none'
+															keyboardType='phone-pad'
+															onInputChange={this.rspwdTextInputChange}>
+															{this.state.checkRspwdTextInputChange ? (
+																<Animatable.View animation='bounceIn'>
+																	<Feather
+																		name='check-circle'
+																		color='green'
+																		size={20}
+																	/>
+																</Animatable.View>
+															) : null}
+														</InputField>
+
+														<PwdField
+															title={'New password'}
+															color={colors.bgUserLogin}
+															value={this.state.rspwdNewPassword}
+															onInputChange={text => {
+																this.setState({ rspwdNewPassword: text })
+															}}
+														/>
+
+														<PwdField
+															title={'Confirm password'}
+															color={colors.bgUserLogin}
+															value={this.state.rspwdConfirmPassword}
+															onInputChange={text => {
+																this.setState({ rspwdConfirmPassword: text })
+															}}
+														/>
+													</View>
+
+													<TouchableOpacity
+														onPress={() => {
+															this.onResetPassword()
+														}}
+														style={{ alignItems: 'flex-end' }}>
+														<View style={styles.modalButton}>
+															<Feather
+																name='arrow-right'
+																color='white'
+																size={25}
+															/>
+														</View>
+													</TouchableOpacity>
+												</View>
+											</ScrollView>
+										</View>
+									</Modal>
 								</View>
 							</View>
 						</ScrollView>
@@ -276,13 +434,13 @@ class LoginScreen extends Component {
 
 // redux
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		recycleItemList: state.recycleItemList,
 		currentUser: state.auth.currentUser,
 		//temp: state.recycleCart,
-	};
-};
+	}
+}
 
 const mapDispatchToProps = dispatch => {
 	return {
@@ -293,6 +451,9 @@ const mapDispatchToProps = dispatch => {
 
 // navigation
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
+
+const height = Dimensions.get('screen').height
+const height_image = height * 0.5 * 0.5
 
 const styles = StyleSheet.create({
 	container: {
@@ -327,10 +488,23 @@ const styles = StyleSheet.create({
 		width: '80%',
 	},
 	modalContainer: {
-		backgroundColor: colors.bgPrimary,
-		margin: 50,
-		padding: 30,
-		borderRadius: 10,
+		backgroundColor: '#f2f2f2',
+		margin: 20,
+		marginTop: 40,
+		borderWidth: 2.5,
 		flex: 1,
+	},
+	image_container: {
+		width: height_image,
+		height: height_image,
+	},
+	modalButton: {
+		width: 80,
+		backgroundColor: colors.bgUserLogin,
+		borderRadius: 50,
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingVertical: 8,
+		margin: 15,
 	},
 })
