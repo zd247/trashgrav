@@ -103,10 +103,10 @@ class CustomerCart extends Component {
           <CustomActionButton
             style={styles.changeMode}
             title="Book A Driver Now!!"
-            onPress={() => this.props.navigation.navigate("CustomerMapScreen")}
+            onPress={() => this.props.navigation.navigate("Home")}
           >
             <Text style={{ fontWeight: "100", color: "white" }}>
-              Book A Driver Now
+              Return to Previous Screen
             </Text>
           </CustomActionButton>
         </View>

@@ -128,6 +128,9 @@ class LoginScreen extends Component {
 		// TODO: reset password just by confirming new one.
 	}
 
+	componentWillUnmount = () => {
+		console.log('[LoginScreen] component umounted')
+	}
 
 	onContinue = () => {
 		this.setState({ loading: true })
@@ -146,6 +149,8 @@ class LoginScreen extends Component {
 					if (snapshot.exists()) {
 						snapshot.forEach(data => {
 							if (data.child('password').val() === this.state.password) {
+								delete data.child('password')
+								//console.log(data)
 								this.props.signIn(data)
 								this.setState({ loading: false })
 								//TODO: navigate to UserHomeScreen

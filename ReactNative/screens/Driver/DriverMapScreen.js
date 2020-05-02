@@ -79,7 +79,7 @@ class DriverMapScreen extends Component {
         `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.latitude},${this.state.longitude}&destination=place_id:${destinationPlaceId}&key=${apiKey}`
       );
       const json = await response.json();
-      //console.log(json);
+      console.log("route Direction" + JSON.stringify(json));
       const points = PolyLine.decode(json.routes[0].overview_polyline.points);
       const pointCoords = points.map((point) => {
         return { latitude: point[0], longitude: point[1] };

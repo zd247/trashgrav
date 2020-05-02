@@ -14,6 +14,7 @@ import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
 
 import CustomerCart from './screens/Customer/CustomerCart'
 import CustomerMapScreen from './screens/Customer/CustomerMapScreen'
+import CustomerPaymentOption from './screens/Customer/CustomerPayment'
 import SettingScreen from './screens/SettingScreen'
 import SecurityCheck from './screens/AppSwitchNavigator/SecurityCheck'
 import LoadingScreen from './screens/LoadingScreen'
@@ -179,7 +180,7 @@ const CustomerStackNavigator = ({ navigation }) => (
 		<Stack.Screen
 			options={{ headerShown: false }}
 			name='Recycle Item List'
-			component={CustomerTabNavigator}
+			component={HomeScreen}
 		/>
 
 		<Stack.Screen
@@ -205,16 +206,21 @@ const CustomerDrawerNavigator = () => (
 				component={UserProfileScreen}
 			/>
 			<Drawer.Screen
+				options={{ drawerIcon: () => <Ionicons name='ios-cart' size={24} /> }}
+				name='Cart'
+				component={CustomerCart}
+			/>
+			<Drawer.Screen
+				options={{ drawerIcon: () => <Ionicons name='ios-card' size={24} /> }}
+				name='Payment Option'
+				component={CustomerPaymentOption}
+			/>
+			<Drawer.Screen
 				options={{
 					drawerIcon: () => <Ionicons name='ios-settings' size={24} />,
 				}}
 				name='Setting'
 				component={SettingScreen}
-			/>
-			<Drawer.Screen
-				options={{ drawerIcon: () => <Ionicons name='ios-people' size={24} /> }}
-				name='Admin'
-				component={AdminHomeScreen}
 			/>
 		</Drawer.Navigator>
 	</ActionSheetProvider>
