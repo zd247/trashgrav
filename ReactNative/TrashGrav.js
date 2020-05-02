@@ -2,15 +2,14 @@ import React, { Component } from 'react'
 import { StyleSheet } from 'react-native'
 
 import StartScreen from './screens/StartScreen'
-import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import HomeScreen from './screens/HomeScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
 
-
-import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
+import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
+import AdminItemScreen from './screens/Admin/AdminItemScreen'
 
 import CustomerCart from './screens/Customer/CustomerCart'
 import CustomerMapScreen from './screens/Customer/CustomerMapScreen'
@@ -119,18 +118,23 @@ class TrashGrav extends Component {
 						/>
 					</Stack.Navigator>
 				) : this.props.auth.isAdmin ? (
-
-					<Stack.Screen
-						name='AdminHomeScreen'
-						component={AdminHomeScreen}
-						options={{ headerShown: false }}
-					/>
-
+					<Stack.Navigator>
+						<Stack.Screen
+							name='AdminHomeScreen'
+							component={AdminHomeScreen}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name='AdminItemScreen'
+							component={AdminItemScreen}
+							options={{ headerShown: false }}
+						/>
+					</Stack.Navigator>
 				) : !this.props.auth.isDriver ? (
 					<CustomerDrawerNavigator />
 				) : (
-								<DriverDrawerNavigator />
-							)}
+					<DriverDrawerNavigator />
+				)}
 			</NavigationContainer>
 		)
 	}

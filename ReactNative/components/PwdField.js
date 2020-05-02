@@ -20,20 +20,22 @@ const PwdField = props => {
 
 	return (
 		<View>
-			<Text style={[styles.text , {color:props.color}]}>Password</Text>
+			<Text style={[styles.text, { color: props.color }]}>
+				{props.title ? props.title : 'Password'}
+			</Text>
 			<View style={styles.action}>
 				<FontAwesome name='lock' color={props.color} size={20} />
-					<TextInput
-						style={[styles.textInput, { color: props.color }]}
-						blurOnSubmit
-						secureTextEntry={secureTextEntry}
-						autoCapitalize='none'
-						autoCorrect={false}
-						keyboardType='default'
-						maxLength={13}
-						value={props.value}
-						onChangeText={text => props.onInputChange(text)}
-					/>
+				<TextInput
+					style={[styles.textInput, { color: props.color }]}
+					blurOnSubmit
+					secureTextEntry={secureTextEntry}
+					autoCapitalize='none'
+					autoCorrect={false}
+					keyboardType='default'
+					maxLength={13}
+					value={props.value}
+					onChangeText={text => props.onInputChange(text)}
+				/>
 				<Animatable.View animation='bounceIn'>
 					<TouchableOpacity onPress={secureTextEntryHandler}>
 						{secureTextEntry ? (

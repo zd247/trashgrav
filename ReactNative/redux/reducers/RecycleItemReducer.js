@@ -81,4 +81,4 @@ const recycles = (state = initialState, action) => {
   }
 };
 
-export default recycles;
+export default recycles

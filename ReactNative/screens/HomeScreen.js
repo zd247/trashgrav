@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   StyleSheet,
   Text,
@@ -22,12 +22,12 @@ import { snapshotToArray } from "../helpers/firebaseHelpers";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../assets/colors";
 
-import { connect } from "react-redux";
-import { compose } from "redux";
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 //import { connectActionSheet } from "@expo/react-native-action-sheet";
 
-import * as firebase from "firebase/app";
-import "firebase/storage";
+import * as firebase from 'firebase/app'
+import 'firebase/storage'
 
 
 class HomeScreen extends Component {
@@ -48,19 +48,19 @@ class HomeScreen extends Component {
   }
 
   componentDidMount = async () => {
-    const user = this.props.currentUser;
+    const user = this.props.currentUser
 
     //const { navigation } = this.props;
     //const user = navigation.getParam("user");
 
     const currentUserData = await firebase
       .database()
-      .ref("Users")
+      .ref('Users')
       .child(user.key)
-      .once("value");
+      .once('value')
 
-    const recycleItems = await firebase.database().ref("Items").once("value");
-    const recycleItemsArray = snapshotToArray(recycleItems);
+    const recycleItems = await firebase.database().ref('Items').once('value')
+    const recycleItemsArray = snapshotToArray(recycleItems)
 
     let temp = currentUserData.val()
     delete temp["password"];
@@ -78,8 +78,8 @@ class HomeScreen extends Component {
   };
 
   showSearchRecycleItem = () => {
-    this.setState({ isSearchRecycleItem: true });
-  };
+    this.setState({ isSearchRecycleItem: true })
+  }
 
   hideSearchRecycleItem = () => {
     this.setState({ isSearchRecycleItem: false });
@@ -96,16 +96,16 @@ class HomeScreen extends Component {
 
   };
 
-  addRecycleItem = (item) => {
+  addRecycleItem = item => {
     this.setState(
       (state, props) => ({
         recycleItemList: [...state.recycleItemList, item],
       }),
       () => {
-        console.log(this.state.recycleItemList);
+        console.log(this.state.recycleItemList)
       }
-    );
-  };
+    )
+  }
 
   chooseItem = (selectedItem, index) => {
 
@@ -266,11 +266,11 @@ class HomeScreen extends Component {
           <View style={styles.textInputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="Search Recycle Items"
+              placeholder='Search Recycle Items'
               placeholderTextColor={colors.txtPlaceholder}
-              onChangeText={(text) => this.setState({ textInputData: text })}
-              ref={(component) => {
-                this.textInputRef = component;
+              onChangeText={text => this.setState({ textInputData: text })}
+              ref={component => {
+                this.textInputRef = component
               }}
             />
           </View>
@@ -281,10 +281,10 @@ class HomeScreen extends Component {
             }
             keyExtractor={(item, index) => index.toString()}
             ListEmptyComponent={
-              <View style={{ marginTop: 50, alignItems: "center" }}>
-                <Text style={{ fontWeight: "bold" }}>
+              <View style={{ marginTop: 50, alignItems: 'center' }}>
+                <Text style={{ fontWeight: 'bold' }}>
                   No Recycle Item Currently Exist In this List
-                </Text>
+								</Text>
               </View>
             }
           />
@@ -370,7 +370,7 @@ class HomeScreen extends Component {
 
         <SafeAreaView />
       </View>
-    );
+    )
   }
 }
 
@@ -406,9 +406,26 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-//export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+const mapDispatchToProps = dispatch => {
+  return {
+    loadRecycleItem: recycleItemList =>
+      dispatch({
+        type: 'LOAD_RECYCLE_ITEMS_FROM_SERVER',
+        payload: recycleItemList,
+      }),
+    loadUser: user =>
+      dispatch({
+        type: 'LOAD_USER_FROM_SERVER',
+        payload: user,
+      }),
+    moveItemToCart: item =>
+      dispatch({ type: 'ADD_RECYCLE_ITEMS_TO_CART', payload: item }),
+    toggleIsLoadingItems: bool =>
+      dispatch({ type: 'TOGGLE_IS_LOADING_ITEMS', payload: bool }),
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
 
 const styles = StyleSheet.create({
   container: {
