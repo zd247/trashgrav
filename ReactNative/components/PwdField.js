@@ -3,13 +3,13 @@ import {
 	Text,
 	View,
 	TextInput,
-	StyleSheet,
-	Image,
+	Dimensions,
 	TouchableOpacity,
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 const PwdField = props => {
 	const [secureTextEntry, setSecureTextEntry] = useState(true)
@@ -52,20 +52,24 @@ const PwdField = props => {
 
 export default PwdField
 
-const styles = StyleSheet.create({
+
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	text: {
-		fontSize: 18,
+		fontSize: '18rem',
 		fontWeight: 'bold',
 	},
 	action: {
 		flexDirection: 'row',
-		marginVertical: 10,
-		borderBottomWidth: 1,
+		marginVertical: '10rem',
+		borderBottomWidth: '1rem',
 		borderBottomColor: '#f2f2f2',
-		paddingBottom: 5,
+		paddingBottom: '5rem',
 	},
 	textInput: {
 		flex: 1,
-		paddingLeft: 10,
+		paddingLeft: '10rem',
 	},
 })

@@ -119,7 +119,7 @@ const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
-		paddingTop: Platform.OS == "android" ? '0rem' : '50rem',
+		paddingVertical: Platform.OS == "android" ? '0rem' : '50rem',
 	},
 	header: {
 		position: 'absolute',

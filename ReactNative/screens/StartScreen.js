@@ -81,7 +81,7 @@ const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#05375a',
-		paddingTop: Platform.OS == "android" ? '0rem' : '50rem',
+		paddingVertical: Platform.OS == "android" ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,
@@ -90,6 +90,7 @@ const styles = EStyleSheet.create({
 		paddingVertical: '120rem',
 	},
 	footer: {
+		justifyContent: 'center',
 		flex: 3,
 		backgroundColor: 'white',
 		borderTopLeftRadius: '30rem',
@@ -100,6 +101,7 @@ const styles = EStyleSheet.create({
 		color: '#05375a',
 		fontSize: '30rem',
 		fontWeight: 'bold',
+		marginBottom: '30rem'
 	},
 	continueTitle: {
 		marginTop: '15rem',
@@ -108,19 +110,16 @@ const styles = EStyleSheet.create({
 		marginBottom: '20rem',
 	},
 	buttonContainer: {
-		flex: 1,
-		marginVertical: '40rem',
 		marginHorizontal: '15rem',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 	},
 	button: {
-		flex: 4,
+		flex: 1,
 		borderColor: colors.bgPrimary,
 		borderWidth: 0.5,
 		borderRadius: 20,
 		alignSelf: 'center',
-		paddingHorizontal: '20rem',
 		paddingVertical: '30rem',
 		width: '120rem',
 	},

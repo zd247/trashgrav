@@ -66,6 +66,7 @@ class Items extends React.Component {
 
 	componentWillUnmount() {
 		console.log('[Items] unmount')
+		firebase.database().ref('Items').off()
 	}
 
 	renderData = (item, index) => (

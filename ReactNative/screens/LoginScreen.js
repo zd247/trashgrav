@@ -2,7 +2,6 @@ import React, { Component, useState } from 'react'
 import {
 	View,
 	Text,
-	StyleSheet,
 	ActivityIndicator,
 	ScrollView,
 	StatusBar,
@@ -17,6 +16,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 import colors from '../assets/colors'
 import strings from '../assets/strings'
@@ -55,12 +55,7 @@ const Policy = () => {
 
 	return (
 		<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-			<View
-				style={{
-					alignSelf: 'center',
-					marginTop: 50,
-					marginHorizontal: 20,
-				}}>
+			<View style={styles.policyContainer}>
 				<Text>
 					By using our application, you agree to our
 					<Text> </Text>
@@ -118,6 +113,7 @@ class LoginScreen extends Component {
 
 	componentWillUnmount = () => {
 		console.log('[LoginScreen] component umounted')
+		firebase.database().ref('Users').off()
 	}
 
 	textInputChange = text => {
@@ -167,7 +163,7 @@ class LoginScreen extends Component {
 						snapshot.forEach(data => {
 							if (
 								this.state.rspwdNewPassword ===
-								this.state.rspwdConfirmPassword &&
+									this.state.rspwdConfirmPassword &&
 								this.state.rspwdNewPassword.length >= 6
 							) {
 								firebase
@@ -233,7 +229,7 @@ class LoginScreen extends Component {
 						this.setState({ isLoading: false })
 					}
 				})
-		}else {
+		} else {
 			alert('Invalid phone number or password format entered')
 			this.setState({ isLoading: false })
 		}
@@ -249,7 +245,7 @@ class LoginScreen extends Component {
 					{this.state.isLoading ? (
 						<View
 							style={[
-								StyleSheet.absoluteFill,
+								EStyleSheet.absoluteFill,
 								{
 									alignItems: 'center',
 									justifyContent: 'center',
@@ -300,7 +296,7 @@ class LoginScreen extends Component {
 									</TouchableOpacity>
 
 									{/* buttons */}
-									<View style={{ flex: 1, marginTop: 30 }}>
+									<View style={styles.buttonContainer}>
 										<CustomActionButton
 											style={[
 												styles.button,
@@ -459,43 +455,48 @@ export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
 const height = Dimensions.get('screen').height
 const height_image = height * 0.5 * 0.5
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgUserLogin,
+		paddingVertical: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,
 		justifyContent: 'flex-end',
-		paddingHorizontal: 20,
-		paddingVertical: 50,
+		paddingHorizontal: '20rem',
+		paddingVertical: '60rem',
 	},
 	footer: {
 		flex: 3,
 		backgroundColor: 'white',
-		borderTopLeftRadius: 30,
-		borderTopRightRadius: 30,
-		paddingHorizontal: 20,
-		paddingVertical: 30,
+		borderTopLeftRadius: '30rem',
+		borderTopRightRadius: '30rem',
+		paddingHorizontal: '30rem',
+		paddingTop: '30rem',
 	},
 	textHeader: {
 		color: 'white',
-		fontSize: 30,
+		fontSize: '30rem',
 		fontWeight: 'bold',
 	},
 	button: {
 		borderColor: colors.bgPrimary,
-		borderWidth: 0.5,
-		borderRadius: 20,
-		marginBottom: 10,
+		borderWidth: '0.5rem',
+		borderRadius: '20rem',
+		marginBottom: '10rem',
 		alignSelf: 'center',
+		paddingVertical: '15rem',
 		width: '80%',
 	},
 	modalContainer: {
 		backgroundColor: '#f2f2f2',
-		margin: 20,
-		marginTop: 40,
-		borderWidth: 2.5,
+		margin: '20rem',
+		marginTop: '40rem',
+		borderWidth: '2.5rem',
 		flex: 1,
 	},
 	image_container: {
@@ -503,12 +504,17 @@ const styles = StyleSheet.create({
 		height: height_image,
 	},
 	modalButton: {
-		width: 80,
+		width: '80rem',
 		backgroundColor: colors.bgUserLogin,
-		borderRadius: 50,
+		borderRadius: '50rem',
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: 8,
-		margin: 15,
+		paddingVertical: '8rem',
+		margin: '15rem',
 	},
+	policyContainer: {
+		marginTop: '30rem',
+		marginHorizontal: '20rem',
+	},
+	buttonContainer: { flex: 1, marginTop: '30rem' },
 })

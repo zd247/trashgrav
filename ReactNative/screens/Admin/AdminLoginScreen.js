@@ -62,6 +62,7 @@ class AdminLoginScreen extends React.Component {
 
 	componentWillUnmount() {
 		console.log('[AdminLoginScreen] component umounted')
+		firebase.database().ref('Users').off()
 	}
 
 	onContinue = async () => {
@@ -190,7 +191,7 @@ const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgAdminLogin,
-		paddingTop: Platform.OS == 'android' ? '0rem' : '50rem',
+		paddingVertical: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,

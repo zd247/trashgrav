@@ -55,6 +55,7 @@ class AdminItemScreen extends React.Component {
 
 	componentWillUnmount = () => {
 		console.log('[AdminItemScreen] component unmounted')
+		firebase.database().ref('Items').off()
 	}
 
 	uploadImage = async image => {
@@ -131,7 +132,7 @@ class AdminItemScreen extends React.Component {
 	storeItemData = (image, category, price, description) => {
 		firebase
 			.database()
-			.ref('Items/')
+			.ref('Items')
 			.child(category)
 			.set({
 				description,
@@ -312,7 +313,7 @@ const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
-		paddingTop: Platform.OS == 'android' ? '0rem' : '50rem',
+		paddingVertical: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	footer: {
 		flex: 1,

@@ -2,15 +2,16 @@ import React, { Component } from 'react'
 import {
 	View,
 	Text,
-	StyleSheet,
 	Platform,
 	ActivityIndicator,
+	Dimensions,
 	ScrollView,
 	StatusBar,
 	YellowBox,
 	SafeAreaView,
 } from 'react-native'
 
+import EStyleSheet from 'react-native-extended-stylesheet'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
 import _ from 'lodash'
@@ -40,11 +41,13 @@ class SignUpScreen extends Component {
 			lastName: '',
 			phoneNumber: '',
 			password: '',
-			isLoading: false,
+			loading: false,
 			checkPhoneInputChange: false,
 			checkFNameInputChange: false,
 			checkLNameInputChange: false,
 			confirm: null,
+			firebaseDatabase: null,
+			firebaseAuth: null,
 		}
 
 		// to ignore the firebase message
@@ -77,11 +80,13 @@ class SignUpScreen extends Component {
 
 	nameTextInputChange = (firstName, value) => {
 		if (value.length >= 1) {
-			this.setState(
-				firstName
-					? { checkFNameInputChange: true }
-					: { checkLNameInputChange: true }
-			)
+			if (firstName) {
+				this.setState({ checkFNameInputChange: true })
+				this.setState({ firstName: value })
+			} else {
+				this.setState({ checkLNameInputChange: true })
+				this.setState({ lastName: value })
+			}
 		} else {
 			this.setState(
 				firstName
@@ -93,6 +98,7 @@ class SignUpScreen extends Component {
 
 	componentWillUnmount = () => {
 		console.log('[SignUpScreen] components unmounted')
+		firebase.database().ref('Users').off()
 	}
 
 	onContinue = () => {
@@ -102,7 +108,7 @@ class SignUpScreen extends Component {
 			this.state.checkLNameInputChange &&
 			this.state.password.length >= 6
 		) {
-			this.setState({ isLoading: true })
+			this.setState({ loading: true })
 			let phone = this.state.phoneNumber.replace(/\D/g, '')
 			phone = phone.replace(phone[0], '+84')
 
@@ -112,12 +118,14 @@ class SignUpScreen extends Component {
 				.ref('Users')
 				.orderByChild('phone')
 				.equalTo(phone)
-				.on('value', snapshot => {
+				.once('value', snapshot => {
 					if (snapshot.exists()) {
-						alert(
-							'Phone number has already existed' +
-								'please re-enter a new phone number'
-						)
+						if (!this.state.confirm) {
+							alert(
+								'Phone number has already existed' +
+									'please re-enter a new phone number'
+							)
+						}
 						this.setState({ loading: false })
 					} else {
 						this.handleConfirmPhoneNumber(phone)
@@ -130,6 +138,28 @@ class SignUpScreen extends Component {
 		}
 	}
 
+	onSignIn = () => {
+		try {
+			firebase
+				.database()
+				.ref('Users')
+				.orderByChild('phone')
+				.equalTo(this.state.phoneNumber)
+				.once('value', snapshot => {
+					if (snapshot.exists()) {
+						snapshot.forEach(data => {
+							this.props.signIn(data)
+						})
+					}
+					this.setState({ loading: false })
+				})
+		} catch (e) {
+			console.log(e)
+			alert(e)
+			this.setState({ loading: false })
+		}
+	}
+
 	handleConfirmPhoneNumber = async phone => {
 		try {
 			const confirmation = await signInWithPhoneNumber(phone)
@@ -138,9 +168,11 @@ class SignUpScreen extends Component {
 				this.setState({ confirm: confirmation })
 				this.setState({ phoneNumber: phone })
 			} else {
+				this.setState({ loading: false })
 				console.log('Error verifying phone number')
 			}
 		} catch (e) {
+			this.setState({ loading: false })
 			console.log(e.message)
 			alert(e.message)
 		}
@@ -149,24 +181,32 @@ class SignUpScreen extends Component {
 	handleConfirmVerificationCode = code => {
 		try {
 			this.setState({ loading: true })
-			let user = this.state.confirm(code)
-			if (user !== null) {
-				this.setState({ loading: false })
-				console.log(user.uid)
-				firebase.database().ref('Users').child(user.uid).set({
-					uid: user.uid,
-					phone: this.state.phoneNumber,
-					password: this.state.password,
-					first_name: this.state.firstName,
-					last_name: this.state.lastName,
+			try {
+				this.state.confirm(code).then(response => {
+					if (firebase.auth().currentUser) {
+						const userID = firebase.auth(userID).currentUser.uid
+						firebase.database().ref('Users').child(userID).set({
+							uid: userID,
+							phone: this.state.phoneNumber,
+							password: this.state.password,
+							first_name: this.state.firstName,
+							last_name: this.state.lastName,
+						})
+						firebase.auth().signOut()
+						this.onSignIn()
+					} else {
+						this.setState({ loading: false })
+					}
 				})
-				// this.props.signIn(user) // store user in redux
-			} else {
-				console.log('Error verifying object code')
+			} catch (e) {
+				alert(e)
+				console.log(e)
+				this.setState({ loading: false })
 			}
 		} catch (error) {
 			alert('Error verifying code')
 			console.log(error.message)
+			this.setState({ loading: false })
 		}
 	}
 
@@ -175,10 +215,10 @@ class SignUpScreen extends Component {
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<SafeAreaView />
 				<StatusBar barStyle='light-content' />
-				{/* {this.state.isLoading ? (
+				{this.state.loading ? (
 					<View
 						style={[
-							StyleSheet.absoluteFill,
+							EStyleSheet.absoluteFill,
 							{
 								alignItems: 'center',
 								justifyContent: 'center',
@@ -188,7 +228,7 @@ class SignUpScreen extends Component {
 						]}>
 						<ActivityIndicator size='large' color={colors.logoColor} />
 					</View>
-				) : null} */}
+				) : null}
 				{/* ----------[[screen]---------- */}
 				<View style={{ flex: 1 }}>
 					<ScrollView style={{ flex: 1 }}>
@@ -275,7 +315,7 @@ class SignUpScreen extends Component {
 										</InputField>
 
 										{/* --------buttons------- */}
-										<View style={{ flex: 1, marginTop: 20 }}>
+										<View style={styles.buttonContainer}>
 											<CustomActionButton
 												style={[
 													styles.button,
@@ -310,53 +350,58 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(null, mapDispatchToProps)(SignUpScreen)
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgUserLogin,
-		paddingTop: Platform.OS == 'android' ? 50 : 0,
+		paddingVertical: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,
 		justifyContent: 'flex-end',
-		paddingHorizontal: 20,
-		paddingVertical: 40,
+		paddingHorizontal: '20rem',
+		paddingVertical: '60rem',
 	},
 	footer: {
 		flex: 3,
 		backgroundColor: 'white',
-		borderTopLeftRadius: 30,
-		borderTopRightRadius: 30,
-		paddingHorizontal: 20,
-		paddingVertical: 30,
+		borderTopLeftRadius: '30rem',
+		borderTopRightRadius: '30rem',
+		paddingHorizontal: '20rem',
+		paddingTop: '30rem',
 	},
 	textHeader: {
 		color: 'white',
-		fontSize: 30,
+		fontSize: '30rem',
 		fontWeight: 'bold',
 	},
 	textFooter: {
 		color: colors.bgUserLogin,
-		fontSize: 18,
+		fontSize: '18rem',
 		fontWeight: 'bold',
 	},
 	action: {
 		flexDirection: 'row',
-		marginVertical: 10,
-		borderBottomWidth: 1,
+		marginVertical: '10rem',
+		borderBottomWidth: '1rem',
 		borderBottomColor: '#f2f2f2',
-		paddingBottom: 5,
+		paddingBottom: '5rem',
 	},
 	textInput: {
 		flex: 1,
-		paddingLeft: 10,
+		paddingLeft: '10rem',
 		color: colors.bgUserLogin,
 	},
+	buttonContainer: { flex: 1, marginTop: '30rem' },
 	button: {
 		borderColor: colors.bgPrimary,
-		borderWidth: 0.5,
-		borderRadius: 20,
+		borderWidth: '0.5rem',
+		borderRadius: '20rem',
 		alignSelf: 'center',
+		paddingVertical: '15rem',
 		width: '80%',
 	},
 })
