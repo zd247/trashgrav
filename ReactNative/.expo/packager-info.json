@@ -3,8 +3,8 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://jd-b5p.ryangjegal.reactnative.exp.direct",
+  "packagerNgrokUrl": "https://packager.jd-b5p.ryangjegal.reactnative.exp.direct",
+  "ngrokPid": 81200,
   "webpackServerPort": null
 }

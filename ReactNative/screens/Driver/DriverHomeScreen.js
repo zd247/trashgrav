@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableHighlight,
   FlatList,
+  RefreshControl,
 } from "react-native";
 
 import Constants from "expo-constants";
@@ -36,6 +37,7 @@ class DriverHomeScreen extends Component {
       errorMessage: null,
       order: [],
       destination: "",
+      refreshing: false,
     };
   }
 
@@ -49,13 +51,30 @@ class DriverHomeScreen extends Component {
 
     let tempArray = [];
     ordersArray.forEach((child) => {
-      if (child.status != 1) {
+      if (child.status == 0) {
         tempArray.push(child);
       }
     });
-    console.log(tempArray);
+    // console.log(tempArray);
 
     this.setState({ order: tempArray });
+  };
+
+  updateOrder = async () => {
+    this.setState({ refreshing: true });
+    const orders = await firebase.database().ref("Requests").once("value");
+    const ordersArray = snapshotToArray(orders);
+
+    let tempArray = [];
+    ordersArray.forEach((child) => {
+      if (child.status == 0) {
+        tempArray.push(child);
+      }
+    });
+    // console.log(tempArray);
+
+    this.setState({ order: tempArray });
+    this.setState({ refreshing: false });
   };
 
   chooseOrder = (selectedItem, index) => {
@@ -102,6 +121,12 @@ class DriverHomeScreen extends Component {
             data={this.state.order}
             renderItem={({ item, index }) => this.renderOrder(item, index)}
             keyExtractor={(item, index) => index.toString()}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.updateOrder}
+              />
+            }
             ListEmptyComponent={
               <View style={{ marginTop: 50, alignItems: "center" }}>
                 <Text style={{ fontWeight: "bold" }}>
