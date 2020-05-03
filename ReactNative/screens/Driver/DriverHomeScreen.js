@@ -9,16 +9,19 @@ import {
   Keyboard,
   TextInput,
   TouchableHighlight,
+  FlatList,
 } from "react-native";
 
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 
 import CustomActionButton from "../../components/CustomTempButton";
-import ItemList from "../../components/ItemList";
+import DriverOrderList from "../../components/DriverOrderList";
 import colors from "../../assets/colors";
 
 import apiKey from "../../helpers/googleAPIkey";
+import * as firebase from "firebase/app";
+import { snapshotToArray } from "../../helpers/firebaseHelpers";
 
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
@@ -31,11 +34,50 @@ class DriverHomeScreen extends Component {
     this.state = {
       location: null,
       errorMessage: null,
-      latitude: 0,
-      longitude: 0,
-      locationPredictions: [],
+      order: [],
+      destination: "",
     };
   }
+
+  componentDidMount() {
+    this.loadInitialOrder();
+  }
+
+  loadInitialOrder = async () => {
+    const orders = await firebase.database().ref("Requests").once("value");
+    const ordersArray = snapshotToArray(orders);
+
+    let tempArray = [];
+    ordersArray.forEach((child) => {
+      if (child.status != 1) {
+        tempArray.push(child);
+      }
+    });
+    console.log(tempArray);
+
+    this.setState({ order: tempArray });
+  };
+
+  chooseOrder = (selectedItem, index) => {
+    let tempLocation = selectedItem.destination;
+    console.log(selectedItem.key);
+    this.props.updateOrderLocation(tempLocation);
+    this.props.updateOrder(selectedItem);
+    this.props.navigation.navigate("Driver Map Screen");
+  };
+
+  renderOrder = (item, index) => (
+    <DriverOrderList item={item}>
+      <TouchableOpacity
+        style={{ paddingRight: 10 }}
+        onPress={() => this.chooseOrder(item, index)}
+      >
+        <View style={styles.addingButton}>
+          <Text>Pick Order</Text>
+        </View>
+      </TouchableOpacity>
+    </DriverOrderList>
+  );
 
   render() {
     return (
@@ -55,13 +97,54 @@ class DriverHomeScreen extends Component {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Driver Home Screen !!</Text>
         </View>
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={this.state.order}
+            renderItem={({ item, index }) => this.renderOrder(item, index)}
+            keyExtractor={(item, index) => index.toString()}
+            ListEmptyComponent={
+              <View style={{ marginTop: 50, alignItems: "center" }}>
+                <Text style={{ fontWeight: "bold" }}>
+                  No Recycle Item Currently Exist In this List
+                </Text>
+              </View>
+            }
+          />
+        </View>
         <SafeAreaView />
       </View>
     );
   }
 }
 
-export default DriverHomeScreen;
+const mapStateToProps = (state) => {
+  return {
+    recycleItemList: state.recycleItemList,
+    currentUser: state.auth.currentUser,
+    //temp: state.recycleCart,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadUser: (user) =>
+      dispatch({
+        type: "LOAD_USER_FROM_SERVER",
+        payload: user,
+      }),
+    toggleIsLoadingItems: (bool) =>
+      dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
+    deleteItem: (item) =>
+      dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
+    updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
+    updateOrderWeight: (item) =>
+      dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
+    updateOrderLocation: (location) =>
+      dispatch({ type: "UPDATE_ORDER_LOCATION", payload: location }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DriverHomeScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -98,5 +181,12 @@ const styles = StyleSheet.create({
   mapStyle: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+  },
+  addingButton: {
+    width: 100,
+    height: 50,
+    backgroundColor: "#a5deba",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

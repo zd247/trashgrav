@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -17,18 +17,17 @@ import { render } from "react-dom";
 import BottomBar from "../components/BottomBar";
 import CustomActionButton from "../components/CustomTempButton";
 import ListItem from "../components/ItemList";
-import OrderSummary from "../components/OrderSummary"
+import OrderSummary from "../components/OrderSummary";
 import { snapshotToArray } from "../helpers/firebaseHelpers";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../assets/colors";
 
-import { connect } from 'react-redux'
-import { compose } from 'redux'
+import { connect } from "react-redux";
+import { compose } from "redux";
 //import { connectActionSheet } from "@expo/react-native-action-sheet";
 
-import * as firebase from 'firebase/app'
-import 'firebase/storage'
-
+import * as firebase from "firebase/app";
+import "firebase/storage";
 
 class HomeScreen extends Component {
   constructor() {
@@ -48,21 +47,21 @@ class HomeScreen extends Component {
   }
 
   componentDidMount = async () => {
-    const user = this.props.currentUser
+    const user = this.props.currentUser;
 
     //const { navigation } = this.props;
     //const user = navigation.getParam("user");
 
     const currentUserData = await firebase
       .database()
-      .ref('Users')
+      .ref("Users")
       .child(user.key)
-      .once('value')
+      .once("value");
 
-    const recycleItems = await firebase.database().ref('Items').once('value')
-    const recycleItemsArray = snapshotToArray(recycleItems)
+    const recycleItems = await firebase.database().ref("Items").once("value");
+    const recycleItemsArray = snapshotToArray(recycleItems);
 
-    let temp = currentUserData.val()
+    let temp = currentUserData.val();
     delete temp["password"];
 
     //console.log(temp)
@@ -78,37 +77,33 @@ class HomeScreen extends Component {
   };
 
   showSearchRecycleItem = () => {
-    this.setState({ isSearchRecycleItem: true })
-  }
+    this.setState({ isSearchRecycleItem: true });
+  };
 
   hideSearchRecycleItem = () => {
     this.setState({ isSearchRecycleItem: false });
-
   };
 
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
-
   };
 
   toggleModal2 = () => {
     this.setState({ isModalVisible2: !this.state.isModalVisible2 });
-
   };
 
-  addRecycleItem = item => {
+  addRecycleItem = (item) => {
     this.setState(
       (state, props) => ({
         recycleItemList: [...state.recycleItemList, item],
       }),
       () => {
-        console.log(this.state.recycleItemList)
+        console.log(this.state.recycleItemList);
       }
-    )
-  }
+    );
+  };
 
   chooseItem = (selectedItem, index) => {
-
     let newList = this.state.recycleItemList.filter(
       (recycleItem) => recycleItem.key == selectedItem.key
     );
@@ -118,15 +113,11 @@ class HomeScreen extends Component {
     );
 
     if (tempList.length > 0) {
-      return Alert.alert("This Item already exist in the cart")
+      return Alert.alert("This Item already exist in the cart");
     }
-
-
 
     delete newList[0].description;
     newList[0].weight = this.state.tempInt;
-
-
 
     var interger = 0;
     if (typeof newList[0].price === "string") {
@@ -138,7 +129,6 @@ class HomeScreen extends Component {
     console.log(newList[0]);
     //console.log(this.state.recycleItemList)
     this.props.moveItemToCart(newList[0]);
-
   };
 
   removeItem = (selectedItem, index) => {
@@ -150,7 +140,6 @@ class HomeScreen extends Component {
       (recycleItem) => recycleItem == selectedItem
     );
 
-
     //console.log(tempList);
     //console.log(newList);
 
@@ -159,8 +148,8 @@ class HomeScreen extends Component {
   };
 
   componentWillUnmount = () => {
-    console.log('[HomeScreen] component umounted')
-  }
+    console.log("[HomeScreen] component umounted");
+  };
 
   renderRecycleItemList = (item, index) => (
     <ListItem item={item}>
@@ -172,7 +161,6 @@ class HomeScreen extends Component {
           <Text>Add To Cart</Text>
         </View>
       </TouchableOpacity>
-
     </ListItem>
   );
 
@@ -182,8 +170,10 @@ class HomeScreen extends Component {
         style={styles.orderInput}
         placeholder={"Current Weight: " + JSON.stringify(item.weight)}
         placeholderTextColor="black"
-        onChangeText={(text) => { item.weight = text }}
-        keyboardType='phone-pad'
+        onChangeText={(text) => {
+          item.weight = text;
+        }}
+        keyboardType="phone-pad"
         ref={(component) => {
           this.textInputRef = component;
         }}
@@ -199,12 +189,10 @@ class HomeScreen extends Component {
           style={{ marginLeft: 10 }}
         />
       </TouchableOpacity>
-
     </OrderSummary>
   );
 
   requestDriver = () => {
-
     var i;
     var tempWeight = 0;
     var interger = 0;
@@ -217,17 +205,18 @@ class HomeScreen extends Component {
       tempWeight += tempList[i].weight;
     }
     if (tempWeight > 5) {
-      return Alert.alert("The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value")
+      return Alert.alert(
+        "The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value"
+      );
     }
 
     this.setState({ isModalVisible: false });
-    this.props.updateOrderWeight(tempWeight)
+    this.props.updateOrderWeight(tempWeight);
     //console.log(tempWeight)
     //this.props.updateOrder()
     //console.log(JSON.stringify(this.props.recycleItemList.order))
-    this.props.navigation.navigate("CustomerMapScreen")
-  }
-
+    this.props.navigation.navigate("CustomerMapScreen");
+  };
 
   render() {
     return (
@@ -266,11 +255,11 @@ class HomeScreen extends Component {
           <View style={styles.textInputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder='Search Recycle Items'
+              placeholder="Search Recycle Items"
               placeholderTextColor={colors.txtPlaceholder}
-              onChangeText={text => this.setState({ textInputData: text })}
-              ref={component => {
-                this.textInputRef = component
+              onChangeText={(text) => this.setState({ textInputData: text })}
+              ref={(component) => {
+                this.textInputRef = component;
               }}
             />
           </View>
@@ -281,10 +270,10 @@ class HomeScreen extends Component {
             }
             keyExtractor={(item, index) => index.toString()}
             ListEmptyComponent={
-              <View style={{ marginTop: 50, alignItems: 'center' }}>
-                <Text style={{ fontWeight: 'bold' }}>
+              <View style={{ marginTop: 50, alignItems: "center" }}>
+                <Text style={{ fontWeight: "bold" }}>
                   No Recycle Item Currently Exist In this List
-								</Text>
+                </Text>
               </View>
             }
           />
@@ -325,12 +314,9 @@ class HomeScreen extends Component {
                     style={{ marginLeft: 10 }}
                   />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>
-                  Order Summary !!
-                </Text>
+                <Text style={styles.headerTitle}>Order Summary !!</Text>
               </View>
               <View style={{ flex: 1 }}>
-
                 <FlatList
                   data={this.props.recycleItemList.recycleCart}
                   renderItem={({ item, index }) =>
@@ -347,10 +333,18 @@ class HomeScreen extends Component {
                 />
               </View>
               <View
-                style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
+                style={{
+                  flex: 0.2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                <Text position="left" style={styles.orderSummary}>Total Weight: {this.props.recycleItemList.totalWeight} Kg</Text>
-                <Text style={styles.orderSummary}>Total Price: ${this.props.recycleItemList.totalPrice}</Text>
+                <Text position="left" style={styles.orderSummary}>
+                  Total Weight: {this.props.recycleItemList.totalWeight} Kg
+                </Text>
+                <Text style={styles.orderSummary}>
+                  Total Price: ${this.props.recycleItemList.totalPrice}
+                </Text>
                 <CustomActionButton
                   style={styles.requestButton}
                   title="Book A Driver Now!!"
@@ -361,16 +355,14 @@ class HomeScreen extends Component {
                   </Text>
                 </CustomActionButton>
               </View>
-
             </View>
             <SafeAreaView />
           </Modal>
         </View>
 
-
         <SafeAreaView />
       </View>
-    )
+    );
   }
 }
 
@@ -400,32 +392,13 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
     deleteItem: (item) =>
       dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
-    updateOrder: () => dispatch({ type: 'UPDATE_ORDER' }),
+    updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
     updateOrderWeight: (item) =>
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    loadRecycleItem: recycleItemList =>
-      dispatch({
-        type: 'LOAD_RECYCLE_ITEMS_FROM_SERVER',
-        payload: recycleItemList,
-      }),
-    loadUser: user =>
-      dispatch({
-        type: 'LOAD_USER_FROM_SERVER',
-        payload: user,
-      }),
-    moveItemToCart: item =>
-      dispatch({ type: 'ADD_RECYCLE_ITEMS_TO_CART', payload: item }),
-    toggleIsLoadingItems: bool =>
-      dispatch({ type: 'TOGGLE_IS_LOADING_ITEMS', payload: bool }),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -537,7 +510,6 @@ const styles = StyleSheet.create({
     color: "white",
   },
   requestButton: {
-
     width: 200,
     height: 50,
     backgroundColor: "transparent",

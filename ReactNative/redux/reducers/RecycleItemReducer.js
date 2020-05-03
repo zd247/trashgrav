@@ -7,14 +7,7 @@ const initialState = {
   totalPrice: 0,
   driver: {},
   location: {},
-  order: {
-    items: [],
-    customer: {},
-    driver: {},
-    totalPrice: 0,
-    totalWeight: 0,
-    location: {},
-  }
+  order: [],
 };
 
 const recycles = (state = initialState, action) => {
@@ -64,7 +57,7 @@ const recycles = (state = initialState, action) => {
     case "UPDATE_ORDER":
       return {
         ...state,
-        order: { item: state.recycleCart, customer: state.user, totalWeight: state.totalWeight, totalPrice: state.totalPrice },
+        order: action.payload,
       };
     case "UPDATE_ORDER_TOTAL_WEIGHT":
       return {
@@ -81,4 +74,4 @@ const recycles = (state = initialState, action) => {
   }
 };
 
-export default recycles
+export default recycles;
