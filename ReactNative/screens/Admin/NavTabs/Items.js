@@ -40,6 +40,7 @@ class Items extends React.Component {
 			newItemPrice: '',
 			newItemName: '',
 			newItemDescription: '',
+			isLoading: false,
 		}
 	}
 
@@ -56,7 +57,6 @@ class Items extends React.Component {
 	componentDidMount = () => {
 		this.loadDataFromServer()
 		this.props.toggleIsLoadingItems(false)
-		
 	}
 
 	componentWillUnmount() {
@@ -117,8 +117,8 @@ class Items extends React.Component {
 		this.props.toggleIsLoadingItems(true)
 		const ref = firebase
 			.storage()
-			.ref('Profile Pictures')
-			.child(this.props.recycleItemList.user.uid)
+			.ref('Item Pictures')
+			.child(this.state.data.key)
 
 		try {
 			//converting to blob

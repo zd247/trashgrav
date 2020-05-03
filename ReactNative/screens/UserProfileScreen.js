@@ -96,8 +96,8 @@ class UserProfileScreen extends Component {
   uploadImage = async (image) => {
     const ref = firebase
       .storage()
-      .ref("Profile Pictures")
-      .child(this.state.currentUser.uid);
+      .ref("Profile Pictures/")
+      .child(this.props.currentUser.uid)
 
     try {
       //converting to blob

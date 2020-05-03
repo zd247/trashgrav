@@ -21,6 +21,7 @@ const auth = (state = initialState, action) => {
 				isSignedIn: false,
 				currentUser: action.payload,
 				isLoading: false,
+				isAdmin: false,
 			}
 
 		case 'CHANGE_TO_DRIVER_MODE':

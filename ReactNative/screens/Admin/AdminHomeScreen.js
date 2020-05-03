@@ -29,6 +29,7 @@ class AdminHomeScreen extends React.Component {
 	adminLogOut = async () => {
 		try {
 			await firebase.auth().signOut()
+			this.props.changeBackFromAdminMode()
 			this.props.signOut()
 			console.log('admin logged out')
 		} catch (error) {
@@ -89,6 +90,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		signOut: () => dispatch({ type: 'SIGN_OUT' }),
+		changeBackFromAdminMode: () =>
+			dispatch({ type: 'CHANGE_BACK_FROM_ADMIN_MODE' }),
 	}
 }
 

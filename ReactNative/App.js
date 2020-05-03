@@ -17,9 +17,13 @@ class App extends React.Component {
 
 		// to ignore the linking warning message
 		YellowBox.ignoreWarnings(['Linking requires that'])
+		YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection'])
 		const _console = _.clone(console)
 		console.warn = message => {
 			if (message.indexOf('Linking requires that') <= -1) {
+				_console.warn(message)
+			}
+			if (message.indexOf('Possible Unhandled Promise Rejection') <= -1) {
 				_console.warn(message)
 			}
 		}

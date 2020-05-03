@@ -35,9 +35,7 @@ export default CustomTempButton;
 
 const styles = StyleSheet.create({
   button: {
-    width: 50,
     backgroundColor: colors.bgError,
-    height: 50,
     alignItems: "center",
     justifyContent: "center",
   },

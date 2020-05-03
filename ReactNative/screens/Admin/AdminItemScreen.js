@@ -17,6 +17,7 @@ import {
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
+import colors from '../../assets/colors'
 import Feather from 'react-native-vector-icons/Feather'
 import * as ImageHelpers from '../../helpers/imageHelpers'
 import { snapshotToArray } from '../../helpers/firebaseHelpers'
@@ -31,6 +32,7 @@ class AdminItemScreen extends React.Component {
 			price: '',
 			name: '',
 			description: '',
+			isLoading: false,
 		}
 
 		YellowBox.ignoreWarnings(['source.uri should not'])
@@ -47,6 +49,7 @@ class AdminItemScreen extends React.Component {
 		this.setState({ price: this.props.route.params.item.price })
 		this.setState({ name: this.props.route.params.item.key })
 		this.setState({ description: this.props.route.params.item.description })
+		this.props.toggleIsLoadingItems(false)
 	}
 
 	componentWillUnmount = () => {
@@ -57,8 +60,8 @@ class AdminItemScreen extends React.Component {
 		this.props.toggleIsLoadingItems(true)
 		const ref = firebase
 			.storage()
-			.ref('Profile Pictures')
-			.child(this.props.recycleItemList.user.uid)
+			.ref('Item Pictures')
+			.child(this.props.route.params.item.key)
 
 		try {
 			//converting to blob
@@ -126,18 +129,20 @@ class AdminItemScreen extends React.Component {
 	}
 
 	storeItemData = (image, category, price, description) => {
-		this.props.toggleIsLoadingItems(true)
-		firebase.database().ref('Items/').child(category).set({
-			description,
-			category,
-			price,
-			image,
-		}).then(response => {
-			this.props.navigation.replace('AdminHomeScreen')
-			this.props.toggleIsLoadingItems(false)
-		})
-		
-		
+		firebase
+			.database()
+			.ref('Items/')
+			.child(category)
+			.set({
+				description,
+				category,
+				price,
+				image,
+			})
+			.then(response => {
+				this.props.navigation.replace('AdminHomeScreen')
+				this.setState({isLoading: false})
+			})
 	}
 
 	navigateBackToHomeScreen = () => {
@@ -167,13 +172,16 @@ class AdminItemScreen extends React.Component {
 						{
 							text: 'Yes',
 							onPress: () => {
+								this.setState({isLoading: true})
 								this.storeItemData(image, category, price, description)
 							},
 						},
 					],
 					{ cancelable: false }
 				)
-			}else {this.props.navigation.replace('AdminHomeScreen')}
+			} else {
+				this.props.navigation.replace('AdminHomeScreen')
+			}
 		} else {
 			alert(
 				'Unable to navigate back, please fill in necessary fields before continue'
@@ -207,6 +215,21 @@ class AdminItemScreen extends React.Component {
 									disabled={false}
 									style={{ flex: 1 }}
 									onPress={() => this.changePicture()}>
+									{this.props.recycleItemList.isLoading && (
+										<View
+											style={{
+												...StyleSheet.absoluteFill,
+												alignItems: 'center',
+												justifyContent: 'center',
+												zIndex: 1000,
+												elevation: 1000,
+											}}>
+											<ActivityIndicator
+												size='large'
+												color={colors.logoColor}
+											/>
+										</View>
+									)}
 									<Image
 										source={{ uri: this.state.image }}
 										style={styles.image}
@@ -248,6 +271,7 @@ class AdminItemScreen extends React.Component {
 								placeholder='Enter the recycle item details here...'
 								autoCapitalize='sentences'
 								value={this.state.description}
+								multiline={true}
 								onChangeText={text => {
 									this.setState({ description: text })
 								}}

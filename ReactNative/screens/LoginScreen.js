@@ -153,7 +153,7 @@ class LoginScreen extends Component {
 	}
 
 	onResetPassword = async () => {
-		this.setState({ loading: true })
+		this.setState({ isLoading: true })
 		if (this.state.checkRspwdTextInputChange) {
 			let phone = this.state.rspwdPhoneNumber.replace(/\D/g, '')
 			phone = phone.replace(phone[0], '+84')
@@ -179,7 +179,7 @@ class LoginScreen extends Component {
 									.then(res => {
 										alert('Your password has been reset')
 										this.setState({ resetPassword: false })
-										this.setState({ loading: false })
+										this.setState({ isLoading: false })
 									})
 							} else {
 								alert(
@@ -187,22 +187,23 @@ class LoginScreen extends Component {
 								)
 								this.setState({ rspwdNewPassword: '' })
 								this.setState({ rspwdConfirmPassword: '' })
-								this.setState({ loading: false })
+								this.setState({ isLoading: false })
 							}
 						})
 					} else {
 						alert('Phone number is invalid, please re-enter')
 						this.setState({ password: '' })
-						this.setState({ loading: false })
+						this.setState({ isLoading: false })
 					}
 				})
 		} else {
 			alert('Invalid phone number format entered')
+			this.setState({ isLoading: false })
 		}
 	}
 
 	onContinue = async () => {
-		this.setState({ loading: true })
+		this.setState({ isLoading: true })
 		if (this.state.checkTextInputChange && this.state.password.length >= 6) {
 			let phone = this.state.phoneNumber.replace(/\D/g, '')
 			phone = phone.replace(phone[0], '+84')
@@ -218,22 +219,23 @@ class LoginScreen extends Component {
 					if (snapshot.exists()) {
 						snapshot.forEach(data => {
 							if (data.child('password').val() === this.state.password) {
-								delete data.child('password')
-								//console.log(data)
 								this.props.signIn(data)
-								this.setState({ loading: false })
+								this.setState({ isLoading: false })
 							} else {
 								alert('Password is invalid, please re-enter')
 								this.setState({ password: '' })
-								this.setState({ loading: false })
+								this.setState({ isLoading: false })
 							}
 						})
 					} else {
 						alert('Phone number is invalid, please re-enter')
 						this.setState({ password: '' })
-						this.setState({ loading: false })
+						this.setState({ isLoading: false })
 					}
 				})
+		}else {
+			alert('Invalid phone number or password format entered')
+			this.setState({ isLoading: false })
 		}
 	}
 

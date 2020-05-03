@@ -406,25 +406,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    loadRecycleItem: recycleItemList =>
-      dispatch({
-        type: 'LOAD_RECYCLE_ITEMS_FROM_SERVER',
-        payload: recycleItemList,
-      }),
-    loadUser: user =>
-      dispatch({
-        type: 'LOAD_USER_FROM_SERVER',
-        payload: user,
-      }),
-    moveItemToCart: item =>
-      dispatch({ type: 'ADD_RECYCLE_ITEMS_TO_CART', payload: item }),
-    toggleIsLoadingItems: bool =>
-      dispatch({ type: 'TOGGLE_IS_LOADING_ITEMS', payload: bool }),
-  }
-}
-
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
 
 const styles = StyleSheet.create({

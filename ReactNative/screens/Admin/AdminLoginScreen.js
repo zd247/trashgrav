@@ -7,6 +7,7 @@ import {
 	SafeAreaView,
 	Dimensions,
 	TouchableOpacity,
+	ActivityIndicator,
 	YellowBox,
 } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather'
@@ -31,6 +32,7 @@ class AdminLoginScreen extends React.Component {
 			email: '',
 			password: '',
 			checkEmailInputText: false,
+			isLoading: false,
 		}
 
 		YellowBox.ignoreWarnings(['Setting a timer'])
@@ -62,21 +64,43 @@ class AdminLoginScreen extends React.Component {
 	}
 
 	onContinue = async () => {
+		this.setState({ isLoading: true })
 		if (this.state.checkEmailInputText && this.state.password.length >= 6) {
+			//verify user info
 			try {
-				const response = await firebase
-					.auth()
-					.signInWithEmailAndPassword(this.state.email, this.state.password)
-				if (response) {
-					this.props.changeAdminMode()
-					console.log(this.props.auth.isAdmin)
-					console.log('admin logged in !')
-					this.props.signIn(response.user)
-				}
+				firebase
+					.database()
+					.ref('Admins')
+					.orderByChild('email')
+					.equalTo(this.state.email)
+					.once('value', snapshot => {
+						if (snapshot.exists()) {
+							snapshot.forEach(data => {
+								if (data.child('password').val() === this.state.password) {
+									this.props.changeAdminMode()
+									console.log(this.props.auth.isAdmin)
+									this.props.signIn(data)
+									this.setState({ isLoading: false })
+								} else {
+									alert('Password is invalid, please re-enter')
+									this.setState({ password: '' })
+									this.setState({ isLoading: false })
+								}
+							})
+						} else {
+							alert('Email is invalid, please re-enter')
+							this.setState({ password: '' })
+							this.setState({ isLoading: false })
+						}
+					})
 			} catch (e) {
 				console.log(e)
 				alert(e)
+				this.setState({ isLoading: false })
 			}
+		} else {
+			alert('Invalid email and password format entered')
+			this.setState({ isLoading: false })
 		}
 	}
 
@@ -86,6 +110,21 @@ class AdminLoginScreen extends React.Component {
 				<SafeAreaView />
 				<View style={{ flex: 1 }}>
 					<ScrollView style={{ flex: 1 }}>
+						{/* ----------[loading indicator]----------*/}
+						{this.state.isLoading ? (
+							<View
+								style={[
+									StyleSheet.absoluteFill,
+									{
+										alignItems: 'center',
+										justifyContent: 'center',
+										zIndex: 1000,
+										elevation: 1000,
+									},
+								]}>
+								<ActivityIndicator size='large' color={colors.logoColor} />
+							</View>
+						) : null}
 						{/* -------header------- */}
 						<Animatable.View style={styles.header} animation='fadeInUpBig'>
 							<Text style={styles.textHeader}>Start managing !</Text>
@@ -136,11 +175,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		signIn: user => dispatch({ type: 'LOAD_USER_FROM_SERVER', payload: user }),
-		signOut: () => dispatch({ type: 'SIGN_OUT' }),
+		signIn: user => dispatch({ type: 'SIGN_IN', payload: user }),
 		changeAdminMode: () => dispatch({ type: 'CHANGE_TO_ADMIN_MODE' }),
-		changeBackFromAdminMode: () =>
-			dispatch({ type: 'CHANGE_BACK_FROM_ADMIN_MODE' }),
 	}
 }
 
