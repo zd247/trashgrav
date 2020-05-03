@@ -2,7 +2,6 @@ import React from 'react'
 import {
 	View,
 	Text,
-	StyleSheet,
 	ScrollView,
 	SafeAreaView,
 	Dimensions,
@@ -10,6 +9,8 @@ import {
 	ActivityIndicator,
 	YellowBox,
 } from 'react-native'
+
+import EStyleSheet from 'react-native-extended-stylesheet'
 import Feather from 'react-native-vector-icons/Feather'
 
 import _ from 'lodash'
@@ -114,7 +115,7 @@ class AdminLoginScreen extends React.Component {
 						{this.state.isLoading ? (
 							<View
 								style={[
-									StyleSheet.absoluteFill,
+									EStyleSheet.absoluteFill,
 									{
 										alignItems: 'center',
 										justifyContent: 'center',
@@ -182,29 +183,32 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminLoginScreen)
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgAdminLogin,
-		paddingTop: Platform.OS == 'android' ? 50 : 0,
+		paddingTop: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,
 		justifyContent: 'flex-end',
-		paddingHorizontal: 30,
-		paddingVertical: 60,
+		paddingHorizontal: '30rem',
+		paddingVertical: '100rem',
 	},
 	footer: {
 		flex: 1,
 		backgroundColor: 'white',
-		borderRadius: 35,
-		marginHorizontal: 15,
-		paddingHorizontal: 20,
-		paddingVertical: 30,
+		borderRadius: '35rem',
+		marginHorizontal: '15rem',
+		paddingHorizontal: '20rem',
+		paddingVertical: '30rem',
 	},
 	textHeader: {
 		color: 'white',
-		fontSize: 30,
+		fontSize: '30rem',
 		fontWeight: 'bold',
 	},
 	absolute: {
@@ -215,15 +219,15 @@ const styles = StyleSheet.create({
 	box: {
 		flex: 1,
 		justifyContent: 'center',
-		paddingHorizontal: 18,
+		paddingHorizontal: '18rem',
 	},
 	button: {
-		width: 100,
+		width: '100rem',
 		backgroundColor: '#4399AD',
-		marginTop: 15,
-		borderRadius: 50,
+		marginTop: '15rem',
+		borderRadius: '50rem',
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: 10,
+		paddingVertical: '10rem',
 	},
 })

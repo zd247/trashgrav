@@ -2,7 +2,6 @@ import React from 'react'
 import {
 	View,
 	Text,
-	StyleSheet,
 	TouchableOpacity,
 	FlatList,
 	TextInput,
@@ -11,12 +10,15 @@ import {
 	Image,
 	ImageBackground,
 	ScrollView,
+	ActivityIndicator,
 	Dimensions,
 } from 'react-native'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import colors from '../../../assets/colors'
 import Feather from 'react-native-vector-icons/Feather'
+
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 import { connect } from 'react-redux'
 import ListItem from '../../../components/ItemList'
@@ -41,6 +43,7 @@ class Items extends React.Component {
 			newItemName: '',
 			newItemDescription: '',
 			isLoading: false,
+			isFetching: false,
 		}
 	}
 
@@ -52,6 +55,8 @@ class Items extends React.Component {
 		this.setState({ data_temp: recycleItemsArray })
 		this.setState({ data: recycleItemsArray })
 		this.props.toggleIsLoadingItems(false)
+		this.setState({ isLoading: false })
+		this.setState({ isFetching: false })
 	}
 
 	componentDidMount = () => {
@@ -98,6 +103,8 @@ class Items extends React.Component {
 		this.setState({ newItemPrice: '' })
 		this.setState({ newItemDescription: '' })
 		this.props.toggleIsLoadingItems(false)
+		this.setState({ isLoading: false })
+		this.setState({ isFetching: false })
 	}
 
 	searchData = text => {
@@ -113,12 +120,16 @@ class Items extends React.Component {
 		})
 	}
 
+	onRefreshData = () => {
+		this.setState({isFetching: true})
+		this.loadDataFromServer()
+	}
+
 	uploadImage = async image => {
 		this.props.toggleIsLoadingItems(true)
 		const ref = firebase
 			.storage()
-			.ref('Item Pictures')
-			.child(this.state.data.key)
+			.ref('Item Pictures/new_item_picture_temp')
 
 		try {
 			//converting to blob
@@ -186,7 +197,7 @@ class Items extends React.Component {
 	}
 
 	onAddNewItem = () => {
-		this.props.toggleIsLoadingItems(true)
+		this.setState({ isLoading: true })
 		const price = this.state.newItemPrice
 		const category = this.state.newItemName.toLowerCase()
 		const description = this.state.newItemDescription
@@ -200,7 +211,6 @@ class Items extends React.Component {
 				image,
 			})
 			this.loadDataFromServer() // store data in redux from firebase
-			this.props.toggleIsLoadingItems(false)
 			this.setPopUpVisibility(false)
 		} else {
 			alert('Please fill in necessary fields')
@@ -208,7 +218,7 @@ class Items extends React.Component {
 	}
 
 	onDeleteItem = (item, index) => {
-		this.props.toggleIsLoadingItems(true)
+		this.setState({ isLoading: true })
 		Alert.alert(
 			'Deleting item...',
 			'Are you sure you want to remove this item from the recycle list ?',
@@ -222,7 +232,6 @@ class Items extends React.Component {
 					onPress: () => {
 						firebase.database().ref('Items').child(item.key).remove()
 						this.loadDataFromServer()
-						this.props.toggleIsLoadingItems(false)
 					},
 				},
 			],
@@ -233,6 +242,20 @@ class Items extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
+				{this.state.isLoading ? (
+					<View
+						style={[
+							EStyleSheet.absoluteFill,
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								zIndex: 1000,
+								elevation: 1000,
+							},
+						]}>
+						<ActivityIndicator size='large' color={colors.logoColor} />
+					</View>
+				) : null}
 				<View style={{ flexDirection: 'row' }}>
 					<TouchableOpacity
 						style={[
@@ -243,9 +266,7 @@ class Items extends React.Component {
 							this.setPopUpVisibility(true)
 							this.resetNewItemState()
 						}}>
-						<Text style={{ color: 'white', fontSize: 17, alignSelf: 'center' }}>
-							+
-						</Text>
+						<Text style={styles.plusTextBtn}>+</Text>
 					</TouchableOpacity>
 					<View style={styles.section}>
 						<TextInput
@@ -277,30 +298,29 @@ class Items extends React.Component {
 									<View style={styles.image_container}>
 										<TouchableOpacity
 											onPress={() => this.setPopUpVisibility(false)}
-											style={{
-												paddingHorizontal: 10,
-												position: 'absolute',
-												left: -75,
-												top: -48,
-											}}>
+											style={styles.popUpCloseBtn}>
 											<Ionicons name='ios-close' color='white' size={30} />
 										</TouchableOpacity>
-										<Text
-											style={{
-												paddingHorizontal: 10,
-												position: 'absolute',
-												top: -40,
-												left: 9,
-												fontSize: 18,
-												fontWeight: 'bold',
-												color: 'white',
-											}}>
-											ADD NEW ITEM
-										</Text>
+										<Text style={styles.popUpTitle}>ADD NEW ITEM</Text>
 										<TouchableOpacity
 											disabled={false}
 											style={{ flex: 1 }}
 											onPress={() => this.changePicture()}>
+											{this.props.recycleItemList.isLoading && (
+												<View
+													style={{
+														...EStyleSheet.absoluteFill,
+														alignItems: 'center',
+														justifyContent: 'center',
+														zIndex: 1000,
+														elevation: 1000,
+													}}>
+													<ActivityIndicator
+														size='large'
+														color={colors.logoColor}
+													/>
+												</View>
+											)}
 											{this.state.newItemImage ? (
 												<Image
 													source={{ uri: this.state.newItemImage }}
@@ -391,8 +411,10 @@ class Items extends React.Component {
 					data={this.state.data}
 					renderItem={({ item, index }) => this.renderData(item, index)}
 					keyExtractor={(item, index) => index.toString()}
+					onRefresh= {() => this.onRefreshData()}
+					refreshing={this.state.isFetching}
 					ListEmptyComponent={
-						<View style={{ marginTop: 50, alignItems: 'center' }}>
+						<View style={styles.itemList}>
 							<Text style={{ fontWeight: 'bold' }}>
 								No Recycle Item Currently Exist In this List
 							</Text>
@@ -427,39 +449,64 @@ export default connect(mapStateToProps, mapDispatchToProps)(Items)
 const height = Dimensions.get('screen').height
 const height_image = height * 0.5 * 0.5
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
+		paddingHorizontal: '20rem',
 		backgroundColor: 'white',
 	},
 	button: {
-		width: 30,
-		height: 30,
+		width: '30rem',
+		height: '30rem',
 		backgroundColor: colors.bgAdminLogin,
-		borderRadius: 15,
+		borderRadius: '15rem',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	itemList: { marginTop: '50rem', alignItems: 'center' },
 	section: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		width: '82%',
-		paddingVertical: 5,
-		paddingHorizontal: 10,
-		borderRadius: 10,
+		paddingVertical: '5rem',
+		paddingHorizontal: '10rem',
+		borderRadius: '10rem',
 		backgroundColor: '#f2f2f2',
-		marginVertical: 10,
+		marginVertical: '10rem',
 	},
 	modalContainer: {
 		backgroundColor: '#f2f2f2',
-		margin: 20,
-		marginTop: 40,
-		borderWidth: 2.5,
+		margin: '20rem',
+		marginTop: '40rem',
+		borderWidth: '2.5rem',
 		flex: 1,
+	},
+	popUpCloseBtn: {
+		paddingHorizontal: '10rem',
+		position: 'absolute',
+		left: '-60rem',
+		top: '-48rem',
+	},
+	popUpTitle: {
+		paddingHorizontal: '10rem',
+		position: 'absolute',
+		top: '-40rem',
+		left: '14rem',
+		fontSize: '18rem',
+		fontWeight: 'bold',
+		color: 'white',
 	},
 	footer: {
 		flex: 1,
-		paddingHorizontal: 15,
+		paddingHorizontal: '15rem',
+	},
+	plusTextBtn: {
+		color: 'white',
+		fontSize: '17rem',
+		alignSelf: 'center',
 	},
 	image_container: {
 		width: height_image,
@@ -470,33 +517,33 @@ const styles = StyleSheet.create({
 		width: '85%',
 		height: '85%',
 		alignSelf: 'center',
-		borderWidth: 5,
+		borderWidth: '5rem',
 		borderColor: 'grey',
-		borderRadius: 30,
+		borderRadius: '30rem',
 	},
 	textPrice: {
 		color: 'green',
 		fontWeight: 'bold',
-		fontSize: 15,
+		fontSize: '15rem',
 	},
 	textName: {
 		color: '#3e3c3e',
 		fontWeight: 'bold',
-		fontSize: 20,
-		marginTop: 5,
+		fontSize: '20rem',
+		marginTop: '5rem',
 	},
 	textDetail: {
 		color: 'gray',
-		marginTop: 10,
-		marginBottom: 20,
+		marginTop: '10rem',
+		marginBottom: '20rem',
 	},
 	modalButton: {
-		width: 80,
+		width: '80rem',
 		backgroundColor: colors.bgAdminLogin,
-		borderRadius: 50,
+		borderRadius: '50rem',
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: 8,
-		margin: 15,
+		paddingVertical: '8rem',
+		margin: '15rem',
 	},
 })

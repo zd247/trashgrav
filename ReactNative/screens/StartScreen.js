@@ -15,8 +15,6 @@ import CustomActionButton from '../components/CustomTempButton'
 
 import colors from '../assets/colors'
 
-import { connect } from 'react-redux'
-
 const screenWidth = Dimensions.get('screen').width
 
 export default class StartScreen extends React.Component {
@@ -83,6 +81,7 @@ const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#05375a',
+		paddingTop: Platform.OS == "android" ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,
@@ -93,8 +92,8 @@ const styles = EStyleSheet.create({
 	footer: {
 		flex: 3,
 		backgroundColor: 'white',
-		borderTopLeftRadius: 30,
-		borderTopRightRadius: 30,
+		borderTopLeftRadius: '30rem',
+		borderTopRightRadius: '30rem',
 		padding: '30rem',
 	},
 	textFooter: {

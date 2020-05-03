@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import {
 	View,
 	Text,
-	StyleSheet,
 	SafeAreaView,
 	ImageBackground,
 	Dimensions,
 	TouchableOpacity,
+	YellowBox,
 } from 'react-native'
 import ScrollableTabView, {
 	DefaultTabBar,
 } from 'react-native-scrollable-tab-view'
+
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 import colors from '../../assets/colors'
 import { Ionicons } from '@expo/vector-icons'
@@ -22,10 +24,23 @@ import Activities from './NavTabs/Activities'
 import { connect } from 'react-redux'
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
+import _ from 'lodash'
 
 const screenWidth = Dimensions.get('screen').width
 
 class AdminHomeScreen extends React.Component {
+	constructor() {
+		super()
+
+		YellowBox.ignoreWarnings(['@firebase/database:'])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('@firebase/database:') <= -1) {
+				_console.warn(message)
+			}
+		}
+	}
+
 	adminLogOut = async () => {
 		try {
 			await firebase.auth().signOut()
@@ -97,10 +112,14 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminHomeScreen)
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
+		paddingTop: Platform.OS == "android" ? '0rem' : '50rem',
 	},
 	header: {
 		position: 'absolute',
@@ -108,7 +127,6 @@ const styles = StyleSheet.create({
 	tabbar: {
 		flex: 1,
 		marginTop: screenWidth * 0.3,
-		paddingHorizontal: 30,
 	},
 	imageBackground: {
 		width: screenWidth * 0.4,
@@ -117,8 +135,8 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		color: 'white',
-		marginTop: 25,
+		marginTop: '25rem',
 		fontWeight: 'bold',
-		fontSize: 20,
+		fontSize: '20rem',
 	},
 })

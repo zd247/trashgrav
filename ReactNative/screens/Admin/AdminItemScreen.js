@@ -2,17 +2,19 @@ import React from 'react'
 import {
 	View,
 	Text,
-	StyleSheet,
 	ImageBackground,
 	Dimensions,
 	Image,
 	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
+	ActivityIndicator,
 	TextInput,
 	YellowBox,
 	Alert,
 } from 'react-native'
+
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -20,7 +22,6 @@ import _ from 'lodash'
 import colors from '../../assets/colors'
 import Feather from 'react-native-vector-icons/Feather'
 import * as ImageHelpers from '../../helpers/imageHelpers'
-import { snapshotToArray } from '../../helpers/firebaseHelpers'
 import * as firebase from 'firebase/app'
 import 'firebase/storage'
 
@@ -60,8 +61,7 @@ class AdminItemScreen extends React.Component {
 		this.props.toggleIsLoadingItems(true)
 		const ref = firebase
 			.storage()
-			.ref('Item Pictures')
-			.child(this.props.route.params.item.key)
+			.ref('Item Pictures/' + this.props.route.params.item.key)
 
 		try {
 			//converting to blob
@@ -141,7 +141,7 @@ class AdminItemScreen extends React.Component {
 			})
 			.then(response => {
 				this.props.navigation.replace('AdminHomeScreen')
-				this.setState({isLoading: false})
+				this.setState({ isLoading: false })
 			})
 	}
 
@@ -172,7 +172,7 @@ class AdminItemScreen extends React.Component {
 						{
 							text: 'Yes',
 							onPress: () => {
-								this.setState({isLoading: true})
+								this.setState({ isLoading: true })
 								this.storeItemData(image, category, price, description)
 							},
 						},
@@ -203,11 +203,7 @@ class AdminItemScreen extends React.Component {
 								onPress={() => {
 									this.navigateBackToHomeScreen()
 								}}
-								style={{
-									alignSelf: 'flex-start',
-									marginTop: 15,
-									marginStart: 20,
-								}}>
+								style={styles.backButton}>
 								<Feather name='arrow-left' color='white' size={35} />
 							</TouchableOpacity>
 							<View style={styles.image_container}>
@@ -218,7 +214,7 @@ class AdminItemScreen extends React.Component {
 									{this.props.recycleItemList.isLoading && (
 										<View
 											style={{
-												...StyleSheet.absoluteFill,
+												...EStyleSheet.absoluteFill,
 												alignItems: 'center',
 												justifyContent: 'center',
 												zIndex: 1000,
@@ -261,6 +257,7 @@ class AdminItemScreen extends React.Component {
 								autoCapitalize='characters'
 								placeholder='Name...'
 								autoCorrect={false}
+								multiline={true}
 								value={this.state.name.toUpperCase()}
 								onChangeText={name => {
 									this.setState({ name: name })
@@ -308,14 +305,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(AdminItemScreen)
 const height = Dimensions.get('screen').height
 const height_image = height * 0.5 * 0.5
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
+		paddingTop: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	footer: {
 		flex: 1,
-		paddingHorizontal: 40,
+		paddingHorizontal: '40rem',
 	},
 	image_container: {
 		width: height_image,
@@ -325,24 +326,29 @@ const styles = StyleSheet.create({
 	image: {
 		width: '100%',
 		height: '100%',
-		borderWidth: 5,
+		borderWidth: '5rem',
 		borderColor: 'grey',
-		borderRadius: 30,
+		borderRadius: '30rem',
 	},
 	textPrice: {
 		color: 'green',
 		fontWeight: 'bold',
-		fontSize: 30,
+		fontSize: '30rem',
 	},
 	textName: {
 		color: '#3e3c3e',
 		fontWeight: 'bold',
-		fontSize: 45,
-		marginTop: 5,
+		fontSize: '45rem',
+		marginTop: '5rem',
 	},
 	textDetail: {
 		color: 'gray',
-		marginTop: 10,
-		marginBottom: 20,
+		marginTop: '10rem',
+		marginBottom: '20rem',
+	},
+	backButton: {
+		alignSelf: 'flex-start',
+		marginTop: '15rem',
+		marginStart: '20rem',
 	},
 })
