@@ -9,6 +9,7 @@ import {
 	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
+	ActivityIndicator,
 	TextInput,
 	YellowBox,
 	Alert,
@@ -54,14 +55,14 @@ class AdminItemScreen extends React.Component {
 
 	componentWillUnmount = () => {
 		console.log('[AdminItemScreen] component unmounted')
+		firebase.database().ref('Items').off()
 	}
 
 	uploadImage = async image => {
 		this.props.toggleIsLoadingItems(true)
 		const ref = firebase
 			.storage()
-			.ref('Item Pictures')
-			.child(this.props.route.params.item.key)
+			.ref('Item Pictures/' + this.props.route.params.item.key)
 
 		try {
 			//converting to blob
@@ -131,7 +132,7 @@ class AdminItemScreen extends React.Component {
 	storeItemData = (image, category, price, description) => {
 		firebase
 			.database()
-			.ref('Items/')
+			.ref('Items')
 			.child(category)
 			.set({
 				description,
@@ -141,7 +142,7 @@ class AdminItemScreen extends React.Component {
 			})
 			.then(response => {
 				this.props.navigation.replace('AdminHomeScreen')
-				this.setState({isLoading: false})
+				this.setState({ isLoading: false })
 			})
 	}
 
@@ -172,7 +173,7 @@ class AdminItemScreen extends React.Component {
 						{
 							text: 'Yes',
 							onPress: () => {
-								this.setState({isLoading: true})
+								this.setState({ isLoading: true })
 								this.storeItemData(image, category, price, description)
 							},
 						},

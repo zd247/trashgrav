@@ -118,6 +118,7 @@ class LoginScreen extends Component {
 
 	componentWillUnmount = () => {
 		console.log('[LoginScreen] component umounted')
+		firebase.database().ref('Users').off()
 	}
 
 	textInputChange = text => {

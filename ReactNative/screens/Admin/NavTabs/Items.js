@@ -10,6 +10,7 @@ import {
 	Modal,
 	Image,
 	ImageBackground,
+	ActivityIndicator,
 	ScrollView,
 	Dimensions,
 } from 'react-native'
@@ -41,6 +42,7 @@ class Items extends React.Component {
 			newItemName: '',
 			newItemDescription: '',
 			isLoading: false,
+			isFetching: false,
 		}
 	}
 
@@ -52,6 +54,8 @@ class Items extends React.Component {
 		this.setState({ data_temp: recycleItemsArray })
 		this.setState({ data: recycleItemsArray })
 		this.props.toggleIsLoadingItems(false)
+		this.setState({ isLoading: false })
+		this.setState({ isFetching: false })
 	}
 
 	componentDidMount = () => {
@@ -61,6 +65,7 @@ class Items extends React.Component {
 
 	componentWillUnmount() {
 		console.log('[Items] unmount')
+		firebase.database().ref('Items').off()
 	}
 
 	renderData = (item, index) => (
@@ -98,6 +103,8 @@ class Items extends React.Component {
 		this.setState({ newItemPrice: '' })
 		this.setState({ newItemDescription: '' })
 		this.props.toggleIsLoadingItems(false)
+		this.setState({ isLoading: false })
+		this.setState({ isFetching: false })
 	}
 
 	searchData = text => {
@@ -113,12 +120,14 @@ class Items extends React.Component {
 		})
 	}
 
+	onRefreshData = () => {
+		this.setState({ isFetching: true })
+		this.loadDataFromServer()
+	}
+
 	uploadImage = async image => {
 		this.props.toggleIsLoadingItems(true)
-		const ref = firebase
-			.storage()
-			.ref('Item Pictures')
-			.child(this.state.data.key)
+		const ref = firebase.storage().ref('Item Pictures/new_item_picture_temp')
 
 		try {
 			//converting to blob
@@ -186,7 +195,7 @@ class Items extends React.Component {
 	}
 
 	onAddNewItem = () => {
-		this.props.toggleIsLoadingItems(true)
+		this.setState({ isLoading: true })
 		const price = this.state.newItemPrice
 		const category = this.state.newItemName.toLowerCase()
 		const description = this.state.newItemDescription
@@ -200,7 +209,6 @@ class Items extends React.Component {
 				image,
 			})
 			this.loadDataFromServer() // store data in redux from firebase
-			this.props.toggleIsLoadingItems(false)
 			this.setPopUpVisibility(false)
 		} else {
 			alert('Please fill in necessary fields')
@@ -208,7 +216,7 @@ class Items extends React.Component {
 	}
 
 	onDeleteItem = (item, index) => {
-		this.props.toggleIsLoadingItems(true)
+		this.setState({ isLoading: true })
 		Alert.alert(
 			'Deleting item...',
 			'Are you sure you want to remove this item from the recycle list ?',
@@ -216,13 +224,13 @@ class Items extends React.Component {
 				{
 					text: 'No',
 					style: 'cancel',
+					onPress: () => {this.setState({isLoading: false})}
 				},
 				{
 					text: 'Yes',
 					onPress: () => {
 						firebase.database().ref('Items').child(item.key).remove()
 						this.loadDataFromServer()
-						this.props.toggleIsLoadingItems(false)
 					},
 				},
 			],
@@ -233,6 +241,20 @@ class Items extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
+				{this.state.isLoading ? (
+					<View
+						style={[
+							StyleSheet.absoluteFill,
+							{
+								alignItems: 'center',
+								justifyContent: 'center',
+								zIndex: 1000,
+								elevation: 1000,
+							},
+						]}>
+						<ActivityIndicator size='large' color={colors.logoColor} />
+					</View>
+				) : null}
 				<View style={{ flexDirection: 'row' }}>
 					<TouchableOpacity
 						style={[
@@ -301,6 +323,21 @@ class Items extends React.Component {
 											disabled={false}
 											style={{ flex: 1 }}
 											onPress={() => this.changePicture()}>
+											{this.props.recycleItemList.isLoading && (
+												<View
+													style={{
+														...StyleSheet.absoluteFill,
+														alignItems: 'center',
+														justifyContent: 'center',
+														zIndex: 1000,
+														elevation: 1000,
+													}}>
+													<ActivityIndicator
+														size='large'
+														color={colors.logoColor}
+													/>
+												</View>
+											)}
 											{this.state.newItemImage ? (
 												<Image
 													source={{ uri: this.state.newItemImage }}
@@ -431,6 +468,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
+		paddingHorizontal: 20,
 	},
 	button: {
 		width: 30,

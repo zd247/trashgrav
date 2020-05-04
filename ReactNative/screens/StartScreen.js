@@ -1,19 +1,19 @@
 import React from 'react'
 import {
 	View,
+	StyleSheet,
 	StatusBar,
 	Image,
 	Text,
 	SafeAreaView,
-	Dimensions,
+	Dimensions
 } from 'react-native'
 import * as Animatable from 'react-native-animatable'
-import EStyleSheet from 'react-native-extended-stylesheet'
 
-import ErrorBoundary from '../components/ErrorBoundary'
-import CustomActionButton from '../components/CustomTempButton'
+import ErrorBoundary from "../components/ErrorBoundary";
+import CustomActionButton from "../components/CustomTempButton";
 
-import colors from '../assets/colors'
+import colors from "../assets/colors";
 
 import { connect } from 'react-redux'
 
@@ -33,8 +33,8 @@ export default class StartScreen extends React.Component {
 					<Animatable.View style={styles.header} animation='fadeInDown'>
 						<Image
 							style={{
-								width: screenWidth / 2,
-								height: screenWidth / 2,
+								width: screenWidth/2,
+								height: screenWidth/2,
 								borderRadius: screenWidth / 4,
 							}}
 							source={require('../assets/logo.png')}
@@ -46,10 +46,22 @@ export default class StartScreen extends React.Component {
 						<Text style={styles.textFooter}>
 							Let's make our environment clean!{' '}
 						</Text>
-						<Text style={styles.continueTitle}>
+						<Text
+							style={{
+								marginTop: 10,
+								color: 'grey',
+								padding: 5,
+								marginBottom: 15,
+							}}>
 							Shall we continue as an ...
 						</Text>
-						<View style={styles.buttonContainer}>
+						<View
+							style={{
+								flex: 1,
+								marginTop: 30,
+								flexDirection: 'row',
+								justifyContent: 'space-evenly',
+							}}>
 							<CustomActionButton
 								style={[
 									styles.button,
@@ -57,7 +69,7 @@ export default class StartScreen extends React.Component {
 								]}
 								title='Admin'
 								onPress={this.handleAdminLogin}>
-								<Text style={{ fontWeight: 'bold', color: 'white' }}>
+								<Text style={{ fontWeight: 'bold', color: 'white' }} >
 									ADMIN
 								</Text>
 							</CustomActionButton>
@@ -73,13 +85,13 @@ export default class StartScreen extends React.Component {
 				</View>
 			</ErrorBoundary>
 		)
+
+		
 	}
 }
 
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#05375a',
@@ -88,41 +100,27 @@ const styles = EStyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignSelf: 'center',
-		paddingVertical: '120rem',
+		paddingVertical: 140,
 	},
 	footer: {
 		flex: 3,
 		backgroundColor: 'white',
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
-		padding: '30rem',
+		paddingHorizontal: 30,
+		paddingVertical: 30,
 	},
 	textFooter: {
 		color: '#05375a',
-		fontSize: '30rem',
+		fontSize: 30,
 		fontWeight: 'bold',
 	},
-	continueTitle: {
-		marginTop: '15rem',
-		color: 'grey',
-		padding: '5rem',
-		marginBottom: '20rem',
-	},
-	buttonContainer: {
-		flex: 1,
-		marginVertical: '40rem',
-		marginHorizontal: '15rem',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-	},
 	button: {
-		flex: 4,
 		borderColor: colors.bgPrimary,
 		borderWidth: 0.5,
 		borderRadius: 20,
+		marginBottom: 10,
 		alignSelf: 'center',
-		paddingHorizontal: '20rem',
-		paddingVertical: '30rem',
-		width: '120rem',
+		width: 100,
 	},
 })

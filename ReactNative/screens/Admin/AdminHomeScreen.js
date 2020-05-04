@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
 	tabbar: {
 		flex: 1,
 		marginTop: screenWidth * 0.3,
-		paddingHorizontal: 30,
 	},
 	imageBackground: {
 		width: screenWidth * 0.4,

@@ -40,11 +40,13 @@ class SignUpScreen extends Component {
 			lastName: '',
 			phoneNumber: '',
 			password: '',
-			isLoading: false,
+			loading: false,
 			checkPhoneInputChange: false,
 			checkFNameInputChange: false,
 			checkLNameInputChange: false,
 			confirm: null,
+			firebaseDatabase: null,
+			firebaseAuth: null,
 		}
 
 		// to ignore the firebase message
@@ -77,11 +79,13 @@ class SignUpScreen extends Component {
 
 	nameTextInputChange = (firstName, value) => {
 		if (value.length >= 1) {
-			this.setState(
-				firstName
-					? { checkFNameInputChange: true }
-					: { checkLNameInputChange: true }
-			)
+			if (firstName) {
+				this.setState({ checkFNameInputChange: true })
+				this.setState({ firstName: value })
+			} else {
+				this.setState({ checkLNameInputChange: true })
+				this.setState({ lastName: value })
+			}
 		} else {
 			this.setState(
 				firstName
@@ -93,6 +97,7 @@ class SignUpScreen extends Component {
 
 	componentWillUnmount = () => {
 		console.log('[SignUpScreen] components unmounted')
+		firebase.database().ref('Users').off()
 	}
 
 	onContinue = () => {
@@ -102,7 +107,7 @@ class SignUpScreen extends Component {
 			this.state.checkLNameInputChange &&
 			this.state.password.length >= 6
 		) {
-			this.setState({ isLoading: true })
+			this.setState({ loading: true })
 			let phone = this.state.phoneNumber.replace(/\D/g, '')
 			phone = phone.replace(phone[0], '+84')
 
@@ -112,12 +117,14 @@ class SignUpScreen extends Component {
 				.ref('Users')
 				.orderByChild('phone')
 				.equalTo(phone)
-				.on('value', snapshot => {
+				.once('value', snapshot => {
 					if (snapshot.exists()) {
-						alert(
-							'Phone number has already existed' +
-								'please re-enter a new phone number'
-						)
+						if (!this.state.confirm) {
+							alert(
+								'Phone number has already existed' +
+									'please re-enter a new phone number'
+							)
+						}
 						this.setState({ loading: false })
 					} else {
 						this.handleConfirmPhoneNumber(phone)
@@ -130,6 +137,28 @@ class SignUpScreen extends Component {
 		}
 	}
 
+	onSignIn = () => {
+		try {
+			firebase
+				.database()
+				.ref('Users')
+				.orderByChild('phone')
+				.equalTo(this.state.phoneNumber)
+				.once('value', snapshot => {
+					if (snapshot.exists()) {
+						snapshot.forEach(data => {
+							this.props.signIn(data)
+						})
+					}
+					this.setState({ loading: false })
+				})
+		} catch (e) {
+			console.log(e)
+			alert(e)
+			this.setState({ loading: false })
+		}
+	}
+
 	handleConfirmPhoneNumber = async phone => {
 		try {
 			const confirmation = await signInWithPhoneNumber(phone)
@@ -138,9 +167,11 @@ class SignUpScreen extends Component {
 				this.setState({ confirm: confirmation })
 				this.setState({ phoneNumber: phone })
 			} else {
+				this.setState({ loading: false })
 				console.log('Error verifying phone number')
 			}
 		} catch (e) {
+			this.setState({ loading: false })
 			console.log(e.message)
 			alert(e.message)
 		}
@@ -149,24 +180,32 @@ class SignUpScreen extends Component {
 	handleConfirmVerificationCode = code => {
 		try {
 			this.setState({ loading: true })
-			let user = this.state.confirm(code)
-			if (user !== null) {
-				this.setState({ loading: false })
-				console.log(user.uid)
-				firebase.database().ref('Users').child(user.uid).set({
-					uid: user.uid,
-					phone: this.state.phoneNumber,
-					password: this.state.password,
-					first_name: this.state.firstName,
-					last_name: this.state.lastName,
+			try {
+				this.state.confirm(code).then(response => {
+					if (firebase.auth().currentUser) {
+						const userID = firebase.auth(userID).currentUser.uid
+						firebase.database().ref('Users').child(userID).set({
+							uid: userID,
+							phone: this.state.phoneNumber,
+							password: this.state.password,
+							first_name: this.state.firstName,
+							last_name: this.state.lastName,
+						})
+						firebase.auth().signOut()
+						this.onSignIn()
+					} else {
+						this.setState({ loading: false })
+					}
 				})
-				// this.props.signIn(user) // store user in redux
-			} else {
-				console.log('Error verifying object code')
+			} catch (e) {
+				alert(e)
+				console.log(e)
+				this.setState({ loading: false })
 			}
 		} catch (error) {
 			alert('Error verifying code')
 			console.log(error.message)
+			this.setState({ loading: false })
 		}
 	}
 
@@ -175,10 +214,10 @@ class SignUpScreen extends Component {
 			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<SafeAreaView />
 				<StatusBar barStyle='light-content' />
-				{/* {this.state.isLoading ? (
+				{this.state.loading ? (
 					<View
 						style={[
-							StyleSheet.absoluteFill,
+							EStyleSheet.absoluteFill,
 							{
 								alignItems: 'center',
 								justifyContent: 'center',
@@ -188,7 +227,7 @@ class SignUpScreen extends Component {
 						]}>
 						<ActivityIndicator size='large' color={colors.logoColor} />
 					</View>
-				) : null} */}
+				) : null}
 				{/* ----------[[screen]---------- */}
 				<View style={{ flex: 1 }}>
 					<ScrollView style={{ flex: 1 }}>
