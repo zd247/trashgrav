@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import colors from '../assets/colors'
-import EStyleSheet from 'react-native-extended-stylesheet'
+
 
 const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 	<View style={[styles.ItemListContainer, { marginVertical }]}>
@@ -42,39 +42,36 @@ ItemList.defaultProps = {
 
 export default ItemList
 
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
-
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
 	ItemListContainer: {
-		minHeight: '100rem',
+		minHeight: 100,
 		flexDirection: 'row',
 		backgroundColor: '#fbfbf1',
 		alignItems: 'center',
-		borderWidth: '0.15rem',
-		borderRadius: '15rem',
-		padding: '10rem',
+		borderWidth: 0.15,
+    borderRadius: 10,
+    padding: 10,
 	},
 	imageContainer: {
-		height: '120rem',
-		width: '120rem',
+		height: 120,
+		width: 120,
 	},
 	image: {
 		width: '100%',
 		height: '100%',
-		borderWidth: '5rem',
+		borderWidth: 5,
 		borderColor: 'white',
-		borderRadius: '10rem',
+		borderRadius: 10,
 	},
 	ItemListTitleContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		paddingLeft: '5rem',
+		paddingLeft: 5,
 	},
 	ItemListTitle: {
 		fontWeight: '100',
-		fontSize: '22rem',
+		fontSize: 22,
 		color: 'black',
-		marginStart: '10rem',
+		marginStart: 10,
 	},
 })
