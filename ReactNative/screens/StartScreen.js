@@ -6,20 +6,38 @@ import {
 	Image,
 	Text,
 	SafeAreaView,
-	Dimensions
+	Dimensions,
+	YellowBox
 } from 'react-native'
+
+import _ from 'lodash'
 import * as Animatable from 'react-native-animatable'
 
-import ErrorBoundary from "../components/ErrorBoundary";
-import CustomActionButton from "../components/CustomTempButton";
+import ErrorBoundary from '../components/ErrorBoundary'
+import CustomActionButton from '../components/CustomTempButton'
 
-import colors from "../assets/colors";
-
-import { connect } from 'react-redux'
+import colors from '../assets/colors'
+import { normalize } from '../helpers/fontHelper'
 
 const screenWidth = Dimensions.get('screen').width
+const screenHeight = Dimensions.get('screen').height
 
 export default class StartScreen extends React.Component {
+	constructor() {
+		super()
+		YellowBox.ignoreWarnings(['Setting a timer'])
+		YellowBox.ignoreWarnings(['Warning: "RootErrorBoundary": Error boundaries'])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('Setting a timer') <= -1) {
+				_console.warn(message)
+			}
+			if (message.indexOf('Warning: "RootErrorBoundary": Error boundaries') <= -1) {
+				_console.warn(message)
+			}
+		}
+	}
+
 	handleAdminLogin = () => {
 		this.props.navigation.navigate('AdminLoginScreen')
 	}
@@ -33,8 +51,8 @@ export default class StartScreen extends React.Component {
 					<Animatable.View style={styles.header} animation='fadeInDown'>
 						<Image
 							style={{
-								width: screenWidth/2,
-								height: screenWidth/2,
+								width: screenWidth / 2,
+								height: screenWidth / 2,
 								borderRadius: screenWidth / 4,
 							}}
 							source={require('../assets/logo.png')}
@@ -48,19 +66,20 @@ export default class StartScreen extends React.Component {
 						</Text>
 						<Text
 							style={{
-								marginTop: 10,
+								marginTop: '15%',
 								color: 'grey',
-								padding: 5,
-								marginBottom: 15,
 							}}>
 							Shall we continue as an ...
 						</Text>
+
 						<View
 							style={{
-								flex: 1,
-								marginTop: 30,
+								flex: 2,
+								marginTop: '5%',
 								flexDirection: 'row',
-								justifyContent: 'space-evenly',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+								marginHorizontal: normalize(20)
 							}}>
 							<CustomActionButton
 								style={[
@@ -69,7 +88,7 @@ export default class StartScreen extends React.Component {
 								]}
 								title='Admin'
 								onPress={this.handleAdminLogin}>
-								<Text style={{ fontWeight: 'bold', color: 'white' }} >
+								<Text style={{ fontWeight: 'bold', color: 'white' }}>
 									ADMIN
 								</Text>
 							</CustomActionButton>
@@ -85,11 +104,8 @@ export default class StartScreen extends React.Component {
 				</View>
 			</ErrorBoundary>
 		)
-
-		
 	}
 }
-
 
 const styles = StyleSheet.create({
 	container: {
@@ -100,27 +116,26 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignSelf: 'center',
-		paddingVertical: 140,
 	},
 	footer: {
-		flex: 3,
+		flex: 1,
 		backgroundColor: 'white',
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
-		paddingHorizontal: 30,
-		paddingVertical: 30,
+		paddingHorizontal: '8%',
+		paddingTop: '10%',
 	},
 	textFooter: {
 		color: '#05375a',
-		fontSize: 30,
+		fontSize: normalize(30),
 		fontWeight: 'bold',
 	},
 	button: {
 		borderColor: colors.bgPrimary,
 		borderWidth: 0.5,
-		borderRadius: 20,
-		marginBottom: 10,
+		borderRadius: 70,
 		alignSelf: 'center',
-		width: 100,
+		width: screenWidth * 0.3,
+		height: screenHeight * 0.08,
 	},
 })

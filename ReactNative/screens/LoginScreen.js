@@ -17,6 +17,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
+import { normalize } from '../helpers/fontHelper'
 
 import colors from '../assets/colors'
 import strings from '../assets/strings'
@@ -58,8 +59,8 @@ const Policy = () => {
 			<View
 				style={{
 					alignSelf: 'center',
-					marginTop: 50,
-					marginHorizontal: 20,
+					marginTop: normalize(30),
+					marginHorizontal: normalize(10),
 				}}>
 				<Text>
 					By using our application, you agree to our
@@ -168,7 +169,7 @@ class LoginScreen extends Component {
 						snapshot.forEach(data => {
 							if (
 								this.state.rspwdNewPassword ===
-								this.state.rspwdConfirmPassword &&
+									this.state.rspwdConfirmPassword &&
 								this.state.rspwdNewPassword.length >= 6
 							) {
 								firebase
@@ -234,7 +235,7 @@ class LoginScreen extends Component {
 						this.setState({ isLoading: false })
 					}
 				})
-		}else {
+		} else {
 			alert('Invalid phone number or password format entered')
 			this.setState({ isLoading: false })
 		}
@@ -354,22 +355,26 @@ class LoginScreen extends Component {
 															}}
 															style={{
 																alignSelf: 'flex-start',
-																marginTop: 10,
-																marginStart: 15,
+																marginTop: normalize(10),
+																marginStart: normalize(15),
 															}}>
 															<Ionicons
 																name='ios-close'
 																color='white'
-																size={40}
+																size={normalize(40)}
 															/>
 														</TouchableOpacity>
 														<View style={styles.image_container}>
-															<Text style={{ fontSize: 35, color: 'white' }}>
+															<Text
+																style={{
+																	fontSize: normalize(35),
+																	color: 'white',
+																}}>
 																Reset Password
 															</Text>
 														</View>
 													</ImageBackground>
-													<View style={{ padding: 15 }}>
+													<View style={{ padding: normalize(15) }}>
 														<InputField
 															title='Phone number'
 															fontAwesomeIcon='phone-square'
@@ -384,7 +389,7 @@ class LoginScreen extends Component {
 																	<Feather
 																		name='check-circle'
 																		color='green'
-																		size={20}
+																		size={normalize(20)}
 																	/>
 																</Animatable.View>
 															) : null}
@@ -418,7 +423,7 @@ class LoginScreen extends Component {
 															<Feather
 																name='arrow-right'
 																color='white'
-																size={25}
+																size={normalize(25)}
 															/>
 														</View>
 													</TouchableOpacity>
@@ -468,34 +473,35 @@ const styles = StyleSheet.create({
 	header: {
 		flex: 1,
 		justifyContent: 'flex-end',
-		paddingHorizontal: 20,
-		paddingVertical: 50,
+		paddingHorizontal: normalize(20),
+		paddingVertical: normalize(50),
 	},
 	footer: {
-		flex: 3,
+		flex: 1,
 		backgroundColor: 'white',
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
-		paddingHorizontal: 20,
-		paddingVertical: 30,
+		paddingHorizontal: normalize(20),
+		paddingVertical: normalize(30),
 	},
 	textHeader: {
 		color: 'white',
-		fontSize: 30,
+		fontSize: normalize(30),
 		fontWeight: 'bold',
 	},
 	button: {
 		borderColor: colors.bgPrimary,
 		borderWidth: 0.5,
-		borderRadius: 20,
-		marginBottom: 10,
+		borderRadius: normalize(30),
+		marginBottom: normalize(10),
 		alignSelf: 'center',
 		width: '80%',
+		height: normalize(42)
 	},
 	modalContainer: {
 		backgroundColor: '#f2f2f2',
-		margin: 20,
-		marginTop: 40,
+		margin: normalize(20),
+		marginTop: normalize(40),
 		borderWidth: 2.5,
 		flex: 1,
 	},
@@ -504,12 +510,12 @@ const styles = StyleSheet.create({
 		height: height_image,
 	},
 	modalButton: {
-		width: 80,
+		width: normalize(80),
 		backgroundColor: colors.bgUserLogin,
-		borderRadius: 50,
+		borderRadius: normalize(50),
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: 8,
-		margin: 15,
+		paddingVertical: normalize(8),
+		margin: normalize(15),
 	},
 })

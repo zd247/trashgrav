@@ -15,6 +15,7 @@ import {
 	Dimensions,
 } from 'react-native'
 
+import { normalize } from '../../../helpers/fontHelper'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import colors from '../../../assets/colors'
 import Feather from 'react-native-vector-icons/Feather'
@@ -300,20 +301,20 @@ class Items extends React.Component {
 										<TouchableOpacity
 											onPress={() => this.setPopUpVisibility(false)}
 											style={{
-												paddingHorizontal: 10,
+												paddingHorizontal: normalize(10),
 												position: 'absolute',
-												left: -75,
-												top: -48,
+												left: normalize(-50),
+												top: normalize(-40),
 											}}>
-											<Ionicons name='ios-close' color='white' size={30} />
+											<Ionicons name='ios-close' color='white' size={normalize(30)} />
 										</TouchableOpacity>
 										<Text
 											style={{
-												paddingHorizontal: 10,
+												paddingHorizontal: normalize(10),
 												position: 'absolute',
-												top: -40,
-												left: 9,
-												fontSize: 18,
+												top: normalize(-40),
+												left: normalize(9),
+												fontSize: normalize(18),
 												fontWeight: 'bold',
 												color: 'white',
 											}}>
@@ -405,10 +406,10 @@ class Items extends React.Component {
 								<Text
 									style={{
 										color: colors.bgAdminLogin,
-										fontSize: 30,
+										fontSize: normalize(30),
 										fontWeight: 'bold',
 										alignSelf: 'center',
-										marginTop: 10,
+										marginTop: normalize(10),
 									}}>
 									- - - - - - - - - -
 								</Text>
@@ -416,7 +417,7 @@ class Items extends React.Component {
 									onPress={this.onAddNewItem}
 									style={{ alignItems: 'flex-end' }}>
 									<View style={styles.modalButton}>
-										<Feather name='arrow-right' color='white' size={25} />
+										<Feather name='arrow-right' color='white' size={normalize(25)} />
 									</View>
 								</TouchableOpacity>
 							</View>
@@ -429,7 +430,7 @@ class Items extends React.Component {
 					renderItem={({ item, index }) => this.renderData(item, index)}
 					keyExtractor={(item, index) => index.toString()}
 					ListEmptyComponent={
-						<View style={{ marginTop: 50, alignItems: 'center' }}>
+						<View style={{ marginTop: normalize(50), alignItems: 'center' }}>
 							<Text style={{ fontWeight: 'bold' }}>
 								No Recycle Item Currently Exist In this List
 							</Text>
@@ -468,11 +469,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
-		paddingHorizontal: 20,
+		paddingHorizontal: normalize(20),
 	},
 	button: {
-		width: 30,
-		height: 30,
+		width: normalize(30),
+		height: normalize(30),
 		backgroundColor: colors.bgAdminLogin,
 		borderRadius: 15,
 		justifyContent: 'center',
@@ -482,22 +483,22 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		width: '82%',
-		paddingVertical: 5,
-		paddingHorizontal: 10,
+		paddingVertical: normalize(5),
+		paddingHorizontal: normalize(10),
 		borderRadius: 10,
 		backgroundColor: '#f2f2f2',
-		marginVertical: 10,
+		marginVertical: normalize(10),
 	},
 	modalContainer: {
 		backgroundColor: '#f2f2f2',
-		margin: 20,
-		marginTop: 40,
+		margin: normalize(20),
+		marginTop: normalize(40),
 		borderWidth: 2.5,
 		flex: 1,
 	},
 	footer: {
 		flex: 1,
-		paddingHorizontal: 15,
+		paddingHorizontal: normalize(15),
 	},
 	image_container: {
 		width: height_image,
@@ -515,26 +516,26 @@ const styles = StyleSheet.create({
 	textPrice: {
 		color: 'green',
 		fontWeight: 'bold',
-		fontSize: 15,
+		fontSize: normalize(15),
 	},
 	textName: {
 		color: '#3e3c3e',
 		fontWeight: 'bold',
-		fontSize: 20,
-		marginTop: 5,
+		fontSize: normalize(20),
+		marginTop: normalize(5),
 	},
 	textDetail: {
 		color: 'gray',
-		marginTop: 10,
-		marginBottom: 20,
+		marginTop: normalize(10),
+		marginBottom: normalize(20),
 	},
 	modalButton: {
-		width: 80,
+		width: normalize(80),
 		backgroundColor: colors.bgAdminLogin,
 		borderRadius: 50,
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: 8,
-		margin: 15,
+		paddingVertical: normalize(8),
+		margin: normalize(15),
 	},
 })

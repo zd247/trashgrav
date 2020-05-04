@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import colors from '../assets/colors'
-
+import { normalize } from '../helpers/fontHelper'
 
 const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 	<View style={[styles.ItemListContainer, { marginVertical }]}>
@@ -16,7 +16,7 @@ const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 						style={styles.image}
 						// indicator={ProgressPie}
 						indicatorProps={{
-							size: 40,
+							size: normalize(40),
 							borderWidth: 0,
 							color: colors.logoColor,
 							unfilledColor: 'rgba(200,200,200,0.2)',
@@ -36,7 +36,7 @@ const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 )
 
 ItemList.defaultProps = {
-	marginVertical: 5,
+	marginVertical: normalize(5),
 	editable: false,
 }
 
@@ -44,34 +44,34 @@ export default ItemList
 
 const styles = StyleSheet.create({
 	ItemListContainer: {
-		minHeight: 100,
+		minHeight: normalize(100),
 		flexDirection: 'row',
 		backgroundColor: '#fbfbf1',
 		alignItems: 'center',
 		borderWidth: 0.15,
-    borderRadius: 10,
-    padding: 10,
+		borderRadius: normalize(10),
+		padding: normalize(10),
 	},
 	imageContainer: {
-		height: 120,
-		width: 120,
+		height: normalize(120),
+		width: normalize(120),
 	},
 	image: {
 		width: '100%',
 		height: '100%',
-		borderWidth: 5,
+		borderWidth: normalize(5),
 		borderColor: 'white',
-		borderRadius: 10,
+		borderRadius: normalize(10),
 	},
 	ItemListTitleContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		paddingLeft: 5,
+		paddingLeft: normalize(5),
 	},
 	ItemListTitle: {
 		fontWeight: '100',
-		fontSize: 22,
+		fontSize: normalize(20),
 		color: 'black',
-		marginStart: 10,
+		marginStart: normalize(10),
 	},
 })

@@ -17,6 +17,7 @@ import {
 
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import { normalize } from '../../helpers/fontHelper'
 
 import colors from '../../assets/colors'
 import Feather from 'react-native-vector-icons/Feather'
@@ -206,10 +207,10 @@ class AdminItemScreen extends React.Component {
 								}}
 								style={{
 									alignSelf: 'flex-start',
-									marginTop: 15,
-									marginStart: 20,
+									marginTop: normalize(15),
+									marginStart: normalize(20),
 								}}>
-								<Feather name='arrow-left' color='white' size={35} />
+								<Feather name='arrow-left' color='white' size={normalize(35)} />
 							</TouchableOpacity>
 							<View style={styles.image_container}>
 								<TouchableOpacity
@@ -241,11 +242,20 @@ class AdminItemScreen extends React.Component {
 						<ScrollView style={styles.footer}>
 							<View style={{ flexDirection: 'row' }}>
 								<Text
-									style={[{ marginTop: 20, marginRight: 8 }, styles.textPrice]}>
+									style={[
+										{
+											marginTop: normalize(normalize(20)),
+											marginRight: normalize(8),
+										},
+										styles.textPrice,
+									]}>
 									$
 								</Text>
 								<TextInput
-									style={[{ marginTop: 25 }, styles.textPrice]}
+									style={[
+										{ marginTop: normalize(normalize(25)) },
+										styles.textPrice,
+									]}
 									placeholder='Price...'
 									keyboardType='decimal-pad'
 									maxLength={6}
@@ -316,7 +326,7 @@ const styles = StyleSheet.create({
 	},
 	footer: {
 		flex: 1,
-		paddingHorizontal: 40,
+		paddingHorizontal: normalize(40),
 	},
 	image_container: {
 		width: height_image,
@@ -333,17 +343,17 @@ const styles = StyleSheet.create({
 	textPrice: {
 		color: 'green',
 		fontWeight: 'bold',
-		fontSize: 30,
+		fontSize: normalize(30),
 	},
 	textName: {
 		color: '#3e3c3e',
 		fontWeight: 'bold',
-		fontSize: 45,
-		marginTop: 5,
+		fontSize: normalize(45),
+		marginTop: normalize(5),
 	},
 	textDetail: {
 		color: 'gray',
-		marginTop: 10,
-		marginBottom: 20,
+		marginTop: normalize(10),
+		marginBottom: normalize(20),
 	},
 })

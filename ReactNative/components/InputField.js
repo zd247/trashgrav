@@ -1,14 +1,14 @@
 import React from 'react'
-import { Text, View, TextInput, Image, Dimensions } from 'react-native'
+import { Text, View, TextInput, StyleSheet, Image } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import EStyleSheet from 'react-native-extended-stylesheet'
+import {normalize} from '../helpers/fontHelper'
 
 const InputField = props => {
 	return (
 		<View>
 			<Text style={[styles.text, {color:props.color}]}>{props.title}</Text>
 			<View style={styles.action}>
-				<FontAwesome name={props.fontAwesomeIcon} color={props.color} size={20} />
+				<FontAwesome name={props.fontAwesomeIcon} color={props.color} size={normalize(20)} />
             
             {props.image ? <Image
 					style={{ marginStart: 5 }}
@@ -33,23 +33,20 @@ const InputField = props => {
 
 export default InputField
 
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
-
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
    text: {
-		fontSize: '18rem',
+		fontSize: normalize(18),
 		fontWeight: 'bold',
    },
    action: {
 		flexDirection: 'row',
-		marginVertical: '10rem',
-		borderBottomWidth: '1rem',
+		marginVertical: normalize(10),
+		borderBottomWidth: 1,
 		borderBottomColor: '#f2f2f2',
-		paddingBottom: '5rem',
+		paddingBottom: normalize(5),
    },
    textInput: {
 		flex: 1,
-		paddingLeft: '10rem',
+		paddingLeft: normalize(10),
 	},
 })
