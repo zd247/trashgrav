@@ -217,7 +217,7 @@ class SignUpScreen extends Component {
 				{this.state.loading ? (
 					<View
 						style={[
-							EStyleSheet.absoluteFill,
+							StyleSheet.absoluteFill,
 							{
 								alignItems: 'center',
 								justifyContent: 'center',
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgUserLogin,
-		paddingTop: Platform.OS == 'android' ? 50 : 0,
+		paddingTop: Platform.OS == 'android' ? 0 : 50,
 	},
 	header: {
 		flex: 1,

@@ -23,6 +23,7 @@
 - `npm install react-native-maps`
 - `npm install react-native-scrollable-tab-view`
 - `npm install lodash`
+- `npm i react-native-extended-stylesheet --save`
 
 
 ### Overview technical requirements

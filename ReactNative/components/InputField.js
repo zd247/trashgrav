@@ -1,6 +1,7 @@
 import React from 'react'
-import { Text, View, TextInput, StyleSheet, Image } from 'react-native'
+import { Text, View, TextInput, Image, Dimensions } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import EStyleSheet from 'react-native-extended-stylesheet'
 
 const InputField = props => {
 	return (
@@ -32,20 +33,23 @@ const InputField = props => {
 
 export default InputField
 
-const styles = StyleSheet.create({
+const entireScreenWidth = Dimensions.get('window').width
+EStyleSheet.build({ $rem: entireScreenWidth / 380 })
+
+const styles = EStyleSheet.create({
    text: {
-		fontSize: 18,
+		fontSize: '18rem',
 		fontWeight: 'bold',
    },
    action: {
 		flexDirection: 'row',
-		marginVertical: 10,
-		borderBottomWidth: 1,
+		marginVertical: '10rem',
+		borderBottomWidth: '1rem',
 		borderBottomColor: '#f2f2f2',
-		paddingBottom: 5,
+		paddingBottom: '5rem',
    },
    textInput: {
 		flex: 1,
-		paddingLeft: 10,
+		paddingLeft: '10rem',
 	},
 })

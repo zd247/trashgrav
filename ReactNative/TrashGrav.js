@@ -222,6 +222,9 @@ const CustomerDrawerNavigator = () => (
 			<Drawer.Screen
 				options={{
 					drawerIcon: () => <Ionicons name='ios-settings' size={24} />,
+					headerBackTitleVisible: false,
+					headerTransparent: true,
+					headerTitle: '',
 				}}
 				name='Setting'
 				component={SettingScreen}

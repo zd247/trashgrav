@@ -9,6 +9,7 @@ import {
   Keyboard,
   TextInput,
   TouchableHighlight,
+  ActivityIndicator,
 } from "react-native";
 
 import * as Location from "expo-location";
@@ -18,7 +19,7 @@ import ItemList from "../../components/ItemList";
 import colors from "../../assets/colors";
 
 import apiKey from "../../helpers/googleAPIkey";
-
+import * as firebase from "firebase/app";
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import MapView, { Polyline, Marker } from "react-native-maps";
@@ -37,6 +38,9 @@ class DriverMapScreen extends Component {
       destination: "",
       predictions: [],
       pointCoords: [],
+      order: [],
+      isButtonEnabled: true,
+      orderStatus: 0,
     };
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
@@ -46,7 +50,18 @@ class DriverMapScreen extends Component {
 
   componentDidMount() {
     //Get current location and set initial region to this
-    //this.findCurrentLocationAsync();
+    this.findCurrentLocationAsync();
+
+    if (this.props.recycleItemList.order) {
+      this.setState({
+        destination: this.props.recycleItemList.location,
+        locationPredictions: this.props.recycleItemList.order.prediction,
+        isButtonEnabled: false,
+      });
+    }
+  }
+
+  findCurrentLocationAsync = async () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -57,19 +72,6 @@ class DriverMapScreen extends Component {
       (error) => console.error(error),
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
     );
-  }
-
-  findCurrentLocationAsync = async () => {
-    let { status } = await Location.requestPermissionsAsync();
-
-    if (status !== "granted") {
-      this.setState({
-        errorMessage: "Permission to access location was denied",
-      });
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
     //console.log(JSON.stringify(location.coords));
   };
 
@@ -79,7 +81,7 @@ class DriverMapScreen extends Component {
         `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.latitude},${this.state.longitude}&destination=place_id:${destinationPlaceId}&key=${apiKey}`
       );
       const json = await response.json();
-      console.log("route Direction" + JSON.stringify(json));
+      //console.log("route Direction" + JSON.stringify(json));
       const points = PolyLine.decode(json.routes[0].overview_polyline.points);
       const pointCoords = points.map((point) => {
         return { latitude: point[0], longitude: point[1] };
@@ -113,6 +115,46 @@ class DriverMapScreen extends Component {
     }
   }
 
+  submit = async () => {
+    let temp = this.state.locationPredictions;
+    this.getRouteDirections(
+      temp.place_id,
+      temp.structured_formatting.main_text
+    );
+    this.setState({ isButtonEnabled: true });
+    let key = this.props.recycleItemList.order.key;
+    try {
+      this.props.toggleIsLoadingItems(true);
+      await firebase
+        .database()
+        .ref("Requests")
+        .child(key)
+        .update({ status: 1, driver: this.props.recycleItemList.user });
+      this.props.toggleIsLoadingItems(false);
+    } catch (error) {
+      console.log(error);
+      this.props.toggleIsLoadingItems(false);
+    }
+    this.setState({ orderStatus: 1 });
+  };
+
+  onArrival = async () => {
+    let key = this.props.recycleItemList.order.key;
+    try {
+      this.props.toggleIsLoadingItems(true);
+      await firebase
+        .database()
+        .ref("Requests")
+        .child(key)
+        .update({ status: 2 });
+      this.props.toggleIsLoadingItems(false);
+    } catch (error) {
+      console.log(error);
+      this.props.toggleIsLoadingItems(false);
+    }
+    console.log("Driver Has Arrived");
+  };
+
   render() {
     let marker = null;
 
@@ -141,6 +183,31 @@ class DriverMapScreen extends Component {
         </View>
       </TouchableHighlight>
     ));
+
+    let button;
+    if (this.state.orderStatus == 0) {
+      button = (
+        <CustomActionButton
+          style={styles.changeMode}
+          title="Navigation to Customer now!!"
+          onPress={() => this.submit()}
+          disabled={this.state.isButtonEnabled}
+        >
+          <Text style={styles.ItemListTitle}>Navigate to Customer</Text>
+        </CustomActionButton>
+      );
+    } else {
+      button = (
+        <CustomActionButton
+          style={styles.onArrival}
+          title="Driver Has Arrived!!"
+          onPress={() => this.onArrival()}
+          disabled={false}
+        >
+          <Text style={styles.ItemListTitle}>Driver Has Arrived</Text>
+        </CustomActionButton>
+      );
+    }
     return (
       <View style={styles.container}>
         <SafeAreaView />
@@ -159,6 +226,19 @@ class DriverMapScreen extends Component {
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
         <View style={styles.body}>
+          {this.props.recycleItemList.isLoading && (
+            <View
+              style={{
+                ...StyleSheet.absoluteFill,
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1000,
+                elevation: 1000,
+              }}
+            >
+              <ActivityIndicator size="large" color={colors.logoColor} />
+            </View>
+          )}
           <MapView
             ref={(map) => {
               this.map = map;
@@ -193,6 +273,16 @@ class DriverMapScreen extends Component {
             />
             {predictions}
           </View>
+          <View
+            style={{
+              flex: 1,
+              bottom: 20,
+              position: "absolute",
+              alignSelf: "center",
+            }}
+          >
+            {button}
+          </View>
         </View>
         <SafeAreaView />
       </View>
@@ -200,7 +290,32 @@ class DriverMapScreen extends Component {
   }
 }
 
-export default DriverMapScreen;
+const mapStateToProps = (state) => {
+  return {
+    recycleItemList: state.recycleItemList,
+    currentUser: state.auth.currentUser,
+    //temp: state.recycleCart,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadUser: (user) =>
+      dispatch({
+        type: "LOAD_USER_FROM_SERVER",
+        payload: user,
+      }),
+    toggleIsLoadingItems: (bool) =>
+      dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
+    deleteItem: (item) =>
+      dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
+    updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
+    updateOrderWeight: (item) =>
+      dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DriverMapScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -210,10 +325,25 @@ const styles = StyleSheet.create({
   },
   changeMode: {
     width: 200,
-    backgroundColor: "transparent",
+    height: 50,
+    backgroundColor: colors.logoColor,
     borderWidth: 0.5,
     borderColor: colors.bgError,
-    marginBottom: 20,
+    marginBottom: 5,
+    marginTop: "auto",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+  onArrival: {
+    width: 200,
+    height: 50,
+    backgroundColor: "orange",
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginBottom: 5,
+    marginTop: "auto",
+    alignSelf: "center",
+    justifyContent: "center",
   },
   header: {
     height: 70,
@@ -262,5 +392,11 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     marginLeft: 5,
     marginRight: 5,
+  },
+  ItemListTitle: {
+    fontWeight: "100",
+    fontSize: 22,
+    color: "black",
+    marginStart: 10,
   },
 });
