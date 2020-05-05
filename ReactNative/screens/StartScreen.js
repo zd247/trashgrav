@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
 	},
 	textFooter: {
 		color: '#05375a',
-		fontSize: normalize(30),
+		fontSize: normalize(25),
 		fontWeight: 'bold',
 	},
 	button: {

@@ -10,7 +10,6 @@ import {
 	Switch,
 } from 'react-native'
 
-import colors from '../assets/colors'
 import { normalize } from '../helpers/fontHelper'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
@@ -56,8 +55,9 @@ class SettingScreen extends Component {
 						<Text style={styles.headerTitle}>SETTINGS</Text>
 					</ImageBackground>
 				</View>
+
+				{/* ------------------------------- */}
 				<View style={{ flex: 1, paddingHorizontal: normalize(15), paddingTop: normalize(10) }}>
-					{/* ------------------------------- */}
 					<View style={styles.bodyContent}>
 						<Text style={{ color: '#696969', fontSize: normalize(15) }}>
 							Notifications
