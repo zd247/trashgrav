@@ -4,5 +4,5 @@
   "hostType": "lan",
   "lanType": "ip",
   "urlRandomness": "6u-x25",
-  "https": false
+  "https": true
 }

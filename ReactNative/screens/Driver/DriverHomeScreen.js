@@ -79,9 +79,9 @@ class DriverHomeScreen extends Component {
 
   chooseOrder = (selectedItem, index) => {
     let tempLocation = selectedItem.destination;
-    console.log(selectedItem.key);
+    console.log(selectedItem);
     this.props.updateOrderLocation(tempLocation);
-    this.props.updateOrder(selectedItem);
+    this.props.updateOrderHello(selectedItem);
     this.props.navigation.navigate("Driver Map Screen");
   };
 
@@ -161,7 +161,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
     deleteItem: (item) =>
       dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
-    updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
+    updateOrderHello: (order) =>
+      dispatch({ type: "UPDATE_ORDER_HELLO", payload: order }),
     updateOrderWeight: (item) =>
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
     updateOrderLocation: (location) =>

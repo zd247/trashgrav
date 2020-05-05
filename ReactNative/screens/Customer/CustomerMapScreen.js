@@ -81,6 +81,7 @@ class CustomerMapScreen extends Component {
                   " is on the way to get your trash"
               );
             } else if (temp.status == 2) {
+              this.props.toggleIsLoadingItems(false);
               return Alert.alert(
                 "Driver " +
                   temp.driver.first_name +
@@ -191,8 +192,6 @@ class CustomerMapScreen extends Component {
 
       this.setState({ serverID: t });
       console.log(this.state.serverID);
-
-      this.props.toggleIsLoadingItems(false);
     } catch (error) {
       console.log(error);
       this.props.toggleIsLoadingItems(false);

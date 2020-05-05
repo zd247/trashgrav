@@ -57,12 +57,22 @@ const recycles = (state = initialState, action) => {
     case "UPDATE_ORDER":
       return {
         ...state,
+        recycleCart: action.payload,
+      };
+    case "UPDATE_ORDER_HELLO":
+      return {
+        ...state,
         order: action.payload,
       };
     case "UPDATE_ORDER_TOTAL_WEIGHT":
       return {
         ...state,
         totalWeight: action.payload,
+      };
+    case "UPDATE_ORDER_TOTAL_PRICE":
+      return {
+        ...state,
+        totalPrice: action.payload,
       };
     case "UPDATE_ORDER_LOCATION":
       return {

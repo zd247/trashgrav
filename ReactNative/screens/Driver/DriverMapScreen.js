@@ -117,6 +117,7 @@ class DriverMapScreen extends Component {
 
   submit = async () => {
     let temp = this.state.locationPredictions;
+    console.log(temp);
     this.getRouteDirections(
       temp.place_id,
       temp.structured_formatting.main_text
@@ -124,13 +125,13 @@ class DriverMapScreen extends Component {
     this.setState({ isButtonEnabled: true });
     let key = this.props.recycleItemList.order.key;
     try {
-      this.props.toggleIsLoadingItems(true);
+      //this.props.toggleIsLoadingItems(true);
       await firebase
         .database()
         .ref("Requests")
         .child(key)
         .update({ status: 1, driver: this.props.recycleItemList.user });
-      this.props.toggleIsLoadingItems(false);
+      //this.props.toggleIsLoadingItems(false);
     } catch (error) {
       console.log(error);
       this.props.toggleIsLoadingItems(false);
@@ -141,13 +142,13 @@ class DriverMapScreen extends Component {
   onArrival = async () => {
     let key = this.props.recycleItemList.order.key;
     try {
-      this.props.toggleIsLoadingItems(true);
+      //this.props.toggleIsLoadingItems(true);
       await firebase
         .database()
         .ref("Requests")
         .child(key)
         .update({ status: 2 });
-      this.props.toggleIsLoadingItems(false);
+      //this.props.toggleIsLoadingItems(false);
     } catch (error) {
       console.log(error);
       this.props.toggleIsLoadingItems(false);
@@ -226,19 +227,6 @@ class DriverMapScreen extends Component {
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
         <View style={styles.body}>
-          {this.props.recycleItemList.isLoading && (
-            <View
-              style={{
-                ...StyleSheet.absoluteFill,
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1000,
-                elevation: 1000,
-              }}
-            >
-              <ActivityIndicator size="large" color={colors.logoColor} />
-            </View>
-          )}
           <MapView
             ref={(map) => {
               this.map = map;
@@ -309,7 +297,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
     deleteItem: (item) =>
       dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
-    updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
+    updateOrder: (order) =>
+      dispatch({ type: "UPDATE_ORDER_HELLO", payload: order }),
     updateOrderWeight: (item) =>
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
   };

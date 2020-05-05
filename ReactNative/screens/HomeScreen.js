@@ -147,6 +147,50 @@ class HomeScreen extends Component {
     //console.log(this.state.recycleCart);
   };
 
+  updateOrderDetail = (item, text) => {
+    //console.log("Item before update", item);
+    //console.log(text);
+    let oldWeight = item.weight;
+    let newWeight;
+    if (typeof text === "string") {
+      newWeight = parseInt(text, 10);
+    } else {
+      newWeight = text;
+    }
+    let tempList = this.props.recycleItemList.recycleCart;
+    tempList.forEach((element) => {
+      if (element.category == item.category) {
+        element.weight = newWeight;
+        //console.log("Item after update: ", element);
+      }
+    });
+    this.props.updateOrder(tempList);
+    this.calculateOrderTotal();
+  };
+
+  calculateOrderTotal() {
+    let i;
+    let tempWeight = 0;
+    let tempPrice = 0;
+    let interger = 0;
+    let tempList = this.props.recycleItemList.recycleCart;
+    for (i = 0; i < tempList.length; i++) {
+      if (typeof tempList[i].weight === "string") {
+        interger = parseInt(tempList[i].weight, 10);
+        tempList[i].weight = interger;
+      }
+      tempWeight += tempList[i].weight;
+      tempPrice = tempPrice + tempList[i].weight * tempList[i].price;
+    }
+    this.props.updateOrderWeight(tempWeight);
+    this.props.updateOrderPrice(tempPrice);
+    if (tempWeight > 5) {
+      return Alert.alert(
+        "The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value"
+      );
+    }
+  }
+
   componentWillUnmount = () => {
     console.log("[HomeScreen] component umounted");
   };
@@ -171,7 +215,7 @@ class HomeScreen extends Component {
         placeholder={"Current Weight: " + JSON.stringify(item.weight)}
         placeholderTextColor="black"
         onChangeText={(text) => {
-          item.weight = text;
+          this.updateOrderDetail(item, text);
         }}
         keyboardType="phone-pad"
         ref={(component) => {
@@ -193,25 +237,9 @@ class HomeScreen extends Component {
   );
 
   requestDriver = () => {
-    var i;
-    var tempWeight = 0;
-    var interger = 0;
-    let tempList = this.props.recycleItemList.recycleCart;
-    for (i = 0; i < tempList.length; i++) {
-      if (typeof tempList[i].weight === "string") {
-        interger = parseInt(tempList[i].weight, 10);
-        tempList[i].weight = interger;
-      }
-      tempWeight += tempList[i].weight;
-    }
-    if (tempWeight > 5) {
-      return Alert.alert(
-        "The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value"
-      );
-    }
-
+    this.calculateOrderTotal();
     this.setState({ isModalVisible: false });
-    this.props.updateOrderWeight(tempWeight);
+
     //console.log(tempWeight)
     //this.props.updateOrder()
     //console.log(JSON.stringify(this.props.recycleItemList.order))
@@ -395,6 +423,8 @@ const mapDispatchToProps = (dispatch) => {
     updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
     updateOrderWeight: (item) =>
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
+    updateOrderPrice: (item) =>
+      dispatch({ type: "UPDATE_ORDER_TOTAL_PRICE", payload: item }),
   };
 };
 
@@ -518,3 +548,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
 });
+
+//git push --set-upstream origin master
+// open ~/.expo/ios-simulator-app-cache
+// ./start_simulators.sh
