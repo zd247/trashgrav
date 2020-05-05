@@ -10,10 +10,12 @@ import {
   Image,
   Modal,
   Button,
+  YellowBox,
   Alert,
 } from "react-native";
 import { render } from "react-dom";
 
+import _ from 'lodash'
 import BottomBar from "../components/BottomBar";
 import CustomActionButton from "../components/CustomTempButton";
 import ListItem from "../components/ItemList";
@@ -44,6 +46,14 @@ class HomeScreen extends Component {
       totalPrice: 0,
       tempInt: 1,
     };
+
+    YellowBox.ignoreWarnings(['Warning: Cant perform a React state '])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('Warning: Cant perform a React state ') <= -1) {
+				_console.warn(message)
+			}
+		}
   }
 
   componentDidMount = async () => {

@@ -16,6 +16,7 @@ import * as Animatable from 'react-native-animatable'
 import _ from 'lodash'
 
 import colors from '../assets/colors'
+import { normalize } from '../helpers/fontHelper'
 
 import CodeInputLayout from '../components/CodeInputLayout'
 import CustomActionButton from '../components/CustomTempButton'
@@ -259,7 +260,7 @@ class SignUpScreen extends Component {
 													<Feather
 														name='check-circle'
 														color='green'
-														size={20}
+														size={normalize(20)}
 													/>
 												</Animatable.View>
 											) : null}
@@ -286,7 +287,7 @@ class SignUpScreen extends Component {
 													<Feather
 														name='check-circle'
 														color='green'
-														size={20}
+														size={normalize(20)}
 													/>
 												</Animatable.View>
 											) : null}
@@ -307,14 +308,14 @@ class SignUpScreen extends Component {
 													<Feather
 														name='check-circle'
 														color='green'
-														size={20}
+														size={normalize(20)}
 													/>
 												</Animatable.View>
 											) : null}
 										</InputField>
 
 										{/* --------buttons------- */}
-										<View style={{ flex: 1, marginTop: 20 }}>
+										<View style={{ flex: 1, marginTop: normalize(30) }}>
 											<CustomActionButton
 												style={[
 													styles.button,
@@ -353,49 +354,49 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgUserLogin,
-		paddingTop: Platform.OS == 'android' ? 0 : 50,
 	},
 	header: {
 		flex: 1,
 		justifyContent: 'flex-end',
-		paddingHorizontal: 20,
-		paddingVertical: 40,
+		paddingHorizontal: normalize(20),
+		paddingVertical: normalize(50),
 	},
 	footer: {
 		flex: 3,
 		backgroundColor: 'white',
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
-		paddingHorizontal: 20,
-		paddingVertical: 30,
+		paddingHorizontal: normalize(20),
+		paddingVertical: normalize(30),
 	},
 	textHeader: {
 		color: 'white',
-		fontSize: 30,
+		fontSize: normalize(30),
 		fontWeight: 'bold',
 	},
 	textFooter: {
 		color: colors.bgUserLogin,
-		fontSize: 18,
+		fontSize: normalize(18),
 		fontWeight: 'bold',
 	},
 	action: {
 		flexDirection: 'row',
-		marginVertical: 10,
+		marginVertical: normalize(10),
 		borderBottomWidth: 1,
 		borderBottomColor: '#f2f2f2',
-		paddingBottom: 5,
+		paddingBottom: normalize(5),
 	},
 	textInput: {
 		flex: 1,
-		paddingLeft: 10,
+		paddingLeft: normalize(10),
 		color: colors.bgUserLogin,
 	},
 	button: {
 		borderColor: colors.bgPrimary,
 		borderWidth: 0.5,
-		borderRadius: 20,
+		borderRadius: normalize(30),
 		alignSelf: 'center',
 		width: '80%',
+		height: normalize(42)
 	},
 })

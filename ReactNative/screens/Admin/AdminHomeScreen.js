@@ -7,11 +7,13 @@ import {
 	ImageBackground,
 	Dimensions,
 	TouchableOpacity,
+	YellowBox,
 } from 'react-native'
 import ScrollableTabView, {
 	DefaultTabBar,
 } from 'react-native-scrollable-tab-view'
 
+import _ from 'lodash'
 import colors from '../../assets/colors'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -22,10 +24,23 @@ import Activities from './NavTabs/Activities'
 import { connect } from 'react-redux'
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
+import { normalize } from '../../helpers/fontHelper'
 
 const screenWidth = Dimensions.get('screen').width
 
 class AdminHomeScreen extends React.Component {
+	constructor() {
+		super()
+
+		YellowBox.ignoreWarnings(['@firebase/database:'])
+		const _console = _.clone(console)
+		console.warn = message => {
+			if (message.indexOf('@firebase/database:') <= -1) {
+				_console.warn(message)
+			}
+		}
+	}
+
 	adminLogOut = async () => {
 		try {
 			await firebase.auth().signOut()
@@ -45,10 +60,10 @@ class AdminHomeScreen extends React.Component {
 					<TouchableOpacity
 						onPress={this.adminLogOut}
 						style={{
-							paddingHorizontal: 10,
+							paddingHorizontal: normalize(10),
 							position: 'absolute',
 							left: '200%',
-							top: 35,
+							top: normalize(35),
 						}}>
 						<Ionicons name='md-power' color={colors.bgAdminLogin} size={30} />
 					</TouchableOpacity>
@@ -116,8 +131,8 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		color: 'white',
-		marginTop: 25,
+		marginTop: normalize(25),
 		fontWeight: 'bold',
-		fontSize: 20,
+		fontSize: normalize(20),
 	},
 })

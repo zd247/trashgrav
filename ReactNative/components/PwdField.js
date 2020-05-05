@@ -3,13 +3,14 @@ import {
 	Text,
 	View,
 	TextInput,
-	Dimensions,
+	StyleSheet,
+	Image,
 	TouchableOpacity,
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import * as Animatable from 'react-native-animatable'
-import EStyleSheet from 'react-native-extended-stylesheet'
+import {normalize} from '../helpers/fontHelper'
 
 const PwdField = props => {
 	const [secureTextEntry, setSecureTextEntry] = useState(true)
@@ -24,7 +25,7 @@ const PwdField = props => {
 				{props.title ? props.title : 'Password'}
 			</Text>
 			<View style={styles.action}>
-				<FontAwesome name='lock' color={props.color} size={20} />
+				<FontAwesome name='lock' color={props.color} size={normalize(20)} />
 				<TextInput
 					style={[styles.textInput, { color: props.color }]}
 					blurOnSubmit
@@ -39,9 +40,9 @@ const PwdField = props => {
 				<Animatable.View animation='bounceIn'>
 					<TouchableOpacity onPress={secureTextEntryHandler}>
 						{secureTextEntry ? (
-							<Feather name='eye-off' color='grey' size={20} />
+							<Feather name='eye-off' color='grey' size={normalize(20)} />
 						) : (
-							<Feather name='eye' color='grey' size={20} />
+							<Feather name='eye' color='grey' size={normalize(20)} />
 						)}
 					</TouchableOpacity>
 				</Animatable.View>
@@ -52,24 +53,20 @@ const PwdField = props => {
 
 export default PwdField
 
-
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
-
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
 	text: {
-		fontSize: '18rem',
+		fontSize: normalize(18),
 		fontWeight: 'bold',
 	},
 	action: {
 		flexDirection: 'row',
-		marginVertical: '10rem',
-		borderBottomWidth: '1rem',
+		marginVertical: normalize(10),
+		borderBottomWidth: 1,
 		borderBottomColor: '#f2f2f2',
-		paddingBottom: '5rem',
+		paddingBottom: normalize(5),
 	},
 	textInput: {
 		flex: 1,
-		paddingLeft: '10rem',
+		paddingLeft: normalize(10),
 	},
 })

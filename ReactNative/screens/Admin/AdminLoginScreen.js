@@ -2,6 +2,7 @@ import React from 'react'
 import {
 	View,
 	Text,
+	StyleSheet,
 	ScrollView,
 	SafeAreaView,
 	Dimensions,
@@ -9,12 +10,11 @@ import {
 	ActivityIndicator,
 	YellowBox,
 } from 'react-native'
-
-import EStyleSheet from 'react-native-extended-stylesheet'
 import Feather from 'react-native-vector-icons/Feather'
 
 import _ from 'lodash'
 import colors from '../../assets/colors'
+import { normalize } from '../../helpers/fontHelper'
 import * as Animatable from 'react-native-animatable'
 import InputField from '../../components/InputField'
 import PwdField from '../../components/PwdField'
@@ -25,6 +25,7 @@ import * as firebase from 'firebase/app'
 import 'firebase/auth'
 
 const screenWidth = Dimensions.get('screen').width
+const screenHeight = Dimensions.get('screen').height
 
 class AdminLoginScreen extends React.Component {
 	constructor() {
@@ -112,11 +113,10 @@ class AdminLoginScreen extends React.Component {
 				<SafeAreaView />
 				<View style={{ flex: 1 }}>
 					<ScrollView style={{ flex: 1 }}>
-						{/* ----------[loading indicator]----------*/}
 						{this.state.isLoading ? (
 							<View
 								style={[
-									EStyleSheet.absoluteFill,
+									StyleSheet.absoluteFill,
 									{
 										alignItems: 'center',
 										justifyContent: 'center',
@@ -142,7 +142,11 @@ class AdminLoginScreen extends React.Component {
 								onInputChange={this.handleEmailTextInputChange}>
 								{this.state.checkEmailInputText ? (
 									<Animatable.View animation='bounceIn'>
-										<Feather name='check-circle' color='green' size={20} />
+										<Feather
+											name='check-circle'
+											color='green'
+											size={normalize(20)}
+										/>
 									</Animatable.View>
 								) : null}
 							</InputField>
@@ -157,7 +161,11 @@ class AdminLoginScreen extends React.Component {
 								style={{ alignItems: 'flex-end' }}
 								onPress={this.onContinue}>
 								<View style={styles.button}>
-									<Feather name='arrow-right' color='white' size={25} />
+									<Feather
+										name='arrow-right'
+										color='white'
+										size={normalize(25)}
+									/>
 								</View>
 							</TouchableOpacity>
 						</View>
@@ -184,32 +192,28 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminLoginScreen)
 
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
-
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.bgAdminLogin,
-		paddingVertical: Platform.OS == 'android' ? '0rem' : '50rem',
 	},
 	header: {
 		flex: 1,
 		justifyContent: 'flex-end',
-		paddingHorizontal: '30rem',
-		paddingVertical: '100rem',
+		paddingHorizontal: '10%',
+		paddingVertical: screenHeight * 0.15,
 	},
 	footer: {
 		flex: 1,
 		backgroundColor: 'white',
-		borderRadius: '35rem',
-		marginHorizontal: '15rem',
-		paddingHorizontal: '20rem',
-		paddingVertical: '30rem',
+		borderRadius: 35,
+		marginHorizontal: '4%',
+		paddingHorizontal: '5%',
+		paddingVertical: '8.5%',
 	},
 	textHeader: {
 		color: 'white',
-		fontSize: '30rem',
+		fontSize: normalize(30),
 		fontWeight: 'bold',
 	},
 	absolute: {
@@ -220,15 +224,15 @@ const styles = EStyleSheet.create({
 	box: {
 		flex: 1,
 		justifyContent: 'center',
-		paddingHorizontal: '18rem',
+		paddingHorizontal: '4%',
 	},
 	button: {
-		width: '100rem',
+		width: normalize(100),
 		backgroundColor: '#4399AD',
-		marginTop: '15rem',
-		borderRadius: '50rem',
+		marginTop: normalize(15),
+		borderRadius: 50,
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingVertical: '10rem',
+		paddingVertical: normalize(10),
 	},
 })

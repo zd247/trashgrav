@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import colors from '../assets/colors'
-import EStyleSheet from 'react-native-extended-stylesheet'
+import { normalize } from '../helpers/fontHelper'
 
 const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 	<View style={[styles.ItemListContainer, { marginVertical }]}>
@@ -16,7 +16,7 @@ const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 						style={styles.image}
 						// indicator={ProgressPie}
 						indicatorProps={{
-							size: 40,
+							size: normalize(40),
 							borderWidth: 0,
 							color: colors.logoColor,
 							unfilledColor: 'rgba(200,200,200,0.2)',
@@ -36,45 +36,42 @@ const ItemList = ({ item, children, marginVertical, editable, onPress }) => (
 )
 
 ItemList.defaultProps = {
-	marginVertical: 5,
+	marginVertical: normalize(5),
 	editable: false,
 }
 
 export default ItemList
 
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
-
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
 	ItemListContainer: {
-		minHeight: '100rem',
+		minHeight: normalize(100),
 		flexDirection: 'row',
 		backgroundColor: '#fbfbf1',
 		alignItems: 'center',
-		borderWidth: '0.15rem',
-		borderRadius: '15rem',
-		padding: '10rem',
+		borderWidth: 0.15,
+		borderRadius: normalize(10),
+		padding: normalize(10),
 	},
 	imageContainer: {
-		height: '120rem',
-		width: '120rem',
+		height: normalize(120),
+		width: normalize(120),
 	},
 	image: {
 		width: '100%',
 		height: '100%',
-		borderWidth: '5rem',
+		borderWidth: normalize(5),
 		borderColor: 'white',
-		borderRadius: '10rem',
+		borderRadius: normalize(10),
 	},
 	ItemListTitleContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		paddingLeft: '5rem',
+		paddingLeft: normalize(5),
 	},
 	ItemListTitle: {
 		fontWeight: '100',
-		fontSize: '22rem',
+		fontSize: normalize(20),
 		color: 'black',
-		marginStart: '10rem',
+		marginStart: normalize(10),
 	},
 })
