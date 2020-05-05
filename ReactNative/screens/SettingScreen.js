@@ -21,10 +21,7 @@ import "firebase/auth";
 
 import CustomActionButton from "../components/CustomTempButton";
 import colors from "../assets/colors";
-import { Ionicons } from "@expo/vector-icons";
-import { connect } from "react-redux";
-import * as firebase from "firebase/app";
-import "firebase/auth";
+
 class SettingScreen extends Component {
   constructor() {
     super();
@@ -275,7 +272,7 @@ class SettingScreen extends Component {
             {!this.props.auth.isDriver ? (
               <TouchableOpacity
                 style={{ alignSelf: "center" }}
-                onPress={this.props.changeCustomerMode}
+                onPress={this.props.changeDriverMode}
               >
                 <Text style={{ color: "green", fontSize: normalize(17) }}>
                   Become a Driver
