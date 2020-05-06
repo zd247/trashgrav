@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableHighlight,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 
 import * as Location from "expo-location";
@@ -40,7 +41,8 @@ class DriverMapScreen extends Component {
       pointCoords: [],
       order: [],
       isButtonEnabled: true,
-      orderStatus: 0,
+      orderStatus: 2,
+      isModalVisible: false,
     };
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
@@ -73,6 +75,10 @@ class DriverMapScreen extends Component {
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
     );
     //console.log(JSON.stringify(location.coords));
+  };
+
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
   async getRouteDirections(destinationPlaceId, destinationName) {
@@ -156,6 +162,10 @@ class DriverMapScreen extends Component {
     console.log("Driver Has Arrived");
   };
 
+  onPayment() {
+    console.log("Pay Your Customer Now");
+  }
+
   render() {
     let marker = null;
 
@@ -197,7 +207,7 @@ class DriverMapScreen extends Component {
           <Text style={styles.ItemListTitle}>Navigate to Customer</Text>
         </CustomActionButton>
       );
-    } else {
+    } else if (this.state.orderStatus == 1) {
       button = (
         <CustomActionButton
           style={styles.onArrival}
@@ -206,6 +216,17 @@ class DriverMapScreen extends Component {
           disabled={false}
         >
           <Text style={styles.ItemListTitle}>Driver Has Arrived</Text>
+        </CustomActionButton>
+      );
+    } else {
+      button = (
+        <CustomActionButton
+          style={styles.onArrival}
+          title="Pay Customer!!"
+          onPress={() => this.onPayment()}
+          disabled={false}
+        >
+          <Text style={styles.ItemListTitle}>Pay Your Customer</Text>
         </CustomActionButton>
       );
     }
