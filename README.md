@@ -25,6 +25,8 @@
 - `npm install lodash`
 - `npm install react-native-numeric-input react-native-vector-icons --save react-native link`
 - `npm install --save react-native-form-select-picker`
+- `npm install react-native-webview`
+- `npm i react-native-plaid-link`
 
 
 ### Overview technical requirements
