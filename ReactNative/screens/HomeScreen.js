@@ -52,10 +52,14 @@ class HomeScreen extends Component {
 			paymentOption: 'cash',
 		}
 
-		YellowBox.ignoreWarnings(['Warning: Cant perform a React state '])
+		YellowBox.ignoreWarnings(["Warning: Can't perform a React state "])
+		YellowBox.ignoreWarnings(['Warning: componentWillReceiveProps has been '])
 		const _console = _.clone(console)
 		console.warn = message => {
-			if (message.indexOf('Warning: Cant perform a React state ') <= -1) {
+			if (message.indexOf("Warning: Can't perform a React state ") <= -1) {
+				_console.warn(message)
+			}
+			if (message.indexOf('Warning: componentWillReceiveProps has been') <= -1) {
 				_console.warn(message)
 			}
 		}
