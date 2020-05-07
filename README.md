@@ -23,7 +23,8 @@
 - `npm install react-native-maps`
 - `npm install react-native-scrollable-tab-view`
 - `npm install lodash`
-- `npm i react-native-extended-stylesheet --save`
+- `npm install react-native-numeric-input react-native-vector-icons --save react-native link`
+- `npm install --save react-native-form-select-picker`
 
 
 ### Overview technical requirements
