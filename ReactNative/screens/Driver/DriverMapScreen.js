@@ -196,6 +196,7 @@ class DriverMapScreen extends Component {
       destination: "",
       locationPredictions: [],
       isButtonEnabled: true,
+      orderStatus: 0,
     });
 
     this.toggleModal();
@@ -298,7 +299,7 @@ class DriverMapScreen extends Component {
     } else {
       button = (
         <CustomActionButton
-          style={styles.onArrival}
+          style={styles.onPayment}
           title="Pay Customer!!"
           onPress={() => this.onPayment()}
           disabled={false}
@@ -489,6 +490,17 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
   },
+  onPayment: {
+    width: 200,
+    height: 50,
+    backgroundColor: "blue",
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginBottom: 5,
+    marginTop: "auto",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
   header: {
     height: 70,
     borderBottomWidth: 0.5,
@@ -540,7 +552,7 @@ const styles = StyleSheet.create({
   ItemListTitle: {
     fontWeight: "100",
     fontSize: 22,
-    color: "black",
+    color: "white",
     marginStart: 10,
   },
   modal: {
