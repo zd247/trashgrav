@@ -78,8 +78,8 @@ class UserProfileScreen extends Component {
 		]
 
 		try {
-      this.props.toggleIsLoadingItems(true)
-      
+			this.props.toggleIsLoadingItems(true)
+
 			await firebase
 				.database()
 				.ref('Users')
@@ -87,14 +87,14 @@ class UserProfileScreen extends Component {
 				.update({
 					email: this.state.email,
 					first_name: this.state.firstName,
-          last_name: this.state.lastName,
-          image: this.state.image
+					last_name: this.state.lastName,
+					image: this.state.image,
 				})
 
 			this.props.updateUser(tempUser[0])
-      console.log(tempUser)
-      alert('Your recently changes has been applied')
-      this.props.toggleIsLoadingItems(false)
+			console.log(tempUser)
+			alert('Your recently changes has been applied')
+			this.props.toggleIsLoadingItems(false)
 		} catch (error) {
 			console.log(error)
 			this.props.props.toggleIsLoadingItems(false)
@@ -113,10 +113,9 @@ class UserProfileScreen extends Component {
 
 			let downloadUrl = await ref.getDownloadURL()
 
+			blob.close()
 
-      blob.close()
-      
-      this.props.toggleIsLoadingItems(false)
+			this.props.toggleIsLoadingItems(false)
 
 			return downloadUrl
 		} catch (error) {
@@ -166,8 +165,8 @@ class UserProfileScreen extends Component {
 			]
 
 			this.props.updateUser(tempUser[0])
-      this.setState({ image: downloadUrl })
-      
+			this.setState({ image: downloadUrl })
+
 			this.props.toggleIsLoadingItems(false)
 		}
 	}
@@ -218,11 +217,9 @@ class UserProfileScreen extends Component {
 							<TouchableOpacity
 								style={{ alignSelf: 'center', marginEnd: normalize(20) }}
 								onPress={this.submit}>
-								<Ionicons
-									name='ios-checkmark'
-									size={normalize(50)}
-									color='green'
-								/>
+								<Text style={{ fontSize: normalize(22), color: 'green' }}>
+									Apply
+								</Text>
 							</TouchableOpacity>
 						</View>
 
@@ -331,7 +328,7 @@ const styles = StyleSheet.create({
 	headerTitle: {
 		color: 'white',
 		fontWeight: 'bold',
-		fontSize: normalize(15),
+		fontSize: normalize(17),
 	},
 
 	textInputContainer: {
@@ -367,8 +364,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
 	return {
-    recycleItemList: state.recycleItemList,
-    currentUser: state.auth.currentUser,
+		recycleItemList: state.recycleItemList,
+		currentUser: state.auth.currentUser,
 	}
 }
 

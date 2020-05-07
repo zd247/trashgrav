@@ -76,8 +76,8 @@ class Items extends React.Component {
 					onPress={() => {
 						this.onDeleteItem(item, index)
 					}}
-					style={{ marginBottom: 50, paddingHorizontal: 10 }}>
-					<Ionicons name='ios-trash' color='gray' size={30} />
+					style={{ marginBottom: normalize(50), paddingHorizontal: normalize(10) }}>
+					<Ionicons name='ios-trash' color='gray' size={normalize(30)} />
 				</TouchableOpacity>
 
 				<TouchableOpacity
@@ -85,7 +85,7 @@ class Items extends React.Component {
 					onPress={() => {
 						this.onItemDetail(item, index)
 					}}>
-					<Ionicons name='ios-brush' color='white' size={15} />
+					<Ionicons name='ios-brush' color='white' size={normalize(15)} />
 				</TouchableOpacity>
 			</View>
 		</ListItem>
@@ -96,7 +96,7 @@ class Items extends React.Component {
 	}
 
 	onItemDetail = (item, index) => {
-		this.props.props.navigation.replace('AdminItemScreen', { item })
+		this.props.props.navigation.replace('ItemScreen', { item })
 	}
 	resetNewItemState = () => {
 		this.setState({ newItemImage: '' })
@@ -225,7 +225,9 @@ class Items extends React.Component {
 				{
 					text: 'No',
 					style: 'cancel',
-					onPress: () => {this.setState({isLoading: false})}
+					onPress: () => {
+						this.setState({ isLoading: false })
+					},
 				},
 				{
 					text: 'Yes',
@@ -286,6 +288,23 @@ class Items extends React.Component {
 					</View>
 				</View>
 
+				<FlatList
+					data={this.state.data}
+					renderItem={({ item, index }) => this.renderData(item, index)}
+					keyExtractor={(item, index) => index.toString()}
+					onRefresh={() => this.onRefreshData()}
+					refreshing={this.state.isFetching}
+					ListEmptyComponent={
+						<View style={{ marginTop: normalize(50), alignItems: 'center' }}>
+							<Text style={{ fontWeight: 'bold' }}>
+								No Recycle Item Currently Exist In this List
+							</Text>
+						</View>
+					}
+				/>
+
+
+
 				<Modal
 					animationType='fade'
 					transparent={true}
@@ -306,7 +325,11 @@ class Items extends React.Component {
 												left: normalize(-50),
 												top: normalize(-40),
 											}}>
-											<Ionicons name='ios-close' color='white' size={normalize(30)} />
+											<Ionicons
+												name='ios-close'
+												color='white'
+												size={normalize(30)}
+											/>
 										</TouchableOpacity>
 										<Text
 											style={{
@@ -417,26 +440,17 @@ class Items extends React.Component {
 									onPress={this.onAddNewItem}
 									style={{ alignItems: 'flex-end' }}>
 									<View style={styles.modalButton}>
-										<Feather name='arrow-right' color='white' size={normalize(25)} />
+										<Feather
+											name='arrow-right'
+											color='white'
+											size={normalize(25)}
+										/>
 									</View>
 								</TouchableOpacity>
 							</View>
 						</ScrollView>
 					</View>
 				</Modal>
-
-				<FlatList
-					data={this.state.data}
-					renderItem={({ item, index }) => this.renderData(item, index)}
-					keyExtractor={(item, index) => index.toString()}
-					ListEmptyComponent={
-						<View style={{ marginTop: normalize(50), alignItems: 'center' }}>
-							<Text style={{ fontWeight: 'bold' }}>
-								No Recycle Item Currently Exist In this List
-							</Text>
-						</View>
-					}
-				/>
 			</View>
 		)
 	}

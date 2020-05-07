@@ -1,563 +1,630 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-  Image,
-  Modal,
-  Button,
-  YellowBox,
-  Alert,
-} from "react-native";
-import { render } from "react-dom";
+	StyleSheet,
+	Text,
+	View,
+	SafeAreaView,
+	TouchableOpacity,
+	TextInput,
+	FlatList,
+	ImageBackground,
+	Modal,
+	YellowBox,
+	Alert,
+	Dimensions,
+	ScrollView,
+	ActivityIndicator,
+} from 'react-native'
+import { render } from 'react-dom'
 
 import _ from 'lodash'
-import BottomBar from "../components/BottomBar";
-import CustomActionButton from "../components/CustomTempButton";
-import ListItem from "../components/ItemList";
-import OrderSummary from "../components/OrderSummary";
-import { snapshotToArray } from "../helpers/firebaseHelpers";
-import { Ionicons } from "@expo/vector-icons";
-import colors from "../assets/colors";
+import BottomBar from '../components/BottomBar'
+import CustomActionButton from '../components/CustomTempButton'
+import ListItem from '../components/ItemList'
+import OrderSummary from '../components/OrderSummary'
+import { snapshotToArray } from '../helpers/firebaseHelpers'
+import { Ionicons } from '@expo/vector-icons'
+import colors from '../assets/colors'
 
-import { connect } from "react-redux";
-import { compose } from "redux";
-//import { connectActionSheet } from "@expo/react-native-action-sheet";
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { normalize } from '../helpers/fontHelper'
 
-import * as firebase from "firebase/app";
-import "firebase/storage";
+import * as firebase from 'firebase/app'
+import 'firebase/storage'
+
+import NumericInput from 'react-native-numeric-input'
+import SelectPicker from 'react-native-form-select-picker'
 
 class HomeScreen extends Component {
-  constructor() {
-    super();
-    this.state = {
-      isSearchRecycleItem: false,
-      textInputData: "",
-      recycleItemList: [],
-      recycleCart: [],
-      currentUser: {},
-      isModalVisible: false,
-      isModalVisible2: false,
-      totalWeight: 0,
-      totalPrice: 0,
-      tempInt: 1,
-    };
+	constructor() {
+		super()
+		this.state = {
+			recycleItemListTemp: [],
+			search: '',
+			recycleCart: [],
+			currentUser: {},
+			isModalVisible: false,
+			totalWeight: 0,
+			totalPrice: 0,
+			tempInt: 1,
+			isFetching: false,
+			paymentOption: 'cash',
+		}
 
-    YellowBox.ignoreWarnings(['Warning: Cant perform a React state '])
+		YellowBox.ignoreWarnings(['Warning: Cant perform a React state '])
 		const _console = _.clone(console)
 		console.warn = message => {
 			if (message.indexOf('Warning: Cant perform a React state ') <= -1) {
 				_console.warn(message)
 			}
 		}
-  }
+	}
 
-  componentDidMount = async () => {
-    const user = this.props.currentUser;
+	componentDidMount = async () => {
+		const user = this.props.currentUser
 
-    //const { navigation } = this.props;
-    //const user = navigation.getParam("user");
+		const currentUserData = await firebase
+			.database()
+			.ref('Users')
+			.child(user.key)
+			.once('value')
 
-    const currentUserData = await firebase
-      .database()
-      .ref("Users")
-      .child(user.key)
-      .once("value");
+		const recycleItems = await firebase.database().ref('Items').once('value')
+		let recycleItemsArray = snapshotToArray(recycleItems)
 
-    const recycleItems = await firebase.database().ref("Items").once("value");
-    const recycleItemsArray = snapshotToArray(recycleItems);
+		let temp = currentUserData.val()
+		delete temp['password']
 
-    let temp = currentUserData.val();
-    delete temp["password"];
+		this.setState({
+			currentUser: temp,
+			recycleItemListTemp: recycleItemsArray,
+		})
 
-    //console.log(temp)
-    this.setState({
-      currentUser: temp,
-      recycleItemList: recycleItemsArray,
-    });
+		this.props.loadUser(temp)
+		this.props.loadRecycleItem(recycleItemsArray)
 
-    this.props.loadUser(temp);
-    this.props.loadRecycleItem(recycleItemsArray);
+		//reset cart and list state
+		this.props.recycleItemList.recycleItemList.isAdded = false
+		this.props.recycleItemList.recycleCart = []
+		this.props.updateOrderWeight(0)
+		this.props.updateOrderPrice(0)
 
-    //console.log(this.props.recycleItemList.user);
-  };
+		this.props.toggleIsLoadingItems(false)
+	}
 
-  showSearchRecycleItem = () => {
-    this.setState({ isSearchRecycleItem: true });
-  };
+	toggleModal = () => {
+		this.setState({ isModalVisible: !this.state.isModalVisible })
+	}
 
-  hideSearchRecycleItem = () => {
-    this.setState({ isSearchRecycleItem: false });
-  };
+	searchItem = text => {
+		let data = []
+		this.state.recycleItemListTemp.map(function (value) {
+			if (value.key.indexOf(text.toLowerCase()) > -1) {
+				data.push(value)
+			}
+		})
+		this.props.loadRecycleItem(data)
+		this.setState({ search: text })
+	}
 
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
-  };
+	chooseItem = (selectedItem, index) => {
+		let newList = this.props.recycleItemList.recycleItemList.filter(
+			recycleItem => recycleItem.key == selectedItem.key
+		)
 
-  toggleModal2 = () => {
-    this.setState({ isModalVisible2: !this.state.isModalVisible2 });
-  };
+		selectedItem.isAdded = true
 
-  addRecycleItem = (item) => {
-    this.setState(
-      (state, props) => ({
-        recycleItemList: [...state.recycleItemList, item],
-      }),
-      () => {
-        console.log(this.state.recycleItemList);
-      }
-    );
-  };
+		delete newList[0].description
+		newList[0].weight = this.state.tempInt
 
-  chooseItem = (selectedItem, index) => {
-    let newList = this.state.recycleItemList.filter(
-      (recycleItem) => recycleItem.key == selectedItem.key
-    );
+		var interger = 0
+		if (typeof newList[0].price === 'string') {
+			interger = parseInt(newList[0].price, 10)
+			newList[0].price = interger
+		}
+		this.props.moveItemToCart(newList[0])
+	}
 
-    let tempList = this.props.recycleItemList.recycleCart.filter(
-      (recycleItem) => recycleItem.key == selectedItem.key
-    );
+	removeItem = (selectedItem, index) => {
+		let tempList = this.props.recycleItemList.recycleCart.filter(
+			recycleItem => recycleItem == selectedItem
+		)
+		selectedItem.isAdded = false
 
-    if (tempList.length > 0) {
-      return Alert.alert("This Item already exist in the cart");
-    }
+		this.props.deleteItem(tempList[0])
+	}
 
-    delete newList[0].description;
-    newList[0].weight = this.state.tempInt;
+	updateOrderDetail = (item, num) => {
+		let newWeight
+		if (typeof num === 'string') {
+			newWeight = parseInt(num, 10)
+		} else {
+			newWeight = num
+		}
+		let tempList = this.props.recycleItemList.recycleCart
+		tempList.forEach(element => {
+			if (element.category == item.category) {
+				element.weight = newWeight
+			}
+		})
+		this.props.updateOrder(tempList)
+		this.calculateOrderTotal()
+	}
 
-    var interger = 0;
-    if (typeof newList[0].price === "string") {
-      interger = parseInt(newList[0].price, 10);
-      newList[0].price = interger;
-    }
+	calculateOrderTotal() {
+		let i
+		let tempWeight = 0
+		let tempPrice = 0
+		let interger = 0
+		let tempList = this.props.recycleItemList.recycleCart
+		for (i = 0; i < tempList.length; i++) {
+			if (typeof tempList[i].weight === 'string') {
+				interger = parseInt(tempList[i].weight, 10)
+				tempList[i].weight = interger
+			}
+			tempWeight += tempList[i].weight
+			tempPrice = tempPrice + tempList[i].weight * tempList[i].price
+		}
+		this.props.updateOrderWeight(tempWeight)
+		this.props.updateOrderPrice(tempPrice)
+		if (tempWeight > 5) {
+			return Alert.alert(
+				'The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value'
+			)
+		}
+	}
 
-    //console.log(newList)
-    console.log(newList[0]);
-    //console.log(this.state.recycleItemList)
-    this.props.moveItemToCart(newList[0]);
-  };
+	componentWillUnmount = () => {
+		console.log('[HomeScreen] component umounted')
+	}
 
-  removeItem = (selectedItem, index) => {
-    let newList = this.props.recycleItemList.recycleCart.filter(
-      (recycleItem) => recycleItem !== selectedItem
-    );
+	renderRecycleItemList = (item, index) => (
+		<ListItem item={item}>
+			<View style={{ flexDirection: 'column', alignItems: 'center' }}>
+				{!item.isAdded ? (
+					<TouchableOpacity
+						onPress={() => this.chooseItem(item, index)}
+						style={{
+							paddingHorizontal: normalize(10),
+							paddingVertical: normalize(20),
+						}}>
+						<Ionicons name='ios-add' color='green' size={normalize(40)} />
+					</TouchableOpacity>
+				) : (
+					<TouchableOpacity
+						onPress={() => this.removeItem(item, index)}
+						style={{
+							paddingHorizontal: normalize(10),
+							paddingVertical: normalize(20),
+						}}>
+						<Ionicons name='ios-remove' color='red' size={normalize(40)} />
+					</TouchableOpacity>
+				)}
 
-    let tempList = this.props.recycleItemList.recycleCart.filter(
-      (recycleItem) => recycleItem == selectedItem
-    );
+				<TouchableOpacity
+					style={{
+						paddingHorizontal: normalize(10),
+						paddingVertical: normalize(20),
+					}}
+					onPress={() => {
+						this.props.navigation.navigate('ItemScreen', { item })
+					}}>
+					<Ionicons name='ios-alert' color='green' size={normalize(30)} />
+				</TouchableOpacity>
+			</View>
+		</ListItem>
+	)
 
-    //console.log(tempList);
-    //console.log(newList);
+	renderOrderSummary = (item, index) => (
+		<OrderSummary item={item}>
+			<View
+				style={{
+					flex: 1,
+					justifyContent: 'space-between',
+					flexDirection: 'row',
+				}}>
+				<View
+					style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+					<Text style={{ fontSize: normalize(22), padding: normalize(5), color: '#777e74' }}>
+						{item.key}
+					</Text>
+					<View style={{ padding: normalize(5) }}>
+						<NumericInput
+							value={item.weight}
+							onChange={value => this.updateOrderDetail(item, value)}
+							step={0.5}
+							valueType='real'
+							maxValue={5}
+							minValue={0}
+							rounded
+							textColor={colors.bgUserLogin}
+							iconStyle={{ color: 'white' }}
+							rightButtonBackgroundColor='#a7b0a2'
+							leftButtonBackgroundColor='#d7e2d0'
+							editable={false}
+						/>
+					</View>
+				</View>
+				<TouchableOpacity
+					style={{ paddingRight: normalize(20) }}
+					onPress={() => this.removeItem(item, index)}>
+					<Ionicons name='ios-remove' size={normalize(30)} color='red' />
+				</TouchableOpacity>
+			</View>
+		</OrderSummary>
+	)
 
-    this.props.deleteItem(tempList[0]);
-    //console.log(this.state.recycleCart);
-  };
+	requestDriver = () => {
+		this.calculateOrderTotal()
+		this.setState({ isModalVisible: false })
 
-  updateOrderDetail = (item, text) => {
-    //console.log("Item before update", item);
-    //console.log(text);
-    let oldWeight = item.weight;
-    let newWeight;
-    if (typeof text === "string") {
-      newWeight = parseInt(text, 10);
-    } else {
-      newWeight = text;
-    }
-    let tempList = this.props.recycleItemList.recycleCart;
-    tempList.forEach((element) => {
-      if (element.category == item.category) {
-        element.weight = newWeight;
-        //console.log("Item after update: ", element);
-      }
-    });
-    this.props.updateOrder(tempList);
-    this.calculateOrderTotal();
-  };
+		this.props.navigation.navigate('CustomerMapScreen')
+	}
 
-  calculateOrderTotal() {
-    let i;
-    let tempWeight = 0;
-    let tempPrice = 0;
-    let interger = 0;
-    let tempList = this.props.recycleItemList.recycleCart;
-    for (i = 0; i < tempList.length; i++) {
-      if (typeof tempList[i].weight === "string") {
-        interger = parseInt(tempList[i].weight, 10);
-        tempList[i].weight = interger;
-      }
-      tempWeight += tempList[i].weight;
-      tempPrice = tempPrice + tempList[i].weight * tempList[i].price;
-    }
-    this.props.updateOrderWeight(tempWeight);
-    this.props.updateOrderPrice(tempPrice);
-    if (tempWeight > 5) {
-      return Alert.alert(
-        "The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value"
-      );
-    }
-  }
+	render() {
+		return (
+			<View style={styles.container}>
+				<SafeAreaView />
+				{/* ------------header------------- */}
+				<View style={styles.header}>
+					<TouchableOpacity
+						onPress={() => this.props.navigation.openDrawer()}
+						style={{ flex: 1 }}>
+						<Ionicons
+							name='ios-menu'
+							size={normalize(30)}
+							color='white'
+							style={{ marginLeft: normalize(10) }}
+						/>
+					</TouchableOpacity>
+					<Text style={styles.headerTitle}>
+						Hello {this.props.recycleItemList.user.first_name} ~
+					</Text>
+					<TouchableOpacity
+						onPress={() => this.props.navigation.navigate('CustomerMapScreen')}
+						style={{ marginRight: normalize(15) }}>
+						<Ionicons
+							name='ios-map'
+							size={normalize(30)}
+							color='white'
+							style={{ marginLeft: normalize(10) }}
+						/>
+					</TouchableOpacity>
+				</View>
 
-  componentWillUnmount = () => {
-    console.log("[HomeScreen] component umounted");
-  };
+				{/* ------------body content------------- */}
+				<View style={{ flex: 1, paddingHorizontal: normalize(15) }}>
+					<View style={{ flexDirection: 'row', paddingStart: normalize(10) }}>
+						<View style={styles.section}>
+							<TextInput
+								placeholder='Search..'
+								style={{ flex: 1, marginLeft: 10 }}
+								value={this.state.search}
+								autoCapitalize='none'
+								onChangeText={text => this.searchItem(text)}
+							/>
+							<TouchableOpacity
+								onPress={() => this.searchItem('')}
+								style={{ paddingHorizontal: 10 }}>
+								<Ionicons name='ios-close' color='gray' size={normalize(20)} />
+							</TouchableOpacity>
+						</View>
+						<TouchableOpacity
+							onPress={this.toggleModal}
+							style={{ paddingHorizontal: normalize(17), alignSelf: 'center' }}>
+							<Ionicons name='ios-cart' color='green' size={normalize(40)} />
+						</TouchableOpacity>
+					</View>
+					<FlatList
+						data={this.props.recycleItemList.recycleItemList}
+						renderItem={({ item, index }) =>
+							this.renderRecycleItemList(item, index)
+						}
+						keyExtractor={(item, index) => index.toString()}
+						ListEmptyComponent={
+							<View style={{ marginTop: 50, alignItems: 'center' }}>
+								<Text style={{ fontWeight: 'bold' }}>
+									No Recycle Item Currently Exist In this List
+								</Text>
+							</View>
+						}
+					/>
+				</View>
 
-  renderRecycleItemList = (item, index) => (
-    <ListItem item={item}>
-      <TouchableOpacity
-        style={{ paddingRight: 20 }}
-        onPress={() => this.chooseItem(item, index)}
-      >
-        <View style={styles.addingButton}>
-          <Text>Add To Cart</Text>
-        </View>
-      </TouchableOpacity>
-    </ListItem>
-  );
+				{/* -----------cart modal----------- */}
 
-  renderOrderSummary = (item, index) => (
-    <OrderSummary item={item}>
-      <TextInput
-        style={styles.orderInput}
-        placeholder={"Current Weight: " + JSON.stringify(item.weight)}
-        placeholderTextColor="black"
-        onChangeText={(text) => {
-          this.updateOrderDetail(item, text);
-        }}
-        keyboardType="phone-pad"
-        ref={(component) => {
-          this.textInputRef = component;
-        }}
-      />
-      <TouchableOpacity
-        style={{ paddingRight: 20 }}
-        onPress={() => this.removeItem(item, index)}
-      >
-        <Ionicons
-          name="ios-remove"
-          size={30}
-          color="white"
-          style={{ marginLeft: 10 }}
-        />
-      </TouchableOpacity>
-    </OrderSummary>
-  );
+				<Modal
+					style={{ flex: 1 }}
+					visible={this.state.isModalVisible}
+					animationType='slide'>
+					<SafeAreaView />
+					{this.props.recycleItemList.isLoading ? (
+						<View
+							style={[
+								StyleSheet.absoluteFill,
+								{
+									alignItems: 'center',
+									justifyContent: 'center',
+									zIndex: 1000,
+									elevation: 1000,
+								},
+							]}>
+							<ActivityIndicator size='large' color={colors.logoColor} />
+						</View>
+					) : null}
+					<View style={styles.modalContainer}>
+						{/* ------header------ */}
+						<View
+							style={{
+								flexDirection: 'row',
+								flex: 0.1,
+								borderBottomColor: colors.bgUserLogin,
+								borderBottomWidth: 0.8,
+								paddingBottom: normalize(10),
+							}}>
+							<ImageBackground
+								source={require('../assets/header.png')}
+								style={styles.imageBackground}
+								resizeMode='stretch'>
+								<TouchableOpacity onPress={this.toggleModal}>
+									<Ionicons
+										name='ios-close'
+										size={normalize(35)}
+										color='white'
+									/>
+								</TouchableOpacity>
+								<Text style={styles.headerModalTitle}>SUMMARY</Text>
+							</ImageBackground>
+						</View>
+						{/* ------item list------ */}
 
-  requestDriver = () => {
-    this.calculateOrderTotal();
-    this.setState({ isModalVisible: false });
+						<View style={[styles.sectionContainer, { flex: 0.65 }]}>
+							<FlatList
+								data={this.props.recycleItemList.recycleCart}
+								renderItem={({ item, index }) =>
+									this.renderOrderSummary(item, index)
+								}
+								keyExtractor={(item, index) => index.toString()}
+								ListEmptyComponent={
+									<View
+										style={{
+											marginTop: normalize(50),
+											alignItems: 'center',
+										}}>
+										<Text style={{ fontWeight: 'bold' }}>
+											No Recycle Item Currently Exist In this List
+										</Text>
+									</View>
+								}
+							/>
+						</View>
+						{/* ------text summary------ */}
+						<View style={{ flex: 0.08 }}>
+							<View
+								style={{
+									flexDirection: 'row',
+									alignSelf: 'flex-end',
+									alignItems: 'flex-end',
+									marginEnd: normalize(40),
+								}}>
+								<Text
+									style={{
+										fontSize: normalize(11),
+										color: 'silver',
+										marginEnd: normalize(6),
+									}}>
+									Total Weight{' '}
+								</Text>
+								<Text style={{ fontSize: normalize(15), fontWeight: 'bold' }}>
+									{this.props.recycleItemList.totalWeight} kg
+								</Text>
+							</View>
+							<View
+								style={{
+									flexDirection: 'row',
+									alignSelf: 'flex-end',
+									alignItems: 'flex-end',
+									marginEnd: normalize(40),
+								}}>
+								<Text
+									style={{
+										fontSize: normalize(11),
+										color: 'silver',
+										marginEnd: normalize(6),
+									}}>
+									Total Earning{' '}
+								</Text>
+								<Text style={{ fontSize: normalize(15), fontWeight: 'bold' }}>
+									{this.props.recycleItemList.totalPrice}$
+								</Text>
+							</View>
+						</View>
+						{/* ------text summary------ */}
+						<View style={[styles.sectionContainer, { flex: 0.1 }]}>
+							<View
+								style={{
+									paddingVertical: normalize(5),
+									paddingHorizontal: normalize(20),
+									flexDirection: 'row',
+									alignItems: 'center',
+								}}>
+								<Text
+									style={{
+										fontSize: normalize(18),
+										fontWeight: '100',
+										color: '#8f978b',
+									}}>
+									How would you like to get paid?
+								</Text>
+								<SelectPicker
+									onValueChange={value => {
+										this.setState({
+											paymentOption: value,
+										})
+									}}
+									style={{ borderBottomWidth: 0.5 }}
+									selected={this.state.paymentOption}>
+									<SelectPicker.Item label='Cash' value='cash' />
+									<SelectPicker.Item label='Visa' value='visa' />
+									<SelectPicker.Item label='Debit' value='debit' />
+									<SelectPicker.Item label='Mastercard' value='mastercard' />
+								</SelectPicker>
+							</View>
+						</View>
+						{/* ------text summary------ */}
+						<View
+							style={{
+								flex: 0.2,
+								borderTopWidth: 0.8,
+								borderTopColor: colors.bgUserLogin,
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								alignContent: 'center',
+							}}>
+							<TouchableOpacity
+								style={styles.modalButton}
+								onPress={() => {
+									this.props.navigation.replace('Recycle Item List')
+									this.props.toggleIsLoadingItems(true)
+								}}>
+								<Text style={{ color: 'red', fontSize: normalize(26) }}>
+									Cancel
+								</Text>
+							</TouchableOpacity>
 
-    //console.log(tempWeight)
-    //this.props.updateOrder()
-    //console.log(JSON.stringify(this.props.recycleItemList.order))
-    this.props.navigation.navigate("CustomerMapScreen");
-  };
+							<TouchableOpacity
+								style={styles.modalButton}
+								onPress={this.requestDriver}>
+								<Text style={{ color: 'green', fontSize: normalize(26) }}>
+									Book
+								</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <SafeAreaView />
+					<SafeAreaView />
+				</Modal>
 
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.openDrawer()}
-            style={{ flex: 1 }}
-          >
-            <Ionicons
-              name="ios-menu"
-              size={30}
-              color="white"
-              style={{ marginLeft: 10 }}
-            />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>
-            Welcome {this.props.recycleItemList.user.first_name} !!
-          </Text>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("CustomerMapScreen")}
-            style={{ marginRight: 15 }}
-          >
-            <Ionicons
-              name="ios-map"
-              size={30}
-              color="white"
-              style={{ marginLeft: 10 }}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <View style={styles.textInputContainer}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Search Recycle Items"
-              placeholderTextColor={colors.txtPlaceholder}
-              onChangeText={(text) => this.setState({ textInputData: text })}
-              ref={(component) => {
-                this.textInputRef = component;
-              }}
-            />
-          </View>
-          <FlatList
-            data={this.props.recycleItemList.recycleItemList}
-            renderItem={({ item, index }) =>
-              this.renderRecycleItemList(item, index)
-            }
-            keyExtractor={(item, index) => index.toString()}
-            ListEmptyComponent={
-              <View style={{ marginTop: 50, alignItems: "center" }}>
-                <Text style={{ fontWeight: "bold" }}>
-                  No Recycle Item Currently Exist In this List
-                </Text>
-              </View>
-            }
-          />
-
-          {/*<CustomTempButton
-            position="right"
-            style={{ backgroundColor: "#CAF1DE", borderRadius: 25 }}
-            onPress={this.showSearchRecycleItem}
-          >
-            <Text style={{ color: "white", fontSize: 30 }}>+</Text>
-          </CustomTempButton> */}
-        </View>
-        <View
-          style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
-        >
-          <CustomActionButton
-            style={styles.changeMode}
-            title="Book A Driver Now!!"
-            onPress={this.toggleModal}
-          >
-            <Text style={{ fontWeight: "100", color: "white" }}>
-              Check Out Now!!
-            </Text>
-          </CustomActionButton>
-          {/* Modal Start here */}
-          <Modal visible={this.state.isModalVisible} animationType="slide">
-            <SafeAreaView />
-            <View style={styles.modal}>
-              <View style={styles.header}>
-                <TouchableOpacity
-                  onPress={this.toggleModal}
-                  style={{ flex: 1 }}
-                >
-                  <Ionicons
-                    name="ios-close"
-                    size={30}
-                    color="white"
-                    style={{ marginLeft: 10 }}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Order Summary !!</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <FlatList
-                  data={this.props.recycleItemList.recycleCart}
-                  renderItem={({ item, index }) =>
-                    this.renderOrderSummary(item, index)
-                  }
-                  keyExtractor={(item, index) => index.toString()}
-                  ListEmptyComponent={
-                    <View style={{ marginTop: 50, alignItems: "center" }}>
-                      <Text style={{ fontWeight: "bold" }}>
-                        No Recycle Item Currently Exist In this List
-                      </Text>
-                    </View>
-                  }
-                />
-              </View>
-              <View
-                style={{
-                  flex: 0.2,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text position="left" style={styles.orderSummary}>
-                  Total Weight: {this.props.recycleItemList.totalWeight} Kg
-                </Text>
-                <Text style={styles.orderSummary}>
-                  Total Price: ${this.props.recycleItemList.totalPrice}
-                </Text>
-                <CustomActionButton
-                  style={styles.requestButton}
-                  title="Book A Driver Now!!"
-                  onPress={this.requestDriver}
-                >
-                  <Text style={{ fontWeight: "100", color: "white" }}>
-                    Request A Driver Now
-                  </Text>
-                </CustomActionButton>
-              </View>
-            </View>
-            <SafeAreaView />
-          </Modal>
-        </View>
-
-        <SafeAreaView />
-      </View>
-    );
-  }
+				<SafeAreaView />
+			</View>
+		)
+	}
 }
 
-const mapStateToProps = (state) => {
-  return {
-    recycleItemList: state.recycleItemList,
-    currentUser: state.auth.currentUser,
-    //temp: state.recycleCart,
-  };
-};
+const mapStateToProps = state => {
+	return {
+		recycleItemList: state.recycleItemList,
+		currentUser: state.auth.currentUser,
+		//temp: state.recycleCart,
+	}
+}
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadRecycleItem: (recycleItemList) =>
-      dispatch({
-        type: "LOAD_RECYCLE_ITEMS_FROM_SERVER",
-        payload: recycleItemList,
-      }),
-    loadUser: (user) =>
-      dispatch({
-        type: "LOAD_USER_FROM_SERVER",
-        payload: user,
-      }),
-    moveItemToCart: (item) =>
-      dispatch({ type: "ADD_RECYCLE_ITEMS_TO_CART", payload: item }),
-    toggleIsLoadingItems: (bool) =>
-      dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
-    deleteItem: (item) =>
-      dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
-    updateOrder: (order) => dispatch({ type: "UPDATE_ORDER", payload: order }),
-    updateOrderWeight: (item) =>
-      dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
-    updateOrderPrice: (item) =>
-      dispatch({ type: "UPDATE_ORDER_TOTAL_PRICE", payload: item }),
-  };
-};
+const mapDispatchToProps = dispatch => {
+	return {
+		loadRecycleItem: recycleItemList =>
+			dispatch({
+				type: 'LOAD_RECYCLE_ITEMS_FROM_SERVER',
+				payload: recycleItemList,
+			}),
+		loadUser: user =>
+			dispatch({
+				type: 'LOAD_USER_FROM_SERVER',
+				payload: user,
+			}),
+		moveItemToCart: item =>
+			dispatch({ type: 'ADD_RECYCLE_ITEMS_TO_CART', payload: item }),
+		toggleIsLoadingItems: bool =>
+			dispatch({ type: 'TOGGLE_IS_LOADING_ITEMS', payload: bool }),
+		deleteItem: item =>
+			dispatch({ type: 'REMOVE_RECYCLE_ITEMS_FROM_CART', payload: item }),
+		updateOrder: order => dispatch({ type: 'UPDATE_ORDER', payload: order }),
+		updateOrderWeight: item =>
+			dispatch({ type: 'UPDATE_ORDER_TOTAL_WEIGHT', payload: item }),
+		updateOrderPrice: item =>
+			dispatch({ type: 'UPDATE_ORDER_TOTAL_PRICE', payload: item }),
+	}
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
+
+const screenWidth = Dimensions.get('screen').width
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bgMain,
-  },
-  header: {
-    height: 70,
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.borderColor,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-  },
-  headerTitle: {
-    fontSize: 24,
-    color: "white",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-  },
-  textInputContainer: {
-    height: 50,
-    flexDirection: "row",
-    margin: 5,
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: "transparent",
-    borderColor: colors.listItemBg,
-    borderBottomWidth: 5,
-    fontSize: 22,
-    fontWeight: "200",
-    color: "white",
-  },
-  checkmarkButton: {
-    backgroundColor: colors.bgSuccess,
-  },
-  listEmptyComponent: {
-    marginTop: 50,
-    alignItems: "center",
-  },
-  listEmptyComponentText: {
-    fontWeight: "bold",
-  },
-  markAsReadButton: {
-    width: 100,
-    backgroundColor: colors.bgSuccess,
-  },
-  markAsReadButtonText: {
-    fontWeight: "bold",
-    color: "white",
-  },
-  footer: {
-    height: 70,
-    flexDirection: "row",
-    borderTopWidth: 0.5,
-    borderTopColor: colors.borderColor,
-    color: "white",
-  },
-  listItemContainer: {
-    minHeight: 100,
-    flexDirection: "row",
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  imageContainer: {
-    height: 70,
-    width: 70,
-    marginLeft: 10,
-  },
-  addingButton: {
-    width: 100,
-    height: 50,
-    backgroundColor: "#a5deba",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  changeMode: {
-    width: 200,
-    height: 50,
-    backgroundColor: "transparent",
-    borderWidth: 0.5,
-    borderColor: colors.bgError,
-    marginBottom: 5,
-  },
-  modal: {
-    flex: 1,
-
-    backgroundColor: colors.bgMain,
-  },
-  orderInput: {
-    //flex: 1,
-    backgroundColor: "transparent",
-    borderColor: colors.listItemBg,
-    padding: 5,
-    fontSize: 20,
-    fontWeight: "100",
-    color: "black",
-  },
-  orderSummary: {
-    //flex: 1,
-    backgroundColor: "transparent",
-    borderColor: colors.listItemBg,
-    padding: 5,
-    fontSize: 20,
-    fontWeight: "100",
-    color: "white",
-  },
-  requestButton: {
-    width: 200,
-    height: 50,
-    backgroundColor: "transparent",
-    borderWidth: 0.5,
-    borderColor: colors.bgError,
-    margin: 5,
-  },
-});
+	container: {
+		flex: 1,
+		backgroundColor: 'white',
+	},
+	header: {
+		height: normalize(60),
+		borderBottomWidth: 0.5,
+		backgroundColor: 'green',
+		borderBottomColor: 'silver',
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: 'row',
+	},
+	imageBackground: {
+		width: screenWidth * 0.45,
+		justifyContent: 'space-evenly',
+		alignItems: 'center',
+		flexDirection: 'row',
+	},
+	headerModalTitle: {
+		color: 'white',
+		fontWeight: 'bold',
+		fontSize: normalize(20),
+	},
+	headerTitle: {
+		fontSize: normalize(24),
+		color: 'white',
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		position: 'absolute',
+	},
+	section: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		width: '82%',
+		paddingVertical: normalize(5),
+		paddingHorizontal: normalize(10),
+		borderRadius: 10,
+		backgroundColor: '#f2f2f2',
+		marginVertical: normalize(10),
+	},
+	listEmptyComponent: {
+		marginTop: normalize(50),
+		alignItems: 'center',
+	},
+	modalContainer: {
+		flex: 1,
+		backgroundColor: 'white',
+	},
+	sectionContainer: {
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 6,
+		shadowOpacity: 0.26,
+		elevation: 5,
+		backgroundColor: 'white',
+		borderRadius: 5,
+		margin: normalize(15),
+	},
+	modalButton: {
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 6,
+		shadowOpacity: 0.26,
+		elevation: 5,
+		backgroundColor: '#f8fdf5',
+		borderRadius: 5,
+		margin: normalize(15),
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+})
 
 //git push --set-upstream origin master
 // open ~/.expo/ios-simulator-app-cache

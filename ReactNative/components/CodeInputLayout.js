@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { SafeAreaView, Text, View, Dimensions } from 'react-native'
+import { SafeAreaView, Text, StyleSheet, View } from 'react-native'
 import CustomActionButton from '../components/CustomTempButton'
 import colors from '../assets/colors'
-import EStyleSheet from 'react-native-extended-stylesheet'
 
 import {
 	CodeField,
@@ -54,7 +53,7 @@ const CodeInputLayout = props => {
 			<CustomActionButton
 				style={[
 					styles.button,
-					{ backgroundColor: colors.bgUserLogin },
+					{ backgroundColor: colors.bgUserLogin, marginTop: 100 },
 				]}
 				title='Verify'
 				onPress={setInputIntoProps}>
@@ -66,18 +65,15 @@ const CodeInputLayout = props => {
 
 export default CodeInputLayout
 
-const entireScreenWidth = Dimensions.get('window').width
-EStyleSheet.build({ $rem: entireScreenWidth / 380 })
-
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
 	root: { flex: 1, padding: 20 },
 	codeFiledRoot: { marginTop: 20 },
 	cell: {
-		width: '40rem',
-		height: '40rem',
-		lineHeight: '38rem',
-		fontSize: '24rem',
-		borderWidth: '2rem',
+		width: 40,
+		height: 40,
+		lineHeight: 38,
+		fontSize: 24,
+		borderWidth: 2,
 		borderColor: '#00000030',
 		textAlign: 'center',
 	},
@@ -86,11 +82,9 @@ const styles = EStyleSheet.create({
 	},
 	button: {
 		borderColor: colors.bgPrimary,
-		borderWidth: '0.5rem',
-		borderRadius: '20rem',
+		borderWidth: 0.5,
+		borderRadius: 20,
 		alignSelf: 'center',
-		paddingVertical: '15rem',
 		width: '80%',
-		marginTop: '100rem'
 	},
 })
