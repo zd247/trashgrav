@@ -79,6 +79,12 @@ const recycles = (state = initialState, action) => {
         ...state,
         location: action.payload,
       };
+    case "DELETE_ORDER":
+      return {
+        ...state,
+        location: "",
+        order: [],
+      };
     default:
       return state;
   }
