@@ -3,6 +3,11 @@
   "minify": false,
   "hostType": "lan",
   "lanType": "ip",
+<<<<<<< HEAD
   "urlRandomness": "98-tra",
   "https": false
+=======
+  "urlRandomness": "i3-8u8",
+  "https": true
+>>>>>>> 7344b801aa1d9da3bc5903de6627a3d9601f1da3
 }
