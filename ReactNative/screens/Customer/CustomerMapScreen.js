@@ -13,9 +13,10 @@ import {
   ActivityIndicator,
   Button,
   Alert,
+  Image,
+  Modal,
 } from "react-native";
 
-import * as Location from "expo-location";
 import MapView, { Polyline, Marker } from "react-native-maps";
 
 import CustomActionButton from "../../components/CustomTempButton";
@@ -29,11 +30,12 @@ import { connect } from "react-redux";
 import * as firebase from "firebase/app";
 import _ from "lodash";
 import { snapshotToArray } from "../../helpers/firebaseHelpers";
+import { normalize } from "../../helpers/fontHelper";
 
 class CustomerMapScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       location: null,
       errorMessage: null,
       latitude: 0,
@@ -47,7 +49,11 @@ class CustomerMapScreen extends Component {
       isButtonEnabled: true,
       serverID: "",
       driverResponse: [],
+      orderStatus: 0,
+      isModalVisible: false,
+      driverRating: 1,
     };
+    this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
       1000
@@ -64,6 +70,10 @@ class CustomerMapScreen extends Component {
     firebase.database().ref("Requests").off();
   }
 
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  };
+
   listenforUpdate = async () => {
     let temp;
     try {
@@ -75,6 +85,11 @@ class CustomerMapScreen extends Component {
           if (snapshot.key === this.state.serverID) {
             temp = snapshot.val();
             if (temp.status == 1) {
+              this.setState({
+                orderStatus: 1,
+                driverResponse: temp.driver,
+              });
+
               return Alert.alert(
                 "Driver " +
                   temp.driver.first_name +
@@ -82,11 +97,16 @@ class CustomerMapScreen extends Component {
               );
             } else if (temp.status == 2) {
               this.props.toggleIsLoadingItems(false);
+              this.setState({
+                orderStatus: 2,
+              });
               return Alert.alert(
                 "Driver " +
                   temp.driver.first_name +
                   " has arrived to your location"
               );
+            } else if (temp.status == 3) {
+              this.setState({ isModalVisible: true });
             }
           }
         });
@@ -198,6 +218,25 @@ class CustomerMapScreen extends Component {
     }
   };
 
+  onComplete = async () => {
+    let uid = this.state.driverResponse.uid;
+    console.log(this.state.driverResponse.uid);
+    try {
+      //this.props.toggleIsLoadingItems(true);
+      await firebase
+        .database()
+        .ref("Users")
+        .child(uid)
+        .update({ rating: { average: this.state.driverRating, noOfCust: 1 } });
+      //this.props.toggleIsLoadingItems(false);
+    } catch (error) {
+      console.log(error);
+    }
+    this.setState(this.initialState);
+    this.props.navigation.navigate("Recycle Item List");
+    //console.log("Complete Request");
+  };
+
   render() {
     const predictions = this.state.predictions.map((prediction) => (
       <TouchableHighlight
@@ -207,6 +246,61 @@ class CustomerMapScreen extends Component {
         <Text style={styles.locationSuggestion}>{prediction.description}</Text>
       </TouchableHighlight>
     ));
+    let component;
+    if (this.state.orderStatus == 0) {
+      component = (
+        <TouchableOpacity
+          style={styles.changeMode}
+          title="Book A Driver Now!!"
+          onPress={() => this.submit()}
+          disabled={this.state.isButtonEnabled}
+        >
+          <Text style={styles.ItemListTitle}>Requesting Driver!!</Text>
+        </TouchableOpacity>
+      );
+    } else {
+      component = (
+        <View style={styles.component}>
+          {this.state.driverResponse.image ? (
+            <Image
+              source={{ uri: this.state.driverResponse.image }}
+              style={styles.image}
+              // indicator={ProgressPie}
+              indicatorProps={{
+                size: 40,
+                borderWidth: 0,
+                color: colors.logoColor,
+                unfilledColor: "rgba(200,200,200,0.2)",
+              }}
+              imageStyle={{ borderRadius: 35 }}
+            />
+          ) : (
+            <Image
+              source={require("../../assets/icon.png")}
+              style={styles.image}
+            />
+          )}
+          {this.state.driverResponse.first_name ? (
+            <View style={styles.ItemListTitleContainer}>
+              <Text style={styles.ItemListTitle}>
+                Driver Name: {this.state.driverResponse.first_name}{" "}
+                {this.state.driverResponse.last_name}
+              </Text>
+              <Text style={styles.ItemListTitle}>
+                {" "}
+                Driver Phone: {this.state.driverResponse.phone}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.ItemListTitleContainer}>
+              <Text style={styles.ItemListTitle}>
+                Error: cannot load Driver Detail
+              </Text>
+            </View>
+          )}
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <SafeAreaView />
@@ -223,46 +317,126 @@ class CustomerMapScreen extends Component {
             <ActivityIndicator size="large" color={colors.logoColor} />
           </View>
         )}
-
-        <MapView
-          style={styles.map}
-          provider="google"
-          region={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
-          }}
-          showsUserLocation={true}
-        />
-        <View style={{ flex: 1, position: "absolute" }}>
-          <TextInput
-            placeholder="Enter your current location.."
-            style={styles.destinationInput}
-            onChangeText={(destination) => {
-              this.setState({ destination });
-              this.onChangeDestinationDebounced(destination);
+        <View style={{ flex: 1 }}>
+          <MapView
+            style={styles.map}
+            provider="google"
+            region={{
+              latitude: this.state.latitude,
+              longitude: this.state.longitude,
+              latitudeDelta: 0.015,
+              longitudeDelta: 0.0121,
             }}
-            value={this.state.destination}
+            showsUserLocation={true}
           />
-          {predictions}
-        </View>
-        <View
-          style={{
-            flex: 1,
-            bottom: 20,
-            position: "absolute",
-            alignSelf: "center",
-          }}
-        >
-          <TouchableOpacity
-            style={styles.changeMode}
-            title="Book A Driver Now!!"
-            onPress={() => this.submit()}
-            disabled={this.state.isButtonEnabled}
+          <View style={{ flex: 1, position: "absolute" }}>
+            <TextInput
+              placeholder="Enter your current location.."
+              style={styles.destinationInput}
+              onChangeText={(destination) => {
+                this.setState({ destination });
+                this.onChangeDestinationDebounced(destination);
+              }}
+              value={this.state.destination}
+            />
+            {predictions}
+          </View>
+          <View
+            style={{
+              flex: 1,
+              bottom: 20,
+              position: "absolute",
+              alignSelf: "center",
+            }}
           >
-            <Text style={styles.ItemListTitle}>Requesting Driver!!</Text>
-          </TouchableOpacity>
+            {component}
+          </View>
+          <Modal visible={this.state.isModalVisible} animationType="slide">
+            <SafeAreaView />
+            <View style={styles.modal}>
+              <View style={styles.header}>
+                <TouchableOpacity
+                  onPress={this.toggleModal}
+                  style={{ flex: 1 }}
+                >
+                  <Ionicons
+                    name="ios-close"
+                    size={30}
+                    color="white"
+                    style={{ marginLeft: 10 }}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Rate Your Driver !!</Text>
+              </View>
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <View
+                  style={
+                    (styles.ItemListTitleContainer, { alignItems: "center" })
+                  }
+                >
+                  <Text
+                    style={{
+                      fontWeight: "100",
+                      fontSize: 35,
+                      color: "white",
+                      marginStart: 10,
+                    }}
+                  >
+                    Please rate your experience with{" "}
+                    {this.state.driverResponse.first_name}
+                  </Text>
+
+                  <Image
+                    source={{ uri: this.state.driverResponse.image }}
+                    style={styles.imageModal}
+                    // indicator={ProgressPie}
+                    indicatorProps={{
+                      size: 40,
+                      borderWidth: 0,
+                      color: colors.logoColor,
+                      unfilledColor: "rgba(200,200,200,0.2)",
+                    }}
+                    imageStyle={{ borderRadius: 35 }}
+                  />
+                  <Text style={styles.modalWord}>
+                    Driver Name: {this.state.driverResponse.first_name}{" "}
+                    {this.state.driverResponse.last_name}
+                  </Text>
+                  <Text style={styles.modalWord}>
+                    {" "}
+                    Driver Phone: {this.state.driverResponse.phone}
+                  </Text>
+
+                  <TextInput
+                    placeholder="Enter your rating for this driver.."
+                    style={styles.modalInput}
+                    onChangeText={(text) => {
+                      this.setState({ driverRating: text });
+                    }}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 0.2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CustomActionButton
+                  style={styles.finalize}
+                  title="Book A Driver Now!!"
+                  onPress={() => this.onComplete()}
+                >
+                  <Text style={{ fontWeight: "100", color: "white" }}>
+                    Complete Request!!
+                  </Text>
+                </CustomActionButton>
+              </View>
+            </View>
+            <SafeAreaView />
+          </Modal>
         </View>
         <SafeAreaView />
       </View>
@@ -291,6 +465,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerMapScreen);
+
+const heightN = Dimensions.get("screen").height;
+const height_image = heightN * 0.5 * 0.5;
 
 const styles = StyleSheet.create({
   container: {
@@ -361,5 +538,78 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "black",
     marginStart: 10,
+  },
+  image: {
+    height: 70,
+    width: 70,
+    marginLeft: 10,
+    borderRadius: 35,
+  },
+  component: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+    minHeight: 100,
+    flexDirection: "row",
+    backgroundColor: "#fbfbf1",
+    alignItems: "center",
+    borderWidth: 0.15,
+    borderRadius: 10,
+    padding: 10,
+  },
+  ItemListTitleContainer: {
+    flex: 1,
+    justifyContent: "center",
+    paddingLeft: 5,
+  },
+  ItemListTitle: {
+    fontWeight: "100",
+    fontSize: 20,
+    color: "black",
+    marginStart: 10,
+  },
+  modal: {
+    flex: 1,
+    backgroundColor: colors.bgMain,
+  },
+  imageModal: {
+    width: height_image,
+    height: height_image,
+    alignSelf: "center",
+    borderWidth: 5,
+    borderColor: "grey",
+    borderRadius: 30,
+  },
+  modalWord: {
+    fontWeight: "100",
+    fontSize: 20,
+    color: "white",
+    marginStart: 10,
+  },
+  finalize: {
+    width: 200,
+    height: 50,
+    backgroundColor: "transparent",
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginBottom: 5,
+    marginTop: "auto",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+  modalInput: {
+    flex: 1,
+    borderWidth: 0.5,
+    borderColor: "grey",
+    height: height_image * 0.5,
+    marginTop: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 5,
+    backgroundColor: "white",
+    width: "100%",
+  },
+  textInputContainer: {
+    flex: 1,
+    margin: 20,
   },
 });
