@@ -36,7 +36,8 @@ const recycles = (state = initialState, action) => {
         recycleCart: state.recycleCart.filter(
           (item) => item !== action.payload
         ),
-        totalPrice: state.totalPrice - action.payload.price,
+        totalPrice:
+          state.totalPrice - action.payload.price * action.payload.weight,
         totalWeight: state.totalWeight - action.payload.weight,
       };
     case "UPDATE_USER_INFORMATION":
@@ -78,6 +79,12 @@ const recycles = (state = initialState, action) => {
       return {
         ...state,
         location: action.payload,
+      };
+    case "DELETE_ORDER":
+      return {
+        ...state,
+        location: "",
+        order: [],
       };
     default:
       return state;

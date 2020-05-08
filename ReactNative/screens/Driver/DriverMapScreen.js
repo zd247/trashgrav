@@ -26,6 +26,7 @@ import { connect } from "react-redux";
 import MapView, { Polyline, Marker } from "react-native-maps";
 import _ from "lodash";
 import PolyLine from "@mapbox/polyline";
+import PlaidAuthenticator from "react-native-plaid-link";
 
 class DriverMapScreen extends Component {
   constructor(props) {
@@ -41,8 +42,10 @@ class DriverMapScreen extends Component {
       pointCoords: [],
       order: [],
       isButtonEnabled: true,
-      orderStatus: 2,
+      orderStatus: 0,
       isModalVisible: false,
+      data: {},
+      status: "LOGIN_BUTTON",
     };
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
@@ -159,12 +162,87 @@ class DriverMapScreen extends Component {
       console.log(error);
       this.props.toggleIsLoadingItems(false);
     }
+    this.setState({ orderStatus: 2 });
     console.log("Driver Has Arrived");
   };
 
   onPayment() {
-    console.log("Pay Your Customer Now");
+    this.toggleModal();
   }
+
+  onComplete = async () => {
+    //console.log(this.props.recycleItemList.order.user.uid);
+    let uid = this.props.recycleItemList.order.user.uid;
+    let order = this.props.recycleItemList.order;
+
+    try {
+      //this.props.toggleIsLoadingItems(true);
+      await firebase.database().ref("History").child(uid).push(order);
+      //this.props.toggleIsLoadingItems(false);
+    } catch (error) {
+      console.log(error);
+    }
+
+    let key = this.props.recycleItemList.order.key;
+    try {
+      //this.props.toggleIsLoadingItems(true);
+      await firebase.database().ref("Requests").child(key).remove();
+      //this.props.toggleIsLoadingItems(false);
+    } catch (error) {
+      console.log(error);
+    }
+
+    this.setState({
+      destination: "",
+      locationPredictions: [],
+      isButtonEnabled: true,
+      orderStatus: 0,
+    });
+
+    this.toggleModal();
+    this.props.navigation.navigate("Pick Up Request");
+  };
+
+  onLoadStart = (props) => {
+    console.log("onLoadStart", props);
+  };
+
+  onLoad = (props) => {
+    console.log("onLoad", props);
+  };
+
+  onLoadEnd = (props) => {
+    console.log("onLoadEnd", props);
+  };
+
+  onMessage = (data) => {
+    // console.log(data)
+    /*
+      Response example for success
+      {
+        "action": "plaid_link-undefined::connected",
+        "metadata": {
+          "account": {
+            "id": null,
+            "name": null
+          },
+          "account_id": null,
+          "public_token": "public-sandbox-e697e666-9ac2-4538-b152-7e56a4e59365",
+          "institution": {
+            "name": "Chase",
+            "institution_id": "ins_3"
+          }
+        }
+      }
+    */
+
+    this.setState({
+      data,
+      status: data.action
+        .substr(data.action.lastIndexOf(":") + 1)
+        .toUpperCase(),
+    });
+  };
 
   render() {
     let marker = null;
@@ -221,7 +299,7 @@ class DriverMapScreen extends Component {
     } else {
       button = (
         <CustomActionButton
-          style={styles.onArrival}
+          style={styles.onPayment}
           title="Pay Customer!!"
           onPress={() => this.onPayment()}
           disabled={false}
@@ -292,6 +370,54 @@ class DriverMapScreen extends Component {
           >
             {button}
           </View>
+          <Modal visible={this.state.isModalVisible} animationType="slide">
+            <SafeAreaView />
+            <View style={styles.modal}>
+              <View style={styles.header}>
+                <TouchableOpacity
+                  onPress={this.toggleModal}
+                  style={{ flex: 1 }}
+                >
+                  <Ionicons
+                    name="ios-close"
+                    size={30}
+                    color="white"
+                    style={{ marginLeft: 10 }}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Order Summary !!</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <PlaidAuthenticator
+                  onMessage={this.onMessage}
+                  publicKey="ff6cf603bbdba6d15b71fbeaa5e416"
+                  env="sandbox"
+                  product="auth,transactions"
+                  onLoad={this.onLoad}
+                  onLoadStart={this.onLoadStart}
+                  onLoadEnd={this.onLoadEnd}
+                />
+              </View>
+              <View
+                style={{
+                  flex: 0.2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CustomActionButton
+                  style={styles.finalize}
+                  title="Book A Driver Now!!"
+                  onPress={() => this.onComplete()}
+                >
+                  <Text style={{ fontWeight: "100", color: "white" }}>
+                    Complete Payment!!
+                  </Text>
+                </CustomActionButton>
+              </View>
+            </View>
+            <SafeAreaView />
+          </Modal>
         </View>
         <SafeAreaView />
       </View>
@@ -316,8 +442,7 @@ const mapDispatchToProps = (dispatch) => {
       }),
     toggleIsLoadingItems: (bool) =>
       dispatch({ type: "TOGGLE_IS_LOADING_ITEMS", payload: bool }),
-    deleteItem: (item) =>
-      dispatch({ type: "REMOVE_RECYCLE_ITEMS_FROM_CART", payload: item }),
+    deleteOrder: () => dispatch({ type: "DELETE_ORDER" }),
     updateOrder: (order) =>
       dispatch({ type: "UPDATE_ORDER_HELLO", payload: order }),
     updateOrderWeight: (item) =>
@@ -330,7 +455,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(DriverMapScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: colors.bgMain,
   },
   changeMode: {
@@ -344,10 +468,32 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
   },
+  finalize: {
+    width: 200,
+    height: 50,
+    backgroundColor: "transparent",
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginBottom: 5,
+    marginTop: "auto",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
   onArrival: {
     width: 200,
     height: 50,
     backgroundColor: "orange",
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginBottom: 5,
+    marginTop: "auto",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+  onPayment: {
+    width: 200,
+    height: 50,
+    backgroundColor: "blue",
     borderWidth: 0.5,
     borderColor: colors.bgError,
     marginBottom: 5,
@@ -406,7 +552,11 @@ const styles = StyleSheet.create({
   ItemListTitle: {
     fontWeight: "100",
     fontSize: 22,
-    color: "black",
+    color: "white",
     marginStart: 10,
+  },
+  modal: {
+    flex: 1,
+    backgroundColor: colors.bgMain,
   },
 });
