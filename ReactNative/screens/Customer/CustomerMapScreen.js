@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     padding: 5,
     backgroundColor: "white",
-    width: "100%",
+    width: "100",
   },
   textInputContainer: {
     flex: 1,

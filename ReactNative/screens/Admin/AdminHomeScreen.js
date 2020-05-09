@@ -18,7 +18,6 @@ import colors from '../../assets/colors'
 import { Ionicons } from '@expo/vector-icons'
 
 import Items from './NavTabs/Items'
-import Requests from './NavTabs/Requests'
 import Activities from './NavTabs/Activities'
 
 import { connect } from 'react-redux'
@@ -86,7 +85,6 @@ class AdminHomeScreen extends React.Component {
 							/>
 						)}>
 						<Items tabLabel='Items' props={this.props} />
-						<Requests tabLabel='Requests' props={this.props} />
 						<Activities tabLabel='Activities' props={this.props} />
 					</ScrollableTabView>
 				</View>

@@ -103,7 +103,7 @@ class SettingScreen extends Component {
 							<View style={{ alignContent: 'flex-start' }}>
 								<Text style={styles.contentTitle}>SMS</Text>
 								<Text style={{ fontSize: normalize(9.3), color: 'silver' }}>
-									We will send you all booking information via text messages
+									Notifications via SMS
 								</Text>
 							</View>
 							<Switch

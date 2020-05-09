@@ -191,6 +191,7 @@ class SignUpScreen extends Component {
 							password: this.state.password,
 							first_name: this.state.firstName,
 							last_name: this.state.lastName,
+							rating: {average: 0, noOfCust: 0}
 						})
 						firebase.auth().signOut()
 						this.onSignIn()

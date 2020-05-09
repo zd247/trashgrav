@@ -13,9 +13,7 @@ import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
 import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
 
 import CustomerMapScreen from './screens/Customer/CustomerMapScreen'
-import CustomerPaymentOption from './screens/Customer/CustomerPayment'
 import SettingScreen from './screens/SettingScreen'
-import SecurityCheck from './screens/AppSwitchNavigator/SecurityCheck'
 import LoadingScreen from './screens/LoadingScreen'
 
 import DriverHomeScreen from './screens/Driver/DriverHomeScreen'
@@ -211,11 +209,6 @@ const CustomerDrawerNavigator = () => (
 				options={{ drawerIcon: () => <Ionicons name='ios-person' size={24} /> }}
 				name='User Profile'
 				component={UserProfileScreen}
-			/>
-			<Drawer.Screen
-				options={{ drawerIcon: () => <Ionicons name='ios-card' size={24} /> }}
-				name='Payment Option'
-				component={CustomerPaymentOption}
 			/>
 			<Drawer.Screen
 				options={{
