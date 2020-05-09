@@ -135,6 +135,10 @@ class HomeScreen extends Component {
     selectedItem.isAdded = false;
 
     this.props.deleteItem(tempList[0]);
+
+    if (this.props.recycleItemList.totalWeight < 5) {
+      this.setState({ isButtonDisabled: false });
+    }
     //this.calculateOrderTotal();
   };
 
@@ -275,9 +279,11 @@ class HomeScreen extends Component {
 
   requestDriver = () => {
     this.calculateOrderTotal();
-    this.setState({ isModalVisible: false });
 
-    this.props.navigation.navigate("CustomerMapScreen");
+    if (this.props.recycleItemList.totalWeight <= 5) {
+      this.setState({ isModalVisible: false });
+      this.props.navigation.navigate("CustomerMapScreen");
+    }
   };
 
   render() {
@@ -665,5 +671,5 @@ const styles = StyleSheet.create({
 });
 
 //git push --set-upstream origin master
-// open ~/.expo/ios-simulator-app-cache
+// cd ~/.expo/ios-simulator-app-cache
 // ./start_simulators.sh

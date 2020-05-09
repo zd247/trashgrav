@@ -163,12 +163,26 @@ class DriverMapScreen extends Component {
       this.props.toggleIsLoadingItems(false);
     }
     this.setState({ orderStatus: 2 });
-    console.log("Driver Has Arrived");
+    //console.log("Driver Has Arrived");
   };
 
-  onPayment() {
+  onPayment = async () => {
+    let key = this.props.recycleItemList.order.key;
+    try {
+      //this.props.toggleIsLoadingItems(true);
+      await firebase
+        .database()
+        .ref("Requests")
+        .child(key)
+        .update({ status: 3 });
+      //this.props.toggleIsLoadingItems(false);
+    } catch (error) {
+      console.log(error);
+      this.props.toggleIsLoadingItems(false);
+    }
+    this.setState({ orderStatus: 3 });
     this.toggleModal();
-  }
+  };
 
   onComplete = async () => {
     //console.log(this.props.recycleItemList.order.user.uid);
@@ -204,19 +218,22 @@ class DriverMapScreen extends Component {
   };
 
   onLoadStart = (props) => {
-    console.log("onLoadStart", props);
+    //console.log("onLoadStart", props);
+    console.log("onLoadStart");
   };
 
   onLoad = (props) => {
-    console.log("onLoad", props);
+    //console.log("onLoad", props);
+    console.log("onLoad");
   };
 
   onLoadEnd = (props) => {
-    console.log("onLoadEnd", props);
+    //console.log("onLoadEnd", props);
+    console.log("onLoadEnd");
   };
 
   onMessage = (data) => {
-    // console.log(data)
+    //console.log(data)
     /*
       Response example for success
       {
@@ -242,6 +259,7 @@ class DriverMapScreen extends Component {
         .substr(data.action.lastIndexOf(":") + 1)
         .toUpperCase(),
     });
+    console.log(data);
   };
 
   render() {
@@ -385,7 +403,7 @@ class DriverMapScreen extends Component {
                     style={{ marginLeft: 10 }}
                   />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Order Summary !!</Text>
+                <Text style={styles.headerTitle}>Pay Customer</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <PlaidAuthenticator
