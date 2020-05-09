@@ -176,13 +176,11 @@ class HomeScreen extends Component {
     this.props.updateOrderWeight(tempWeight);
     this.props.updateOrderPrice(tempPrice);
     if (tempWeight > 5) {
-      this.setState({ isButtonDisabled: true });
+      //this.setState({ isButtonDisabled: true });
       return Alert.alert(
         "The total weight cannot be heavier than 5 kg. Please remove some of your item in the cart or decrease its weight value"
       );
-    } else {
-      this.setState({ isButtonDisabled: false });
-    }
+    } 
   }
 
   componentWillUnmount = () => {
