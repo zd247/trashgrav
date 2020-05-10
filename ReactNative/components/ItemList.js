@@ -51,6 +51,12 @@ const styles = StyleSheet.create({
 		borderWidth: 0.15,
 		borderRadius: normalize(10),
 		padding: normalize(10),
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 6,
+		shadowOpacity: 0.26,
+		elevation: 5,
+		marginHorizontal: normalize(24),
 	},
 	imageContainer: {
 		height: normalize(120),

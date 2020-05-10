@@ -18,8 +18,7 @@ import {
 import { render } from 'react-dom'
 
 import _ from 'lodash'
-import BottomBar from '../components/BottomBar'
-import CustomActionButton from '../components/CustomTempButton'
+
 import ListItem from '../components/ItemList'
 import OrderSummary from '../components/OrderSummary'
 import { snapshotToArray } from '../helpers/firebaseHelpers'
@@ -27,7 +26,6 @@ import { Ionicons } from '@expo/vector-icons'
 import colors from '../assets/colors'
 
 import { connect } from 'react-redux'
-import { compose } from 'redux'
 import { normalize } from '../helpers/fontHelper'
 
 import * as firebase from 'firebase/app'
@@ -48,8 +46,8 @@ class HomeScreen extends Component {
 			totalWeight: 0,
 			totalPrice: 0,
 			tempInt: 1,
-      isFetching: false,
-      isLoading: false,
+			isFetching: false,
+			isLoading: false,
 			paymentOption: 'cash',
 			isButtonDisabled: false,
 		}
@@ -100,9 +98,20 @@ class HomeScreen extends Component {
 		this.props.recycleItemList.recycleItemList.isAdded = false
 		this.props.recycleItemList.recycleCart = []
 		this.props.updateOrderWeight(0)
-    this.props.updateOrderPrice(0)
-    this.setState({isLoading:false})
+		this.props.updateOrderPrice(0)
+		this.setState({ isLoading: false })
 		this.props.toggleIsLoadingItems(false)
+	}
+
+	onRefreshData = async () => {
+		this.setState({ isFetching: true })
+		const recycleItems = await firebase.database().ref('Items').once('value')
+		let recycleItemsArray = snapshotToArray(recycleItems)
+
+		this.props.loadRecycleItem(recycleItemsArray)
+
+		this.setState({ recycleItemListTemp: recycleItemsArray })
+		this.setState({ isFetching: false })
 	}
 
 	toggleModal = () => {
@@ -230,7 +239,11 @@ class HomeScreen extends Component {
 					onPress={() => {
 						this.props.navigation.navigate('ItemScreen', { item })
 					}}>
-					<Ionicons name='ios-information-circle' color='green' size={normalize(30)} />
+					<Ionicons
+						name='ios-information-circle'
+						color='green'
+						size={normalize(30)}
+					/>
 				</TouchableOpacity>
 			</View>
 		</ListItem>
@@ -325,7 +338,7 @@ class HomeScreen extends Component {
 				</View>
 
 				{/* ------------body content------------- */}
-				<View style={{ flex: 1, paddingHorizontal: normalize(15) }}>
+				<View style={{ flex: 1 }}>
 					<View style={{ flexDirection: 'row', paddingStart: normalize(10) }}>
 						<View style={styles.section}>
 							<TextInput
@@ -352,6 +365,8 @@ class HomeScreen extends Component {
 						renderItem={({ item, index }) =>
 							this.renderRecycleItemList(item, index)
 						}
+						onRefresh={() => this.onRefreshData()}
+						refreshing={this.state.isFetching}
 						keyExtractor={(item, index) => index.toString()}
 						ListEmptyComponent={
 							<View style={{ marginTop: 50, alignItems: 'center' }}>
@@ -517,7 +532,7 @@ class HomeScreen extends Component {
 								style={styles.modalButton}
 								onPress={() => {
 									this.props.navigation.replace('Recycle Item List')
-									this.setState({isLoading: true})
+									this.setState({ isLoading: true })
 								}}>
 								<Text style={{ color: 'red', fontSize: normalize(26) }}>
 									Cancel

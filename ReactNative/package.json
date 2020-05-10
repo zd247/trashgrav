@@ -38,6 +38,7 @@
     "react-native-numeric-input": "^1.8.3",
     "react-native-plaid-link": "^1.4.4",
     "react-native-progress": "^4.1.2",
+    "react-native-ratings": "^7.2.0",
     "react-native-reanimated": "~1.7.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "~2.2.0",

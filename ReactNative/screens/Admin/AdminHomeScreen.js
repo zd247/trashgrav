@@ -18,7 +18,7 @@ import colors from '../../assets/colors'
 import { Ionicons } from '@expo/vector-icons'
 
 import Items from './NavTabs/Items'
-import Activities from './NavTabs/Activities'
+import Users from './NavTabs/Users'
 
 import { connect } from 'react-redux'
 import * as firebase from 'firebase/app'
@@ -85,7 +85,7 @@ class AdminHomeScreen extends React.Component {
 							/>
 						)}>
 						<Items tabLabel='Items' props={this.props} />
-						<Activities tabLabel='Activities' props={this.props} />
+						<Users tabLabel='Users' props={this.props} />
 					</ScrollableTabView>
 				</View>
 				<SafeAreaView />

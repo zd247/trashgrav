@@ -11,6 +11,8 @@ import UserProfileScreen from './screens/UserProfileScreen'
 
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
 import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
+import UserSummaryScreen from './screens/Admin/NavTabs/UserSummaryScreen'
+import UserDetailScreen from './screens/Admin/NavTabs/UserDetailScreen'
 
 import CustomerMapScreen from './screens/Customer/CustomerMapScreen'
 import SettingScreen from './screens/SettingScreen'
@@ -34,6 +36,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 
 import * as firebase from 'firebase/app'
+
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -125,6 +128,16 @@ class TrashGrav extends Component {
 						<Stack.Screen
 							name='ItemScreen'
 							component={ItemScreen}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name='UserSummaryScreen'
+							component={UserSummaryScreen}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name='UserDetailScreen'
+							component={UserDetailScreen}
 							options={{ headerShown: false }}
 						/>
 					</Stack.Navigator>

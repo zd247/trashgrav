@@ -483,7 +483,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
-		paddingHorizontal: normalize(20),
 	},
 	button: {
 		width: normalize(30),
@@ -496,7 +495,7 @@ const styles = StyleSheet.create({
 	section: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		width: '82%',
+		width: '85%',
 		paddingVertical: normalize(5),
 		paddingHorizontal: normalize(10),
 		borderRadius: 10,

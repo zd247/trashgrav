@@ -26,7 +26,7 @@ import { snapshotToArray } from '../helpers/firebaseHelpers'
 import * as firebase from 'firebase/app'
 import 'firebase/storage'
 
-class AdminItemScreen extends React.Component {
+class ItemScreen extends React.Component {
 	constructor() {
 		super()
 		this.state = {
@@ -352,7 +352,7 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdminItemScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ItemScreen)
 
 const height = Dimensions.get('screen').height
 const height_image = height * 0.5 * 0.5
