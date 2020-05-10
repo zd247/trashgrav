@@ -27,6 +27,7 @@
 - `npm install --save react-native-form-select-picker`
 - `npm install react-native-webview`
 - `npm i react-native-plaid-link`
+- `npm install --save react-native-ratings`
 
 
 ### Overview technical requirements
