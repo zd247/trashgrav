@@ -18,6 +18,7 @@ import {
 } from "react-native";
 
 import MapView, { Polyline, Marker } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 
 import CustomActionButton from "../../components/CustomTempButton";
 
@@ -32,6 +33,7 @@ import _ from "lodash";
 import { snapshotToArray } from "../../helpers/firebaseHelpers";
 import { normalize } from "../../helpers/fontHelper";
 import { Rating } from "react-native-elements";
+const { width, height } = Dimensions.get("window");
 
 class CustomerMapScreen extends Component {
   constructor(props) {
@@ -47,6 +49,7 @@ class CustomerMapScreen extends Component {
       routeResponse: {},
       lookingForDriver: false,
       customerLocation: [],
+      driverLocation: {},
       isButtonEnabled: true,
       serverID: "",
       driverResponse: [],
@@ -54,12 +57,14 @@ class CustomerMapScreen extends Component {
       isModalVisible: false,
       driverRating: 1,
       showComponent: false,
+      coordinates: [],
     };
     this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
       1000
     );
+    this.mapView = null;
   }
 
   componentDidMount() {
@@ -95,8 +100,13 @@ class CustomerMapScreen extends Component {
               this.setState({
                 orderStatus: 1,
                 driverResponse: temp.driver,
+                driverLocation: temp.driverLocation,
+                coordinates: [...this.state.coordinates, temp.driverLocation],
               });
-              //console.log(this.state.driverResponse);
+              console.log(
+                "Location of Customer and Driver",
+                this.state.coordinates
+              );
               return Alert.alert(
                 "Driver " +
                   temp.driver.first_name +
@@ -125,17 +135,28 @@ class CustomerMapScreen extends Component {
 
   findCurrentLocationAsync = async () => {
     this.props.toggleIsLoadingItems(true);
+    let tempLocation = { latitude: 0, longitude: 0 };
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        tempLocation.latitude = position.coords.latitude;
+        tempLocation.longitude = position.coords.longitude;
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          coordinates: [
+            ...this.state.coordinates,
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          ],
         });
       },
       (error) => console.error(error),
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
     );
     this.props.toggleIsLoadingItems(false);
+    console.log("Customer's Location on customer side", this.state.coordinates);
   };
 
   async getRouteDirections(destinationPlaceId, destinationName) {
@@ -220,7 +241,7 @@ class CustomerMapScreen extends Component {
       }
 
       this.setState({ serverID: t });
-      console.log(this.state.serverID);
+      //console.log(this.state.serverID);
     } catch (error) {
       console.log(error);
       this.props.toggleIsLoadingItems(false);
@@ -342,7 +363,42 @@ class CustomerMapScreen extends Component {
               longitudeDelta: 0.0121,
             }}
             showsUserLocation={true}
-          />
+            ref={(c) => (this.mapView = c)}
+          >
+            {this.state.coordinates.length >= 2 && (
+              <MapViewDirections
+                origin={this.state.coordinates[0]}
+                destination={
+                  this.state.coordinates[this.state.coordinates.length - 1]
+                }
+                apikey={apiKey}
+                strokeWidth={3}
+                strokeColor="hotpink"
+                optimizeWaypoints={true}
+                onStart={(params) => {
+                  console.log(
+                    `Started routing between "${params.origin}" and "${params.destination}"`
+                  );
+                }}
+                onReady={(result) => {
+                  console.log(`Distance: ${result.distance} km`);
+                  console.log(`Duration: ${result.duration} min.`);
+
+                  this.mapView.fitToCoordinates(result.coordinates, {
+                    edgePadding: {
+                      right: width / 20,
+                      bottom: height / 20,
+                      left: width / 20,
+                      top: height / 20,
+                    },
+                  });
+                }}
+                onError={(errorMessage) => {
+                  console.log(errorMessage);
+                }}
+              />
+            )}
+          </MapView>
           <View style={{ flex: 1, position: "absolute" }}>
             <TextInput
               placeholder="Enter your current location.."

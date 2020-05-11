@@ -31,7 +31,7 @@ import PlaidAuthenticator from "react-native-plaid-link";
 class DriverMapScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       location: null,
       errorMessage: null,
       latitude: 0,
@@ -47,6 +47,7 @@ class DriverMapScreen extends Component {
       data: {},
       status: "LOGIN_BUTTON",
     };
+    this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
       1000
@@ -139,7 +140,14 @@ class DriverMapScreen extends Component {
         .database()
         .ref("Requests")
         .child(key)
-        .update({ status: 1, driver: this.props.recycleItemList.user });
+        .update({
+          status: 1,
+          driver: this.props.recycleItemList.user,
+          driverLocation: {
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
+          },
+        });
       //this.props.toggleIsLoadingItems(false);
     } catch (error) {
       console.log(error);
@@ -206,14 +214,9 @@ class DriverMapScreen extends Component {
       console.log(error);
     }
 
-    this.setState({
-      destination: "",
-      locationPredictions: [],
-      isButtonEnabled: true,
-      orderStatus: 0,
-    });
+    this.setState(this.initialState);
 
-    this.toggleModal();
+    //this.toggleModal();
     this.props.navigation.navigate("Pick Up Request");
   };
 
