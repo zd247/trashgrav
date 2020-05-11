@@ -31,6 +31,7 @@ import * as firebase from "firebase/app";
 import _ from "lodash";
 import { snapshotToArray } from "../../helpers/firebaseHelpers";
 import { normalize } from "../../helpers/fontHelper";
+import { Rating } from "react-native-elements";
 
 class CustomerMapScreen extends Component {
   constructor(props) {
@@ -52,6 +53,7 @@ class CustomerMapScreen extends Component {
       orderStatus: 0,
       isModalVisible: false,
       driverRating: 1,
+      showComponent: false,
     };
     this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
@@ -74,6 +76,11 @@ class CustomerMapScreen extends Component {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
+  ratingCompleted = (rating) => {
+    console.log("Rating is: " + rating);
+    this.setState({ driverRating: rating });
+  };
+
   listenforUpdate = async () => {
     let temp;
     try {
@@ -89,7 +96,7 @@ class CustomerMapScreen extends Component {
                 orderStatus: 1,
                 driverResponse: temp.driver,
               });
-
+              //console.log(this.state.driverResponse);
               return Alert.alert(
                 "Driver " +
                   temp.driver.first_name +
@@ -166,6 +173,7 @@ class CustomerMapScreen extends Component {
       const json = await result.json();
       this.setState({
         predictions: json.predictions,
+        showComponent: true,
       });
       //console.log(json);
     } catch (err) {
@@ -181,6 +189,7 @@ class CustomerMapScreen extends Component {
       destination: prediction.description,
       customerLocation: prediction,
       isButtonEnabled: false,
+      showComponent: true,
     });
     Keyboard;
   }
@@ -220,14 +229,16 @@ class CustomerMapScreen extends Component {
 
   onComplete = async () => {
     let uid = this.state.driverResponse.uid;
-    console.log(this.state.driverResponse.uid);
+    let currentRating = this.state.driverResponse.rating.average;
+    let no = this.state.driverResponse.rating.noOfCust;
+    currentRating = (currentRating + this.state.driverRating) / (no + 1);
     try {
       //this.props.toggleIsLoadingItems(true);
       await firebase
         .database()
         .ref("Users")
         .child(uid)
-        .update({ rating: { average: this.state.driverRating, noOfCust: 1 } });
+        .update({ rating: { average: currentRating, noOfCust: no + 1 } });
       //this.props.toggleIsLoadingItems(false);
     } catch (error) {
       console.log(error);
@@ -247,60 +258,63 @@ class CustomerMapScreen extends Component {
       </TouchableHighlight>
     ));
     let component;
-    if (this.state.orderStatus == 0) {
-      component = (
-        <TouchableOpacity
-          style={styles.changeMode}
-          title="Book A Driver Now!!"
-          onPress={() => this.submit()}
-          disabled={this.state.isButtonEnabled}
-        >
-          <Text style={styles.ItemListTitle}>Requesting Driver!!</Text>
-        </TouchableOpacity>
-      );
-    } else {
-      component = (
-        <View style={styles.component}>
-          {this.state.driverResponse.image ? (
-            <Image
-              source={{ uri: this.state.driverResponse.image }}
-              style={styles.image}
-              // indicator={ProgressPie}
-              indicatorProps={{
-                size: 40,
-                borderWidth: 0,
-                color: colors.logoColor,
-                unfilledColor: "rgba(200,200,200,0.2)",
-              }}
-              imageStyle={{ borderRadius: 35 }}
-            />
-          ) : (
-            <Image
-              source={require("../../assets/icon.png")}
-              style={styles.image}
-            />
-          )}
-          {this.state.driverResponse.first_name ? (
-            <View style={styles.ItemListTitleContainer}>
-              <Text style={styles.ItemListTitle}>
-                Driver Name: {this.state.driverResponse.first_name}{" "}
-                {this.state.driverResponse.last_name}
-              </Text>
-              <Text style={styles.ItemListTitle}>
-                {" "}
-                Driver Phone: {this.state.driverResponse.phone}
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.ItemListTitleContainer}>
-              <Text style={styles.ItemListTitle}>
-                Error: cannot load Driver Detail
-              </Text>
-            </View>
-          )}
-        </View>
-      );
+    if (this.state.showComponent == true) {
+      if (this.state.orderStatus == 0) {
+        component = (
+          <TouchableOpacity
+            style={styles.changeMode}
+            title="Book A Driver Now!!"
+            onPress={() => this.submit()}
+            disabled={this.state.isButtonEnabled}
+          >
+            <Text style={styles.ItemListTitle}>Requesting Driver!!</Text>
+          </TouchableOpacity>
+        );
+      } else {
+        component = (
+          <View style={styles.component}>
+            {this.state.driverResponse.image ? (
+              <Image
+                source={{ uri: this.state.driverResponse.image }}
+                style={styles.image}
+                // indicator={ProgressPie}
+                indicatorProps={{
+                  size: 40,
+                  borderWidth: 0,
+                  color: colors.logoColor,
+                  unfilledColor: "rgba(200,200,200,0.2)",
+                }}
+                imageStyle={{ borderRadius: 35 }}
+              />
+            ) : (
+              <Image
+                source={require("../../assets/icon.png")}
+                style={styles.image}
+              />
+            )}
+            {this.state.driverResponse.first_name ? (
+              <View style={styles.ItemListTitleContainer}>
+                <Text style={styles.ItemListTitle}>
+                  Driver Name: {this.state.driverResponse.first_name}{" "}
+                  {this.state.driverResponse.last_name}
+                </Text>
+                <Text style={styles.ItemListTitle}>
+                  {" "}
+                  Driver Phone: {this.state.driverResponse.phone}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.ItemListTitleContainer}>
+                <Text style={styles.ItemListTitle}>
+                  Error: cannot load Driver Detail
+                </Text>
+              </View>
+            )}
+          </View>
+        );
+      }
     }
+
     return (
       <View style={styles.container}>
         <SafeAreaView />
@@ -407,13 +421,15 @@ class CustomerMapScreen extends Component {
                     Driver Phone: {this.state.driverResponse.phone}
                   </Text>
 
-                  <TextInput
-                    placeholder="Enter your rating for this driver.."
-                    style={styles.modalInput}
-                    onChangeText={(text) => {
-                      this.setState({ driverRating: text });
-                    }}
-                    keyboardType="number-pad"
+                  <Rating
+                    ratingCount={5}
+                    imageSize={60}
+                    showRating
+                    fractions={1}
+                    //startingValue={this.state.driverResponse.rating.average}
+                    onFinishRating={(rating) =>
+                      this.setState({ driverRating: rating })
+                    }
                   />
                 </View>
               </View>
@@ -531,13 +547,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: "auto",
     alignSelf: "center",
+    alignItems: "center",
     justifyContent: "center",
-  },
-  ItemListTitle: {
-    fontWeight: "100",
-    fontSize: 22,
-    color: "black",
-    marginStart: 10,
   },
   image: {
     height: 70,
@@ -559,13 +570,15 @@ const styles = StyleSheet.create({
   ItemListTitleContainer: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
     paddingLeft: 5,
   },
   ItemListTitle: {
     fontWeight: "100",
     fontSize: 20,
     color: "black",
-    marginStart: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   modal: {
     flex: 1,
@@ -584,6 +597,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
     marginStart: 10,
+    padding: 10,
+    margin: 10,
   },
   finalize: {
     width: 200,
