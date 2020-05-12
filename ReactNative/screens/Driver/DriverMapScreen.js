@@ -64,7 +64,7 @@ class DriverMapScreen extends Component {
     //Get current location and set initial region to this
     this.findCurrentLocationAsync();
 
-    if (this.props.recycleItemList.order.length != 0) {
+    if (this.props.recycleItemList.isOrderExist == true) {
       this.setState({
         destination: this.props.recycleItemList.location,
         locationPredictions: this.props.recycleItemList.order.prediction,
@@ -77,6 +77,18 @@ class DriverMapScreen extends Component {
       );
       this.props.navigation.navigate("Pick Up Request");
     }
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      destination: "",
+      locationPredictions: [],
+      isButtonEnabled: true,
+      showComponent: false,
+      orderStatus: 0,
+      coordinates: [],
+      isModalVisible: false,
+    });
   }
 
   findCurrentLocationAsync = async () => {
@@ -263,6 +275,7 @@ class DriverMapScreen extends Component {
     }
 
     this.props.deleteOrder();
+    this.props.isOrderExist(false);
     //this.setState(this.initialState);
     this.setState({
       destination: "",
@@ -384,6 +397,7 @@ class DriverMapScreen extends Component {
     return (
       <View style={styles.container}>
         <SafeAreaView />
+        {/*
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => this.props.navigation.openDrawer()}
@@ -398,6 +412,7 @@ class DriverMapScreen extends Component {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
+        */}
         <View style={styles.body}>
           <MapView
             ref={(map) => {
@@ -554,6 +569,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "UPDATE_ORDER_HELLO", payload: order }),
     updateOrderWeight: (item) =>
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
+    orderIsPickedUp: (bool) =>
+      dispatch({ type: "CHECK_IF_ORDER_IS_PICK_UP", payload: bool }),
   };
 };
 
@@ -637,7 +654,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 20,
     marginLeft: 5,
-    marginRight: 5,
+    marginRight: 10,
     padding: 5,
     backgroundColor: "white",
     width: Dimensions.get("window").width,
