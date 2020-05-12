@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   ActivityIndicator,
   Modal,
+  Alert,
 } from "react-native";
 
 import * as Location from "expo-location";
@@ -49,6 +50,7 @@ class DriverMapScreen extends Component {
       data: {},
       status: "LOGIN_BUTTON",
       coordinates: [],
+      showComponent: false,
     };
     this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
@@ -62,12 +64,18 @@ class DriverMapScreen extends Component {
     //Get current location and set initial region to this
     this.findCurrentLocationAsync();
 
-    if (this.props.recycleItemList.order) {
+    if (this.props.recycleItemList.order.length != 0) {
       this.setState({
         destination: this.props.recycleItemList.location,
         locationPredictions: this.props.recycleItemList.order.prediction,
         isButtonEnabled: false,
+        showComponent: true,
       });
+    } else {
+      Alert.alert(
+        "You have not yet pick an order! Please return to the previous screen to choose one"
+      );
+      this.props.navigation.navigate("Pick Up Request");
     }
   }
 
@@ -136,17 +144,43 @@ class DriverMapScreen extends Component {
     }
   }
 
+  pressedPrediction(prediction) {
+    //console.log(prediction);
+    Keyboard.dismiss();
+    this.setState({
+      predictions: [],
+      destination: prediction.description,
+      locationPredictions: prediction.description,
+      isButtonEnabled: false,
+      showComponent: true,
+    });
+    Keyboard;
+  }
+
   submit = async () => {
     let temp = this.state.locationPredictions;
-    console.log("Customer current location", temp.toString());
     /* this.getRouteDirections(
       temp.place_id,
       temp.structured_formatting.main_text
     ); */
-    this.setState({
-      isButtonEnabled: true,
-      coordinates: [...this.state.coordinates, temp.toString()],
-    });
+    if (temp.length == 0) {
+      Alert.alert(
+        "You have not yet pick an order! Please return to the previous screen to choose one"
+      );
+      this.props.navigation.navigate("Pick Up Request");
+      return;
+    } else if (temp.toString() === this.state.destination) {
+      this.setState({
+        isButtonEnabled: true,
+        coordinates: [...this.state.coordinates, temp.toString()],
+      });
+    } else {
+      this.setState({
+        isButtonEnabled: true,
+        coordinates: [...this.state.coordinates, temp],
+      });
+    }
+
     let key = this.props.recycleItemList.order.key;
     try {
       //this.props.toggleIsLoadingItems(true);
@@ -228,7 +262,17 @@ class DriverMapScreen extends Component {
       console.log(error);
     }
 
-    this.setState(this.initialState);
+    this.props.deleteOrder();
+    //this.setState(this.initialState);
+    this.setState({
+      destination: "",
+      locationPredictions: [],
+      isButtonEnabled: true,
+      showComponent: false,
+      orderStatus: 0,
+      coordinates: [],
+      isModalVisible: false,
+    });
 
     //this.toggleModal();
     this.props.navigation.navigate("Pick Up Request");
@@ -292,57 +336,51 @@ class DriverMapScreen extends Component {
 
     const predictions = this.state.predictions.map((prediction) => (
       <TouchableHighlight
-        onPress={() =>
-          this.getRouteDirections(
-            prediction.place_id,
-            prediction.structured_formatting.main_text
-          )
-        }
         key={prediction.id}
+        onPress={() => this.pressedPrediction(prediction)}
       >
-        <View>
-          <Text style={styles.suggestions}>
-            {prediction.structured_formatting.main_text}
-          </Text>
-        </View>
+        <Text style={styles.locationSuggestion}>{prediction.description}</Text>
       </TouchableHighlight>
     ));
 
     let button;
-    if (this.state.orderStatus == 0) {
-      button = (
-        <CustomActionButton
-          style={styles.changeMode}
-          title="Navigation to Customer now!!"
-          onPress={() => this.submit()}
-          disabled={this.state.isButtonEnabled}
-        >
-          <Text style={styles.ItemListTitle}>Navigate to Customer</Text>
-        </CustomActionButton>
-      );
-    } else if (this.state.orderStatus == 1) {
-      button = (
-        <CustomActionButton
-          style={styles.onArrival}
-          title="Driver Has Arrived!!"
-          onPress={() => this.onArrival()}
-          disabled={false}
-        >
-          <Text style={styles.ItemListTitle}>Driver Has Arrived</Text>
-        </CustomActionButton>
-      );
-    } else {
-      button = (
-        <CustomActionButton
-          style={styles.onPayment}
-          title="Pay Customer!!"
-          onPress={() => this.onPayment()}
-          disabled={false}
-        >
-          <Text style={styles.ItemListTitle}>Pay Your Customer</Text>
-        </CustomActionButton>
-      );
+    if (this.state.showComponent == true) {
+      if (this.state.orderStatus == 0) {
+        button = (
+          <CustomActionButton
+            style={styles.changeMode}
+            title="Navigation to Customer now!!"
+            onPress={() => this.submit()}
+            disabled={this.state.isButtonEnabled}
+          >
+            <Text style={styles.ItemListTitle}>Navigate to Customer</Text>
+          </CustomActionButton>
+        );
+      } else if (this.state.orderStatus == 1) {
+        button = (
+          <CustomActionButton
+            style={styles.onArrival}
+            title="Driver Has Arrived!!"
+            onPress={() => this.onArrival()}
+            disabled={false}
+          >
+            <Text style={styles.ItemListTitle}>Driver Has Arrived</Text>
+          </CustomActionButton>
+        );
+      } else {
+        button = (
+          <CustomActionButton
+            style={styles.onPayment}
+            title="Pay Customer!!"
+            onPress={() => this.onPayment()}
+            disabled={false}
+          >
+            <Text style={styles.ItemListTitle}>Pay Your Customer</Text>
+          </CustomActionButton>
+        );
+      }
     }
+
     return (
       <View style={styles.container}>
         <SafeAreaView />

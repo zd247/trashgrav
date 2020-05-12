@@ -199,7 +199,7 @@ class CustomerMapScreen extends Component {
   }
 
   pressedPrediction(prediction) {
-    console.log(prediction);
+    //console.log(prediction);
     Keyboard.dismiss();
     this.setState({
       predictions: [],
@@ -211,8 +211,22 @@ class CustomerMapScreen extends Component {
     Keyboard;
   }
 
+  useCurrentLocation() {
+    this.setState({
+      predictions: [],
+      destination: "Use Current Location",
+      customerLocation: {
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
+      },
+      isButtonEnabled: false,
+      showComponent: true,
+    });
+  }
+
   submit = async () => {
     this.setState({ isButtonEnabled: true });
+    console.log(this.state.customerLocation);
     try {
       this.props.toggleIsLoadingItems(true);
       const response = await firebase.database().ref("Requests").push({
@@ -261,6 +275,7 @@ class CustomerMapScreen extends Component {
       console.log(error);
     }
     this.setState(this.initialState);
+    this.props.deleteOrder();
     this.props.navigation.navigate("Recycle Item List");
     //console.log("Complete Request");
   };
@@ -406,6 +421,13 @@ class CustomerMapScreen extends Component {
               value={this.state.destination}
             />
             {predictions}
+            <TouchableOpacity
+              style={styles.currentLocation}
+              title="Use My Current Location"
+              onPress={() => this.useCurrentLocation()}
+            >
+              <Ionicons name="ios-navigate" size={30} color="white" />
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -529,6 +551,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
     updateOrderLocation: (location) =>
       dispatch({ type: "UPDATE_ORDER_LOCATION", payload: location }),
+    deleteOrder: () => dispatch({ type: "DELETE_ORDER" }),
   };
 };
 
@@ -678,5 +701,17 @@ const styles = StyleSheet.create({
   textInputContainer: {
     flex: 1,
     margin: 20,
+  },
+  currentLocation: {
+    width: 30,
+    height: 30,
+    backgroundColor: colors.logoColor,
+    borderWidth: 0.5,
+    borderColor: colors.bgError,
+    marginRight: 15,
+    marginTop: 15,
+    alignSelf: "flex-end",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
