@@ -89,6 +89,7 @@ class DriverMapScreen extends Component {
       coordinates: [],
       isModalVisible: false,
     });
+    console.log("DriverMapScreen is unmounted");
   }
 
   findCurrentLocationAsync = async () => {
@@ -274,8 +275,8 @@ class DriverMapScreen extends Component {
       console.log(error);
     }
 
-    this.props.deleteOrder();
-    this.props.isOrderExist(false);
+    //this.props.deleteOrder();
+    //this.props.isOrderExist(false);
     //this.setState(this.initialState);
     this.setState({
       destination: "",
