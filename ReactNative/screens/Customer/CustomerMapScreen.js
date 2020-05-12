@@ -135,11 +135,8 @@ class CustomerMapScreen extends Component {
 
   findCurrentLocationAsync = async () => {
     this.props.toggleIsLoadingItems(true);
-    let tempLocation = { latitude: 0, longitude: 0 };
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        tempLocation.latitude = position.coords.latitude;
-        tempLocation.longitude = position.coords.longitude;
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -156,7 +153,6 @@ class CustomerMapScreen extends Component {
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
     );
     this.props.toggleIsLoadingItems(false);
-    console.log("Customer's Location on customer side", this.state.coordinates);
   };
 
   async getRouteDirections(destinationPlaceId, destinationName) {
@@ -208,7 +204,7 @@ class CustomerMapScreen extends Component {
     this.setState({
       predictions: [],
       destination: prediction.description,
-      customerLocation: prediction,
+      customerLocation: prediction.description,
       isButtonEnabled: false,
       showComponent: true,
     });

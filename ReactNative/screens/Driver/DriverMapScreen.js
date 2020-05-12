@@ -24,9 +24,11 @@ import * as firebase from "firebase/app";
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import MapView, { Polyline, Marker } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 import _ from "lodash";
 import PolyLine from "@mapbox/polyline";
 import PlaidAuthenticator from "react-native-plaid-link";
+const { width, height } = Dimensions.get("window");
 
 class DriverMapScreen extends Component {
   constructor(props) {
@@ -46,12 +48,14 @@ class DriverMapScreen extends Component {
       isModalVisible: false,
       data: {},
       status: "LOGIN_BUTTON",
+      coordinates: [],
     };
     this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
       1000
     );
+    this.mapView = null;
   }
 
   componentDidMount() {
@@ -73,6 +77,13 @@ class DriverMapScreen extends Component {
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          coordinates: [
+            ...this.state.coordinates,
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          ],
         });
       },
       (error) => console.error(error),
@@ -103,7 +114,7 @@ class DriverMapScreen extends Component {
       });
       Keyboard.dismiss();
       //console.log(pointCoords);
-      this.map.fitToCoordinates(pointCoords);
+      this.mapView.fitToCoordinates(pointCoords);
     } catch (error) {
       console.error(error);
     }
@@ -127,12 +138,15 @@ class DriverMapScreen extends Component {
 
   submit = async () => {
     let temp = this.state.locationPredictions;
-    console.log(temp);
-    this.getRouteDirections(
+    console.log("Customer current location", temp.toString());
+    /* this.getRouteDirections(
       temp.place_id,
       temp.structured_formatting.main_text
-    );
-    this.setState({ isButtonEnabled: true });
+    ); */
+    this.setState({
+      isButtonEnabled: true,
+      coordinates: [...this.state.coordinates, temp.toString()],
+    });
     let key = this.props.recycleItemList.order.key;
     try {
       //this.props.toggleIsLoadingItems(true);
@@ -349,8 +363,9 @@ class DriverMapScreen extends Component {
         <View style={styles.body}>
           <MapView
             ref={(map) => {
-              this.map = map;
+              this.mapView = map;
             }}
+            //ref={(c) => (this.mapView = c)}
             style={styles.mapStyle}
             provider="google"
             region={{
@@ -361,12 +376,45 @@ class DriverMapScreen extends Component {
             }}
             showsUserLocation={true}
           >
-            <Polyline
+            {/* <Polyline
               coordinates={this.state.pointCoords}
               strokeWidth={4}
               strokeColor="red"
             />
-            {marker}
+            {marker} */}
+            {this.state.coordinates.length >= 2 && (
+              <MapViewDirections
+                origin={this.state.coordinates[0]}
+                destination={
+                  this.state.coordinates[this.state.coordinates.length - 1]
+                }
+                apikey={apiKey}
+                strokeWidth={3}
+                strokeColor="hotpink"
+                optimizeWaypoints={true}
+                onStart={(params) => {
+                  console.log(
+                    `Started routing between "${params.origin}" and "${params.destination}"`
+                  );
+                }}
+                onReady={(result) => {
+                  console.log(`Distance: ${result.distance} km`);
+                  console.log(`Duration: ${result.duration} min.`);
+
+                  this.mapView.fitToCoordinates(result.coordinates, {
+                    edgePadding: {
+                      right: width / 20,
+                      bottom: height / 20,
+                      left: width / 20,
+                      top: height / 20,
+                    },
+                  });
+                }}
+                onError={(errorMessage) => {
+                  console.log(errorMessage);
+                }}
+              />
+            )}
           </MapView>
           <View style={{ flex: 1, position: "absolute" }}>
             <TextInput
