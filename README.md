@@ -26,8 +26,9 @@
 - `npm install react-native-numeric-input react-native-vector-icons --save react-native link`
 - `npm install --save react-native-form-select-picker`
 - `npm install react-native-webview`
-- `npm i react-native-plaid-link`
+- `npm install react-native-plaid-link`
 - `npm install --save react-native-ratings`
+- `npm install react-native-maps-directions`
 
 
 ### Overview technical requirements
