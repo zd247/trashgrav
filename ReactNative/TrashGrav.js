@@ -20,6 +20,7 @@ import LoadingScreen from './screens/LoadingScreen'
 
 import DriverHomeScreen from './screens/Driver/DriverHomeScreen'
 import DriverMapScreen from './screens/Driver/DriverMapScreen'
+import DriverOrderDetailScreen from './screens/Driver/DriverOrderDetailScreen'
 
 import CustomDrawerNavigator from './screens/DrawerNavigator/CustomDrawerNavigator'
 import CartContainer from './redux/containers/CartContainer'
@@ -36,7 +37,6 @@ import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 
 import * as firebase from 'firebase/app'
-
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -151,44 +151,6 @@ class TrashGrav extends Component {
 	}
 }
 
-const CustomerTabNavigator = ({ route }) => (
-	<Tab.Navigator
-		tabBarOptions={{
-			style: {
-				backgroundColor: colors.bgMain,
-			},
-			activeTintColor: colors.logoColor,
-			inactiveTintColor: colors.bgTextInput,
-		}}
-		screenOptions={({ route }) => ({
-			tabBarIcon: ({ color, size }) => {
-				switch (route.name) {
-					case 'Recycle Item List':
-						return <CartContainer color={color} type='recycleItemList' />
-					case 'Recycle Cart':
-						return <CartContainer color={color} type='recycleCart' />
-				}
-			},
-		})}>
-		<Tab.Screen name='Recycle Item List' component={HomeScreen} />
-	</Tab.Navigator>
-)
-
-const getHeaderTitle = route => {
-	const routeName = route.state
-		? route.state.routes[route.state.index].name
-		: 'Home'
-
-	switch (routeName) {
-		case 'Home':
-			return 'Recycle Item List'
-		case 'Recycle Cart':
-			return 'Recycle Cart'
-		case 'CustomerMapScreen':
-			return 'Book A Driver'
-	}
-}
-
 const CustomerStackNavigator = ({ navigation }) => (
 	<Stack.Navigator>
 		<Stack.Screen
@@ -237,6 +199,27 @@ const CustomerDrawerNavigator = () => (
 	</ActionSheetProvider>
 )
 
+const DriverStackNavigator = ({ navigation }) => (
+	<Stack.Navigator>
+		<Stack.Screen
+			options={{ headerShown: false }}
+			name='Pick Up Request'
+			component={DriverHomeScreen}
+		/>
+		<Stack.Screen
+		options={{ headerShown: false }}
+			name='Driver Order Detail Screen'
+			component={DriverOrderDetailScreen}
+		/>
+
+		<Stack.Screen
+			options={{ title: 'Driver Map Screen' }}
+			name='Driver Map Screen'
+			component={DriverMapScreen}
+		/>
+	</Stack.Navigator>
+)
+
 const DriverTabNavigator = ({ route }) => (
 	<Tab.Navigator
 		tabBarOptions={{
@@ -260,7 +243,7 @@ const DriverDrawerNavigator = () => (
 					drawerIcon: () => <Ionicons name='ios-bicycle' size={24} />,
 				}}
 				name='Home'
-				component={DriverTabNavigator}
+				component={DriverStackNavigator}
 			/>
 			<Drawer.Screen
 				options={{ drawerIcon: () => <Ionicons name='ios-person' size={24} /> }}

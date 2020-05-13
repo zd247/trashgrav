@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   ActivityIndicator,
   Modal,
+  Alert,
 } from "react-native";
 
 import * as Location from "expo-location";
@@ -24,9 +25,11 @@ import * as firebase from "firebase/app";
 import { Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import MapView, { Polyline, Marker } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 import _ from "lodash";
 import PolyLine from "@mapbox/polyline";
 import PlaidAuthenticator from "react-native-plaid-link";
+const { width, height } = Dimensions.get("window");
 
 class DriverMapScreen extends Component {
   constructor(props) {
@@ -46,25 +49,47 @@ class DriverMapScreen extends Component {
       isModalVisible: false,
       data: {},
       status: "LOGIN_BUTTON",
+      coordinates: [],
+      showComponent: false,
     };
     this.state = this.initialState;
     this.onChangeDestinationDebounced = _.debounce(
       this.onChangeDestination,
       1000
     );
+    this.mapView = null;
   }
 
   componentDidMount() {
     //Get current location and set initial region to this
     this.findCurrentLocationAsync();
 
-    if (this.props.recycleItemList.order) {
+    if (this.props.recycleItemList.isOrderExist == true) {
       this.setState({
         destination: this.props.recycleItemList.location,
         locationPredictions: this.props.recycleItemList.order.prediction,
         isButtonEnabled: false,
+        showComponent: true,
       });
+    } else {
+      Alert.alert(
+        "You have not yet pick an order! Please return to the previous screen to choose one"
+      );
+      this.props.navigation.navigate("Pick Up Request");
     }
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      destination: "",
+      locationPredictions: [],
+      isButtonEnabled: true,
+      showComponent: false,
+      orderStatus: 0,
+      coordinates: [],
+      isModalVisible: false,
+    });
+    console.log("DriverMapScreen is unmounted");
   }
 
   findCurrentLocationAsync = async () => {
@@ -73,6 +98,13 @@ class DriverMapScreen extends Component {
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          coordinates: [
+            ...this.state.coordinates,
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          ],
         });
       },
       (error) => console.error(error),
@@ -103,7 +135,7 @@ class DriverMapScreen extends Component {
       });
       Keyboard.dismiss();
       //console.log(pointCoords);
-      this.map.fitToCoordinates(pointCoords);
+      this.mapView.fitToCoordinates(pointCoords);
     } catch (error) {
       console.error(error);
     }
@@ -125,14 +157,43 @@ class DriverMapScreen extends Component {
     }
   }
 
+  pressedPrediction(prediction) {
+    //console.log(prediction);
+    Keyboard.dismiss();
+    this.setState({
+      predictions: [],
+      destination: prediction.description,
+      locationPredictions: prediction.description,
+      isButtonEnabled: false,
+      showComponent: true,
+    });
+    Keyboard;
+  }
+
   submit = async () => {
     let temp = this.state.locationPredictions;
-    console.log(temp);
-    this.getRouteDirections(
+    /* this.getRouteDirections(
       temp.place_id,
       temp.structured_formatting.main_text
-    );
-    this.setState({ isButtonEnabled: true });
+    ); */
+    if (temp.length == 0) {
+      Alert.alert(
+        "You have not yet pick an order! Please return to the previous screen to choose one"
+      );
+      this.props.navigation.navigate("Pick Up Request");
+      return;
+    } else if (temp.toString() === this.state.destination) {
+      this.setState({
+        isButtonEnabled: true,
+        coordinates: [...this.state.coordinates, temp.toString()],
+      });
+    } else {
+      this.setState({
+        isButtonEnabled: true,
+        coordinates: [...this.state.coordinates, temp],
+      });
+    }
+
     let key = this.props.recycleItemList.order.key;
     try {
       //this.props.toggleIsLoadingItems(true);
@@ -214,10 +275,21 @@ class DriverMapScreen extends Component {
       console.log(error);
     }
 
-    this.setState(this.initialState);
+    //this.props.deleteOrder();
+    //this.props.isOrderExist(false);
+    //this.setState(this.initialState);
+    this.setState({
+      destination: "",
+      locationPredictions: [],
+      isButtonEnabled: true,
+      showComponent: false,
+      orderStatus: 0,
+      coordinates: [],
+      isModalVisible: false,
+    });
 
     //this.toggleModal();
-    this.props.navigation.navigate("Pick Up Request");
+    this.props.navigation.replace("Pick Up Request");
   };
 
   onLoadStart = (props) => {
@@ -278,60 +350,55 @@ class DriverMapScreen extends Component {
 
     const predictions = this.state.predictions.map((prediction) => (
       <TouchableHighlight
-        onPress={() =>
-          this.getRouteDirections(
-            prediction.place_id,
-            prediction.structured_formatting.main_text
-          )
-        }
         key={prediction.id}
+        onPress={() => this.pressedPrediction(prediction)}
       >
-        <View>
-          <Text style={styles.suggestions}>
-            {prediction.structured_formatting.main_text}
-          </Text>
-        </View>
+        <Text style={styles.locationSuggestion}>{prediction.description}</Text>
       </TouchableHighlight>
     ));
 
     let button;
-    if (this.state.orderStatus == 0) {
-      button = (
-        <CustomActionButton
-          style={styles.changeMode}
-          title="Navigation to Customer now!!"
-          onPress={() => this.submit()}
-          disabled={this.state.isButtonEnabled}
-        >
-          <Text style={styles.ItemListTitle}>Navigate to Customer</Text>
-        </CustomActionButton>
-      );
-    } else if (this.state.orderStatus == 1) {
-      button = (
-        <CustomActionButton
-          style={styles.onArrival}
-          title="Driver Has Arrived!!"
-          onPress={() => this.onArrival()}
-          disabled={false}
-        >
-          <Text style={styles.ItemListTitle}>Driver Has Arrived</Text>
-        </CustomActionButton>
-      );
-    } else {
-      button = (
-        <CustomActionButton
-          style={styles.onPayment}
-          title="Pay Customer!!"
-          onPress={() => this.onPayment()}
-          disabled={false}
-        >
-          <Text style={styles.ItemListTitle}>Pay Your Customer</Text>
-        </CustomActionButton>
-      );
+    if (this.state.showComponent == true) {
+      if (this.state.orderStatus == 0) {
+        button = (
+          <CustomActionButton
+            style={styles.changeMode}
+            title="Navigation to Customer now!!"
+            onPress={() => this.submit()}
+            disabled={this.state.isButtonEnabled}
+          >
+            <Text style={styles.ItemListTitle}>Navigate to Customer</Text>
+          </CustomActionButton>
+        );
+      } else if (this.state.orderStatus == 1) {
+        button = (
+          <CustomActionButton
+            style={styles.onArrival}
+            title="Driver Has Arrived!!"
+            onPress={() => this.onArrival()}
+            disabled={false}
+          >
+            <Text style={styles.ItemListTitle}>Driver Has Arrived</Text>
+          </CustomActionButton>
+        );
+      } else {
+        button = (
+          <CustomActionButton
+            style={styles.onPayment}
+            title="Pay Customer!!"
+            onPress={() => this.onPayment()}
+            disabled={false}
+          >
+            <Text style={styles.ItemListTitle}>Pay Your Customer</Text>
+          </CustomActionButton>
+        );
+      }
     }
+
     return (
       <View style={styles.container}>
         <SafeAreaView />
+        {/*
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => this.props.navigation.openDrawer()}
@@ -346,11 +413,13 @@ class DriverMapScreen extends Component {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Driver Screen</Text>
         </View>
+        */}
         <View style={styles.body}>
           <MapView
             ref={(map) => {
-              this.map = map;
+              this.mapView = map;
             }}
+            //ref={(c) => (this.mapView = c)}
             style={styles.mapStyle}
             provider="google"
             region={{
@@ -361,12 +430,45 @@ class DriverMapScreen extends Component {
             }}
             showsUserLocation={true}
           >
-            <Polyline
+            {/* <Polyline
               coordinates={this.state.pointCoords}
               strokeWidth={4}
               strokeColor="red"
             />
-            {marker}
+            {marker} */}
+            {this.state.coordinates.length >= 2 && (
+              <MapViewDirections
+                origin={this.state.coordinates[0]}
+                destination={
+                  this.state.coordinates[this.state.coordinates.length - 1]
+                }
+                apikey={apiKey}
+                strokeWidth={3}
+                strokeColor="hotpink"
+                optimizeWaypoints={true}
+                onStart={(params) => {
+                  console.log(
+                    `Started routing between "${params.origin}" and "${params.destination}"`
+                  );
+                }}
+                onReady={(result) => {
+                  console.log(`Distance: ${result.distance} km`);
+                  console.log(`Duration: ${result.duration} min.`);
+
+                  this.mapView.fitToCoordinates(result.coordinates, {
+                    edgePadding: {
+                      right: width / 20,
+                      bottom: height / 20,
+                      left: width / 20,
+                      top: height / 20,
+                    },
+                  });
+                }}
+                onError={(errorMessage) => {
+                  console.log(errorMessage);
+                }}
+              />
+            )}
           </MapView>
           <View style={{ flex: 1, position: "absolute" }}>
             <TextInput
@@ -468,6 +570,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "UPDATE_ORDER_HELLO", payload: order }),
     updateOrderWeight: (item) =>
       dispatch({ type: "UPDATE_ORDER_TOTAL_WEIGHT", payload: item }),
+    orderIsPickedUp: (bool) =>
+      dispatch({ type: "CHECK_IF_ORDER_IS_PICK_UP", payload: bool }),
   };
 };
 
@@ -551,7 +655,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 20,
     marginLeft: 5,
-    marginRight: 5,
+    marginRight: 10,
     padding: 5,
     backgroundColor: "white",
     width: Dimensions.get("window").width,

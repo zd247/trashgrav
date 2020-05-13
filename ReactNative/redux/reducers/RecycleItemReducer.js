@@ -2,6 +2,7 @@ const initialState = {
   recycleItemList: [],
   recycleCart: [],
   isLoading: true,
+  isOrderExist: false,
   user: {},
   totalWeight: 0,
   totalPrice: 0,
@@ -85,6 +86,11 @@ const recycles = (state = initialState, action) => {
         ...state,
         location: "",
         order: [],
+      };
+    case "CHECK_IF_ORDER_IS_PICK_UP":
+      return {
+        ...state,
+        isOrderExist: action.payload,
       };
     default:
       return state;

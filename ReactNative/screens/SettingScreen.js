@@ -268,7 +268,10 @@ class SettingScreen extends Component {
 						{!this.props.auth.isDriver ? (
 							<TouchableOpacity
 								style={styles.button}
-								onPress={this.props.changeDriverMode}>
+								onPress={() => {
+									this.props.changeDriverMode()
+									this.props.navigation.goBack(null);
+								}}>
 								<Text style={{ color: 'green', fontSize: normalize(20) }}>
 									Be a Driver
 								</Text>
@@ -276,7 +279,11 @@ class SettingScreen extends Component {
 						) : (
 							<TouchableOpacity
 								style={styles.button}
-								onPress={this.props.changeCustomerMode}>
+								onPress={() => {
+									this.props.changeCustomerMode()
+									this.props.navigation.goBack(null);
+
+								}}>
 								<Text style={{ color: 'green', fontSize: normalize(20) }}>
 									Be a Customer
 								</Text>
