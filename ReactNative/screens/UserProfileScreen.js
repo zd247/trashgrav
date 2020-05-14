@@ -12,6 +12,7 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
 
 import CustomActionButton from "../components/CustomTempButton";
@@ -194,151 +195,158 @@ class UserProfileScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1 }}>
-            <SafeAreaView />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <View style={styles.container}>
+          <View style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }}>
+              <SafeAreaView />
 
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <ImageBackground
-                source={require("../assets/header.png")}
-                style={styles.imageBackground}
-                resizeMode="stretch"
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
               >
+                <ImageBackground
+                  source={require("../assets/header.png")}
+                  style={styles.imageBackground}
+                  resizeMode="stretch"
+                >
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.openDrawer()}
+                  >
+                    <Ionicons
+                      name="ios-menu"
+                      size={normalize(30)}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.headerTitle}>PROFILE</Text>
+                </ImageBackground>
                 <TouchableOpacity
-                  onPress={() => this.props.navigation.openDrawer()}
+                  style={{ alignSelf: "center", marginEnd: normalize(20) }}
+                  onPress={this.submit}
                 >
-                  <Ionicons
-                    name="ios-menu"
-                    size={normalize(30)}
-                    color="white"
-                  />
+                  <Text style={{ fontSize: normalize(22), color: "green" }}>
+                    Apply
+                  </Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>PROFILE</Text>
-              </ImageBackground>
-              <TouchableOpacity
-                style={{ alignSelf: "center", marginEnd: normalize(20) }}
-                onPress={this.submit}
-              >
-                <Text style={{ fontSize: normalize(22), color: "green" }}>
-                  Apply
-                </Text>
-              </TouchableOpacity>
-            </View>
+              </View>
 
-            <View style={styles.imageContainer}>
-              {this.props.recycleItemList.isLoading && (
-                <View
-                  style={{
-                    ...StyleSheet.absoluteFill,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    zIndex: 1000,
-                    elevation: 1000,
-                  }}
-                >
-                  <ActivityIndicator size="large" color={colors.logoColor} />
-                </View>
-              )}
-              <TouchableOpacity
-                disabled={false}
-                style={{ flex: 1 }}
-                onPress={() => this.changePicture()}
-              >
-                {this.props.recycleItemList.user.image ? (
-                  <Image
-                    source={{ uri: this.props.recycleItemList.user.image }}
-                    style={styles.image}
-                    // indicator={ProgressPie}
-                    indicatorProps={{
-                      size: 40,
-                      borderWidth: 0,
-                      color: colors.logoColor,
-                      unfilledColor: "rgba(200,200,200,0.2)",
+              <View style={styles.imageContainer}>
+                {this.props.recycleItemList.isLoading && (
+                  <View
+                    style={{
+                      ...StyleSheet.absoluteFill,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 1000,
+                      elevation: 1000,
                     }}
-                    imageStyle={{ borderRadius: 35 }}
-                  />
-                ) : (
-                  <Image
-                    source={require("../assets/icon.png")}
-                    style={styles.image}
-                  />
+                  >
+                    <ActivityIndicator size="large" color={colors.logoColor} />
+                  </View>
                 )}
-              </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1 }}>
-              <View style={styles.textInputContainer}>
-                <View
-                  style={{ flex: 1, flexDirection: "row", paddingBottom: 20 }}
+                <TouchableOpacity
+                  disabled={false}
+                  style={{ flex: 1 }}
+                  onPress={() => this.changePicture()}
                 >
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="First name..."
-                    onBlur={Keyboard.dismiss}
-                    value={this.state.firstName}
-                    onChangeText={(text) => this.setState({ firstName: text })}
-                    ref={(component) => {
-                      this.textInputRef = component;
-                    }}
-                  />
-                  <TextInput
-                    style={[styles.textInput, { alignSelf: "center" }]}
-                    placeholder="Last name..."
-                    onBlur={Keyboard.dismiss}
-                    value={this.state.lastName}
-                    onChangeText={(text) => this.setState({ lastName: text })}
-                    ref={(component) => {
-                      this.textInputRef = component;
-                    }}
-                  />
-                </View>
-                <View style={{ flex: 1, paddingBottom: 20 }}>
-                  <TextInput
-                    style={[styles.textInput, { alignSelf: "center" }]}
-                    placeholder="Email..."
-                    value={this.state.email}
-                    onBlur={Keyboard.dismiss}
-                    onChangeText={(text) => this.setState({ email: text })}
-                    ref={(component) => {
-                      this.textInputRef = component;
-                    }}
-                  />
-                </View>
-                <View style={{ flex: 1, paddingBottom: 20 }}>
-                  <TextInput
-                    style={[styles.textInput, { alignSelf: "center" }]}
-                    placeholder="Phone..."
-                    value={this.state.phone}
-                    onBlur={Keyboard.dismiss}
-                    editable={false}
-                    ref={(component) => {
-                      this.textInputRef = component;
-                    }}
-                  />
-                </View>
-                <View style={{ flex: 1, paddingBottom: 20 }}>
-                  <Rating
-                    type="star"
-                    fractions={1}
-                    ratingCount={5}
-                    startingValue={this.state.rating}
-                    readonly
-                    showRating
-                    imageSize={40}
-                    ratingTextColor="black"
-                    onFinishRating={this.ratingCompleted}
-                    style={{ paddingVertical: 10 }}
-                  />
+                  {this.props.recycleItemList.user.image ? (
+                    <Image
+                      source={{ uri: this.props.recycleItemList.user.image }}
+                      style={styles.image}
+                      // indicator={ProgressPie}
+                      indicatorProps={{
+                        size: 40,
+                        borderWidth: 0,
+                        color: colors.logoColor,
+                        unfilledColor: "rgba(200,200,200,0.2)",
+                      }}
+                      imageStyle={{ borderRadius: 35 }}
+                    />
+                  ) : (
+                    <Image
+                      source={require("../assets/icon.png")}
+                      style={styles.image}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1 }}>
+                <View style={styles.textInputContainer}>
+                  <View
+                    style={{ flex: 1, flexDirection: "row", paddingBottom: 20 }}
+                  >
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="First name..."
+                      onBlur={Keyboard.dismiss}
+                      value={this.state.firstName}
+                      onChangeText={(text) =>
+                        this.setState({ firstName: text })
+                      }
+                      ref={(component) => {
+                        this.textInputRef = component;
+                      }}
+                    />
+                    <TextInput
+                      style={[styles.textInput, { alignSelf: "center" }]}
+                      placeholder="Last name..."
+                      onBlur={Keyboard.dismiss}
+                      value={this.state.lastName}
+                      onChangeText={(text) => this.setState({ lastName: text })}
+                      ref={(component) => {
+                        this.textInputRef = component;
+                      }}
+                    />
+                  </View>
+                  <View style={{ flex: 1, paddingBottom: 20 }}>
+                    <TextInput
+                      style={[styles.textInput, { alignSelf: "center" }]}
+                      placeholder="Email..."
+                      value={this.state.email}
+                      onBlur={Keyboard.dismiss}
+                      onChangeText={(text) => this.setState({ email: text })}
+                      ref={(component) => {
+                        this.textInputRef = component;
+                      }}
+                    />
+                  </View>
+                  <View style={{ flex: 1, paddingBottom: 20 }}>
+                    <TextInput
+                      style={[styles.textInput, { alignSelf: "center" }]}
+                      placeholder="Phone..."
+                      value={this.state.phone}
+                      onBlur={Keyboard.dismiss}
+                      editable={false}
+                      ref={(component) => {
+                        this.textInputRef = component;
+                      }}
+                    />
+                  </View>
+                  <View style={{ flex: 1, paddingBottom: 20 }}>
+                    <Rating
+                      type="star"
+                      fractions={1}
+                      ratingCount={5}
+                      startingValue={this.state.rating}
+                      readonly
+                      showRating
+                      imageSize={40}
+                      ratingTextColor="black"
+                      onFinishRating={this.ratingCompleted}
+                      style={{ paddingVertical: 10 }}
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
 
-            <SafeAreaView />
-          </ScrollView>
+              <SafeAreaView />
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
