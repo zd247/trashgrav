@@ -103,17 +103,13 @@ class CustomerMapScreen extends Component {
                 driverLocation: temp.driverLocation,
                 coordinates: [...this.state.coordinates, temp.driverLocation],
               });
-              console.log(
-                "Location of Customer and Driver",
-                this.state.coordinates
-              );
+              this.props.toggleIsLoadingItems(false);
               return Alert.alert(
                 "Driver " +
                   temp.driver.first_name +
                   " is on the way to get your trash"
               );
             } else if (temp.status == 2) {
-              this.props.toggleIsLoadingItems(false);
               this.setState({
                 orderStatus: 2,
               });
@@ -262,7 +258,7 @@ class CustomerMapScreen extends Component {
     let uid = this.state.driverResponse.uid;
     let currentRating = this.state.driverResponse.rating.average;
     let no = this.state.driverResponse.rating.noOfCust;
-    currentRating = (currentRating + this.state.driverRating) / (no + 1);
+    currentRating = (currentRating + this.state.driverRating) / 2;
     try {
       //this.props.toggleIsLoadingItems(true);
       await firebase
@@ -347,6 +343,14 @@ class CustomerMapScreen extends Component {
       }
     }
 
+    let marker = null;
+
+    if (this.state.coordinates.length >= 2) {
+      marker = this.state.coordinates.map((coordinate, index) => (
+        <MapView.Marker key={`coordinate_${index}`} coordinate={coordinate} />
+      ));
+    }
+
     return (
       <View style={styles.container}>
         <SafeAreaView />
@@ -376,6 +380,7 @@ class CustomerMapScreen extends Component {
             showsUserLocation={true}
             ref={(c) => (this.mapView = c)}
           >
+            {marker}
             {this.state.coordinates.length >= 2 && (
               <MapViewDirections
                 origin={this.state.coordinates[0]}

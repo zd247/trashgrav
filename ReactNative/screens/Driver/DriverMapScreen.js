@@ -135,7 +135,7 @@ class DriverMapScreen extends Component {
       });
       Keyboard.dismiss();
       //console.log(pointCoords);
-      this.mapView.fitToCoordinates(pointCoords);
+      //this.mapView.fitToCoordinates(pointCoords);
     } catch (error) {
       console.error(error);
     }
@@ -257,6 +257,8 @@ class DriverMapScreen extends Component {
     //console.log(this.props.recycleItemList.order.user.uid);
     let uid = this.props.recycleItemList.order.user.uid;
     let order = this.props.recycleItemList.order;
+    order.driver = this.props.recycleItemList.user;
+    console.log(order);
 
     try {
       //this.props.toggleIsLoadingItems(true);
