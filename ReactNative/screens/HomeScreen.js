@@ -325,16 +325,7 @@ class HomeScreen extends Component {
 					<Text style={styles.headerTitle}>
 						Hello {this.props.recycleItemList.user.first_name} ~
 					</Text>
-					<TouchableOpacity
-						onPress={() => this.props.navigation.navigate('CustomerMapScreen')}
-						style={{ marginRight: normalize(15) }}>
-						<Ionicons
-							name='ios-map'
-							size={normalize(30)}
-							color='white'
-							style={{ marginLeft: normalize(10) }}
-						/>
-					</TouchableOpacity>
+					
 				</View>
 
 				{/* ------------body content------------- */}
