@@ -295,7 +295,7 @@ class CustomerMapScreen extends Component {
             onPress={() => this.submit()}
             disabled={this.state.isButtonEnabled}
           >
-            <Text style={styles.ItemListTitle}>Requesting Driver!!</Text>
+            <Text style={styles.ItemListTitle}>Request</Text>
           </TouchableOpacity>
         );
       } else {
@@ -614,15 +614,17 @@ const styles = StyleSheet.create({
   },
   locationSuggestion: {
     backgroundColor: "white",
-    padding: 10,
+    padding: normalize(10),
+    marginEnd: normalize(10),
     fontSize: 18,
     borderWidth: 0.5,
   },
   changeMode: {
-    width: 200,
-    height: 50,
+    width: normalize(200),
+    height: normalize(50),
     backgroundColor: colors.logoColor,
     borderWidth: 0.5,
+    borderRadius: normalize(10),
     borderColor: colors.bgError,
     marginBottom: 5,
     marginTop: "auto",
