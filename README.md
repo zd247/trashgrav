@@ -58,3 +58,4 @@
 
 ### Miscellaneous
 - The effort of this project is from team 12 SEPM-RMIT
+- I dips on the Android version :p
