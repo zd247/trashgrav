@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Android-GravTrash.iml" filepath="$PROJECT_DIR$/.idea/modules/Android-GravTrash.iml" group="GravTrash" />
       <module fileurl="file://$PROJECT_DIR$/GravTrash.iml" filepath="$PROJECT_DIR$/GravTrash.iml" group="GravTrash" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GravTrash-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GravTrash-app.iml" group="GravTrash/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="GravTrash/app" />
     </modules>
   </component>

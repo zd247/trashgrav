@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.raycoarana.codeinputview:codeinputview:2.1.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4655ac506ec55afa8df341873242db8c/jetified-codeinputview-2.1.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4655ac506ec55afa8df341873242db8c/jetified-codeinputview-2.1.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/21fa7f91661a16da4caa1c518f818603/jetified-codeinputview-2.1.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/21fa7f91661a16da4caa1c518f818603/jetified-codeinputview-2.1.1/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.raycoarana.codeinputview/codeinputview/2.1.1/6c2a1d903b120f6cb6edfddc4172b9794daf3f0e/codeinputview-2.1.1-javadoc.jar!/" />
