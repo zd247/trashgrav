@@ -23,7 +23,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".ChatActivity"></activity>
+        <activity
+            android:name=".welcome.SplashActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".welcome.slider.SliderActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChatActivity" />
         <activity android:name=".RecycleActivity" />
         <activity android:name=".AccountSettingsActivity" />
         <activity
@@ -51,14 +64,9 @@
             android:label="@string/app_name" />
         <activity android:name=".EmailContActivity" />
         <activity
-            android:name=".WelcomeActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".welcome.WelcomeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

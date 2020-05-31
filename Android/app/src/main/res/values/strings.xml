@@ -3,6 +3,10 @@
     <string name="app_name">TrashGrav</string>
     <string name="app_slogan">Welcome to TrashGrav community,
         are you ready to make a change to the environment and earn ? </string>
+    <string name="welcome_login">Let\'s join our community</string>
+    <string name="welcome_cont_btn">Continue</string>
+
+
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_settings">Settings</string>
