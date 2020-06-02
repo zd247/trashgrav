@@ -6,7 +6,10 @@
     <string name="welcome_login">Let\'s join us</string>
     <string name="welcome_cont_btn">Continue</string>
     <string name="welcome_verify_btn">Verify</string>
+    <string name="welcome_verify_resend_text">Resend</string>
     <string name="welcome_verify_cancel_text">Want to change your phone number ?</string>
+    <string name="welcome_snackbar_cont_error">Something went wrong..</string>
+    <string name="snackbar_detail_text">Details</string>
 
 
     <string name="register_first_name">First name …</string>

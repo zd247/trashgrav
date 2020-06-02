@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -18,6 +19,7 @@ import com.raycoarana.codeinputview.OnDigitInputListener
 import kotlinx.android.synthetic.main.activity_welcome.*
 import rattclub.gravtrash.R
 import java.util.concurrent.TimeUnit
+import kotlin.properties.Delegates
 
 
 class WelcomeActivity : AppCompatActivity() {
@@ -28,12 +30,13 @@ class WelcomeActivity : AppCompatActivity() {
     // co-routines
     private var handler = Handler()
     private lateinit var runnable: Runnable
-    private var currentInterval: Long = RESET_TOTAL_INTERVAL
+    private var currentInterval by Delegates.notNull<Long>()
 
 
     private var veriCodeSent = false // when cont button is hit
     private var contBtnIsEnabled = false
     private var veriBtnIsEnabled = false
+    private var resendIsClickable = false
 
     // phone authentication
     private lateinit var phone: String
@@ -88,6 +91,7 @@ class WelcomeActivity : AppCompatActivity() {
                             welcome_cont_btn_text.visibility = View.INVISIBLE
                             contBtnIsEnabled = false
 
+
                             //send SMS verification code
                             PhoneAuthProvider.getInstance()
                                 .verifyPhoneNumber(phone,60, TimeUnit.SECONDS,
@@ -107,6 +111,7 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_phone_edit_text.setText("")
             welcome_verification_input.code = ""
             welcome_cont_btn_text.visibility = View.VISIBLE
+            welcome_verification_resend_txt.text = "01:00"
         }
 
         welcome_verification_input.setOnClickListener { welcome_verification_input.setEditable(true) }
@@ -150,6 +155,16 @@ class WelcomeActivity : AppCompatActivity() {
             }
 
         })
+
+        welcome_verification_resend_txt.setOnClickListener {
+            if (resendIsClickable) {
+                PhoneAuthProvider.getInstance()
+                    .verifyPhoneNumber(
+                        phone, 60, TimeUnit.SECONDS,
+                        this@WelcomeActivity, callbacks, mResendToken)
+                Toast.makeText(this, "Resent verification code", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private fun initVerificationCallBack() {
@@ -174,6 +189,15 @@ class WelcomeActivity : AppCompatActivity() {
                 welcome_phone_edit_text.setText("")
 
                 //snackbar fail indicator with stacktrace
+                @Suppress("DEPRECATION")
+                Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.snackbar_detail_text) {
+                        Toast.makeText(this@WelcomeActivity,
+                            p0.message,
+                            Toast.LENGTH_LONG).show();
+                    }
+                    .setActionTextColor(resources.getColor(R.color.colorAccent))
+                    .show()
             }
 
             override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -183,10 +207,27 @@ class WelcomeActivity : AppCompatActivity() {
                 mResendToken = p1
                 displayVerifyFields(true)
 
-                // reset cont button state
+                // reset cont button state for future use
                 welcome_cont_btn_pbar.visibility = View.INVISIBLE
                 welcome_cont_btn_text.visibility = View.VISIBLE
                 contBtnIsEnabled = false
+
+
+                // start re-send counter
+                currentInterval = RESET_TOTAL_INTERVAL
+                runnable = Runnable {
+                    currentInterval -= RESET_COUNT_INTERVAL
+                    welcome_verification_resend_txt.text = "00:${String.format("%02d", currentInterval/1000)}"
+                    handler.postDelayed(runnable, RESET_COUNT_INTERVAL)
+
+                    if (currentInterval == 0L) {
+                        handler.removeCallbacks(runnable)
+                        resendIsClickable = true
+                        welcome_verification_resend_txt.setText(R.string.welcome_verify_resend_text)
+                    }
+                }
+                handler.postDelayed(runnable, RESET_COUNT_INTERVAL)
+
             }
 
         }
@@ -204,20 +245,28 @@ class WelcomeActivity : AppCompatActivity() {
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener {task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     welcome_verification_input.error = ""
                     welcome_verification_input.clearError()
                     welcome_verification_input.code = ""
-                    welcome_verification_input.setEditable(true)
 
                     veriBtnIsEnabled = false
                     welcome_verification_btn_pbar.visibility = View.INVISIBLE
                     welcome_verification_btn_text.visibility = View.VISIBLE
 
+                    currentInterval = RESET_TOTAL_INTERVAL
 
                     //Snackbar here
+                    @Suppress("DEPRECATION")
+                    Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.snackbar_detail_text) {
+                            Toast.makeText(this@WelcomeActivity,
+                                task.exception?.message,
+                                Toast.LENGTH_LONG).show();
+                        }
+                        .setActionTextColor(resources.getColor(R.color.colorAccent))
+                        .show()
                 }
             }
     }
@@ -231,12 +280,12 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_cont_btn.visibility = View.GONE
 
             // Visible
-            welcome_verification_input.visibility = View.VISIBLE
+            welcome_verification_linear_layout.visibility = View.VISIBLE
             welcome_verification_btn.visibility = View.VISIBLE
             welcome_verification_cancel_txt.visibility = View.VISIBLE
         }else {
             // Gone
-            welcome_verification_input.visibility = View.GONE
+            welcome_verification_linear_layout.visibility = View.GONE
             welcome_verification_btn.visibility = View.GONE
             welcome_verification_cancel_txt.visibility = View.GONE
 
@@ -253,8 +302,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     companion object {
         private const val PHONE_NUMBER_LIMIT = 10
-        private const val INPUT_CHECK_INTERVAL: Long = 400
         private const val RESET_COUNT_INTERVAL: Long = 1000
-        private const val RESET_TOTAL_INTERVAL: Long = 60000
+        private const val RESET_TOTAL_INTERVAL: Long = 59000
     }
 }
