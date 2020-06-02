@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.activity_phone_input.*
-import rattclub.gravtrash.PhoneInputActivity
 import rattclub.gravtrash.R
 import rattclub.gravtrash.welcome.slider.SliderActivity
 

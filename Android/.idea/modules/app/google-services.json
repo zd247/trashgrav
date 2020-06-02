@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "397971799878-gk7hgv205shtipdisobcdeptpq9ff8kb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rattclub.gravtrash",
+            "certificate_hash": "145c231b0006e52e3b431d7b1474bf3833215e95"
+          }
+        },
+        {
+          "client_id": "397971799878-hk2mbrvmmlbee2c6acllelu8lel34bio.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rattclub.gravtrash",
+            "certificate_hash": "f6978056e5b89368ce19e4b15b8a557913313666"
+          }
+        },
+        {
           "client_id": "397971799878-ggrc98m2nfft700bp9s3bb6qj40eosj3.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -28,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "397971799878-ggrc98m2nfft700bp9s3bb6qj40eosj3.apps.googleusercontent.com",
+              "client_id": "397971799878-l2kd987fj60bkhmh7j5a9up5qc20u9hc.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

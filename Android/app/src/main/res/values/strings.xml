@@ -3,8 +3,18 @@
     <string name="app_name">TrashGrav</string>
     <string name="app_slogan">Welcome to TrashGrav community,
         are you ready to make a change to the environment and earn ? </string>
-    <string name="welcome_login">Let\'s join our community</string>
+    <string name="welcome_login">Let\'s join us</string>
     <string name="welcome_cont_btn">Continue</string>
+    <string name="welcome_verify_btn">Verify</string>
+    <string name="welcome_verify_cancel_text">Want to change your phone number ?</string>
+
+
+    <string name="register_first_name">First name …</string>
+    <string name="register_last_name">Last name …</string>
+    <string name="register_email">Email …</string>
+    <string name="register_next_btn_text">Next</string>
+    <string name="register_cont_google">Continue with Google</string>
+
 
 
     <string name="title_home">Home</string>

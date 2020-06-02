@@ -7,19 +7,20 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/phone_cont_logo"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
+        android:id="@+id/welcome_cont_logo"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+
+        android:elevation="20dp"
         android:src="@drawable/web_hi_res_512"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.039" />
+        app:layout_constraintVertical_bias="0.03" />
 
     <TextView
-        android:id="@+id/phone_cont_slogan"
+        android:id="@+id/welcome_cont_slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/welcome_login"
@@ -28,73 +29,185 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.22"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.129" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_cont_logo"
+        app:layout_constraintVertical_bias="0.021" />
 
     <TextView
-        android:id="@+id/login_pinput_text_view"
+        android:id="@+id/welcome_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_baseline_smartphone_24"
+        android:drawablePadding="7dp"
         android:text="Phone number"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.206" />
+        app:layout_constraintVertical_bias="0.328"
+        android:layout_marginStart="35dp"/>
 
-    <com.hbb20.CountryCodePicker
-        android:id="@+id/pinput_ccp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_pinput_text_view"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="8dp"
-        app:ccpDialog_allowSearch="false"
-        app:ccp_showFullName="true"
-        app:ccp_showNameCode="true"
-        app:ccp_showPhoneCode="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.382"
+        android:layout_marginStart="30dp">
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/welcome_ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:ccpDialog_allowSearch="true"
+            app:ccpDialog_showCloseIcon="true"
+            app:ccp_defaultPhoneCode="84"
+            app:ccp_showNameCode="true"
+            app:ccp_showPhoneCode="true" />
+
+        <EditText
+            android:id="@+id/welcome_phone_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Ex: (012)-345 6789"
+            android:inputType="number"
+            android:maxLength="13"
+            android:maxLines="1" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/welcome_cont_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/continue_color_fade_btn"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.232" />
+        app:layout_constraintVertical_bias="0.884"
+        android:layout_marginHorizontal="50dp">
+        <ProgressBar
+            android:id="@+id/welcome_cont_btn_pbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/welcome_cont_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_cont_btn"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
-        android:id="@+id/phone_edit_text"
-        android:layout_width="match_parent"
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--    Verification fields-->
+
+    <com.raycoarana.codeinputview.CodeInputView
+        android:id="@+id/welcome_verification_input"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:hint="Ex: (012)-345 6789"
-        android:inputType="phone"
-        android:maxLines="1"
-        android:maxLength="13"
+        android:layout_centerHorizontal="true"
+        app:animate_on_complete="false"
+        app:input_type="numeric"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.311" />
+        app:layout_constraintVertical_bias="0.36"
+        android:visibility="gone"/>
 
 
-    <Button
-        android:id="@+id/login_btn"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/welcome_verification_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/continue_color_fade_btn"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.884"
         android:layout_marginHorizontal="50dp"
-        android:background="@color/colorSignInSignUpFade"
-        android:text="@string/welcome_cont_btn"
-        android:textAllCaps="false"
-        android:theme="@style/GoogleButtonStyle"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/welcome_verification_btn_pbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/welcome_verification_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_verify_btn"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/welcome_verification_cancel_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_verify_cancel_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/colorSignInSignUp"
+        android:textStyle="italic"
+        android:textSize="15sp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.884" />
+        app:layout_constraintVertical_bias="0.46"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/welcome_verification_resend_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_verify_cancel_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/colorSignInSignUp"
+        android:textStyle="italic"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.56"
+        android:visibility="gone"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

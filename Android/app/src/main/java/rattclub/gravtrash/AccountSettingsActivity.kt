@@ -51,9 +51,6 @@ class AccountSettingsActivity : AppCompatActivity() {
     private fun initOnClickListeners() {
         settings_save_btn.setOnClickListener{ updateUserInfo() }
 
-        settings_connect_phone_btn.setOnClickListener {
-            startActivity(Intent(this, PhoneInputActivity::class.java))
-        }
         settings_reset_password_btn
 
         profile_image_change_text.setOnClickListener {

@@ -31,7 +31,6 @@ class CustomerDashboardFragment : Fragment() {
         root = inflater.inflate(R.layout.customer_fragment_dashboard, container, false)
         initOnClickListeners()
 
-
         return root
     }
 
@@ -51,7 +50,6 @@ class CustomerDashboardFragment : Fragment() {
                                         " Please set your phone number to continue")
                                 builder?.apply {
                                     setPositiveButton("OK") { _, _ ->
-                                        startActivity(Intent(root.context, PhoneInputActivity::class.java))
                                     }
                                     setNegativeButton("Cancel") { dialog, _ ->
                                         dialog.cancel()
