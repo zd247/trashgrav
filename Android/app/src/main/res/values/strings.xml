@@ -15,8 +15,8 @@
     <string name="register_first_name">First name …</string>
     <string name="register_last_name">Last name …</string>
     <string name="register_email">Email …</string>
-    <string name="register_next_btn_text">Next</string>
-    <string name="register_cont_google">Continue with Google</string>
+    <string name="register_cont_btn_text">Continue</string>
+    <string name="register_continue_text">Continue with</string>
 
 
 
@@ -41,6 +41,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="home_second">Home Second</string>
+
 
 
 </resources>

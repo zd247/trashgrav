@@ -1,11 +1,11 @@
 package rattclub.gravtrash.welcome
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -14,10 +14,15 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.raycoarana.codeinputview.OnDigitInputListener
 import kotlinx.android.synthetic.main.activity_welcome.*
 import rattclub.gravtrash.R
+import rattclub.gravtrash.customers.CustomerMainActivity
+import rattclub.gravtrash.model.Prevalent
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
@@ -49,12 +54,12 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome)
 
         initVerificationCallBack()
-        observePinputButtonState()
+        observeInputButtonState()
         handleOnClicks()
 
     }
 
-    private fun observePinputButtonState() {
+    private fun observeInputButtonState() {
         welcome_phone_edit_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 phone = welcome_phone_edit_text.text.toString()
@@ -245,10 +250,38 @@ class WelcomeActivity : AppCompatActivity() {
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener {task ->
                 if (task.isSuccessful) {
+                    mAuth.currentUser?.uid?.let {
+                        rootRef.child("Users").child(it)
+                            .addListenerForSingleValueEvent(object: ValueEventListener {
+                                override fun onCancelled(p0: DatabaseError) {}
+                                override fun onDataChange(p0: DataSnapshot) {
+                                    if (p0.exists()) {
+                                        Prevalent.startActivity(this@WelcomeActivity,
+                                            CustomerMainActivity::class.java, true)
+                                        Toast.makeText(this@WelcomeActivity,
+                                            "Welcome ${p0.child("first_name").value}",
+                                            Toast.LENGTH_LONG).show();
+                                    }else {
+                                        val intent = Intent(this@WelcomeActivity,
+                                            RegisterProfileActivity::class.java)
+                                        intent.putExtra("phoneNumber", phone)
+                                        Prevalent.startActivity(this@WelcomeActivity,
+                                        RegisterProfileActivity::class.java, false, intent)
+
+                                        // reset this activity state
+                                        welcome_verification_input.code = ""
+                                        welcome_phone_edit_text.setText("")
+                                        veriBtnIsEnabled = false
+                                        welcome_verification_btn_pbar.visibility = View.INVISIBLE
+                                        welcome_verification_btn_text.visibility = View.VISIBLE
+                                        displayVerifyFields(false)
+                                    }
+                                }
+
+                            })
+                    }
                 }
                 else {
-                    welcome_verification_input.error = ""
-                    welcome_verification_input.clearError()
                     welcome_verification_input.code = ""
 
                     veriBtnIsEnabled = false

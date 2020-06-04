@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
 import rattclub.gravtrash.R
+import rattclub.gravtrash.model.Prevalent
 import rattclub.gravtrash.welcome.slider.SliderActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -25,9 +26,11 @@ class SplashActivity : AppCompatActivity() {
         runnable = Runnable {
             if (launcherManager.isFirstTime()) {
                 launcherManager.setFirstLaunch(false)
-                startActivity(SliderActivity::class.java)
+
+                Prevalent.startActivity(this@SplashActivity, SliderActivity::class.java, true)
             }else {
-                startActivity(WelcomeActivity::class.java)
+//                Prevalent.startActivity(this@SplashActivity,WelcomeActivity::class.java, true)
+                Prevalent.startActivity(this@SplashActivity,RegisterProfileActivity::class.java, true)
             }
             handler.postDelayed(runnable, 2000)
         }
@@ -37,12 +40,5 @@ class SplashActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(runnable)
-    }
-
-    private fun startActivity(activity: Class<*> ) {
-        val intent = Intent(this@SplashActivity, activity)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        finish()
     }
 }

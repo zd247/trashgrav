@@ -142,4 +142,16 @@ object Prevalent {
                 }
             }
     }
+
+    fun startActivity(context: Context, activity: Class<*>, isFinished: Boolean,
+                              intent:Intent? = Intent(context, activity)) {
+        if (isFinished) {
+            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+        if (isFinished) {
+            (context as Activity).finish()
+        }
+
+    }
 }
