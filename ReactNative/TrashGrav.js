@@ -8,6 +8,7 @@ import LoginScreen from './screens/LoginScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import HomeScreen from './screens/HomeScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
+import NotificationScreen from './screens/NotificationScreen'
 
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
 import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
@@ -194,6 +195,16 @@ const CustomerDrawerNavigator = () => (
 				}}
 				name='Setting'
 				component={SettingScreen}
+			/>
+			<Drawer.Screen
+				options={{
+					drawerIcon: () => <Ionicons name='ios-chatbubbles' size={24} />,
+					headerBackTitleVisible: false,
+					headerTransparent: true,
+					headerTitle: '',
+				}}
+				name='Notification'
+				component={NotificationScreen}
 			/>
 		</Drawer.Navigator>
 	</ActionSheetProvider>

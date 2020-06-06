@@ -525,7 +525,7 @@ class CustomerMapScreen extends Component {
                   onPress={() => this.onComplete()}
                 >
                   <Text style={{ fontWeight: "100", color: "white" }}>
-                    Complete Request!!
+                    Complete Request
                   </Text>
                 </CustomActionButton>
               </View>
@@ -615,7 +615,6 @@ const styles = StyleSheet.create({
   locationSuggestion: {
     backgroundColor: "white",
     padding: normalize(10),
-    marginEnd: normalize(10),
     fontSize: 18,
     borderWidth: 0.5,
   },

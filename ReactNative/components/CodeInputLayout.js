@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { SafeAreaView, Text, StyleSheet, View } from 'react-native'
 import CustomActionButton from '../components/CustomTempButton'
 import colors from '../assets/colors'
+import { normalize } from '../helpers/fontHelper'
+
 
 import {
 	CodeField,
@@ -53,7 +55,7 @@ const CodeInputLayout = props => {
 			<CustomActionButton
 				style={[
 					styles.button,
-					{ backgroundColor: colors.bgUserLogin, marginTop: 100 },
+					{ backgroundColor: colors.bgUserLogin, marginTop: normalize(100) },
 				]}
 				title='Verify'
 				onPress={setInputIntoProps}>
@@ -66,13 +68,13 @@ const CodeInputLayout = props => {
 export default CodeInputLayout
 
 const styles = StyleSheet.create({
-	root: { flex: 1, padding: 20 },
-	codeFiledRoot: { marginTop: 20 },
+	root: { flex: 1, padding: normalize(20) },
+	codeFiledRoot: { marginTop: normalize(20) },
 	cell: {
-		width: 40,
-		height: 40,
-		lineHeight: 38,
-		fontSize: 24,
+		width: normalize(40),
+		height: normalize(40),
+		lineHeight: normalize(38),
+		fontSize: normalize(24),
 		borderWidth: 2,
 		borderColor: '#00000030',
 		textAlign: 'center',
@@ -83,8 +85,10 @@ const styles = StyleSheet.create({
 	button: {
 		borderColor: colors.bgPrimary,
 		borderWidth: 0.5,
-		borderRadius: 20,
+		borderRadius: normalize(30),
+		marginBottom: normalize(10),
 		alignSelf: 'center',
 		width: '80%',
+		height: normalize(42)
 	},
 })
