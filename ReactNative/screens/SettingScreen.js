@@ -16,6 +16,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 
+import { userCache } from '../helpers/cacheHelper'
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 
@@ -37,6 +38,7 @@ class SettingScreen extends Component {
 		try {
 			await firebase.auth().signOut()
 			this.props.signOut()
+			await userCache.clearAll()
 		} catch (error) {
 			alert('Unable to sign out right now')
 		}
@@ -270,7 +272,7 @@ class SettingScreen extends Component {
 								style={styles.button}
 								onPress={() => {
 									this.props.changeDriverMode()
-									this.props.navigation.goBack(null);
+									this.props.navigation.goBack(null)
 								}}>
 								<Text style={{ color: 'green', fontSize: normalize(20) }}>
 									Be a Driver
@@ -281,8 +283,7 @@ class SettingScreen extends Component {
 								style={styles.button}
 								onPress={() => {
 									this.props.changeCustomerMode()
-									this.props.navigation.goBack(null);
-
+									this.props.navigation.goBack(null)
 								}}>
 								<Text style={{ color: 'green', fontSize: normalize(20) }}>
 									Be a Customer

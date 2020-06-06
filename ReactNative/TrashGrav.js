@@ -37,6 +37,8 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { connect } from 'react-redux'
 
+import {userCache} from './helpers/cacheHelper'
+
 import * as firebase from 'firebase/app'
 
 const Stack = createStackNavigator()
@@ -49,25 +51,20 @@ class TrashGrav extends Component {
 		this.state = {}
 	}
 
-	componentDidMount() {
+	componentDidMount= () => {
 		this.checkIfLoggedIn()
 	}
 
-	checkIfLoggedIn = () => {
-		let unsubscribe
-		try {
-			unsubscribe = firebase.auth().onAuthStateChanged(user => {
-				if (user) {
-					this.props.signIn(user)
-				} else {
-					console.log('No user Sign In')
-					this.props.signOut()
-				}
-				unsubscribe()
-			})
-		} catch (e) {
+	checkIfLoggedIn = async () => {
+		let user = await userCache.get('data')
+		
+		if (user) {
+			await this.props.signIn(user)
+		}else {
+			console.log('No user Sign In')
 			this.props.signOut()
 		}
+		
 	}
 
 	render() {
@@ -182,6 +179,16 @@ const CustomerDrawerNavigator = () => (
 				component={CustomerStackNavigator}
 			/>
 			<Drawer.Screen
+				options={{
+					drawerIcon: () => <Ionicons name='ios-chatbubbles' size={24} />,
+					headerBackTitleVisible: false,
+					headerTransparent: true,
+					headerTitle: '',
+				}}
+				name='Notification'
+				component={NotificationScreen}
+			/>
+			<Drawer.Screen
 				options={{ drawerIcon: () => <Ionicons name='ios-person' size={24} /> }}
 				name='User Profile'
 				component={UserProfileScreen}
@@ -196,16 +203,7 @@ const CustomerDrawerNavigator = () => (
 				name='Setting'
 				component={SettingScreen}
 			/>
-			<Drawer.Screen
-				options={{
-					drawerIcon: () => <Ionicons name='ios-chatbubbles' size={24} />,
-					headerBackTitleVisible: false,
-					headerTransparent: true,
-					headerTitle: '',
-				}}
-				name='Notification'
-				component={NotificationScreen}
-			/>
+			
 		</Drawer.Navigator>
 	</ActionSheetProvider>
 )

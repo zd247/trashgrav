@@ -29,6 +29,7 @@
 - `npm install react-native-plaid-link`
 - `npm install --save react-native-ratings`
 - `npm install react-native-maps-directions`
+- `npm install --save react-native-cache`
 
 
 ### Overview technical requirements

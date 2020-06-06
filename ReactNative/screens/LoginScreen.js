@@ -29,6 +29,7 @@ import CustomActionButton from '../components/CustomTempButton'
 import PopUpPolicy from '../components/PopUpPolicy'
 import InputField from '../components/InputField'
 import PwdField from '../components/PwdField'
+import { userCache } from '../helpers/cacheHelper'
 
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
@@ -221,7 +222,7 @@ class LoginScreen extends Component {
 					if (snapshot.exists()) {
 						snapshot.forEach(data => {
 							if (data.child('password').val() === this.state.password) {
-								this.props.signIn(data)
+								this.signingIn(data)
 								this.setState({ isLoading: false })
 							} else {
 								alert('Password is invalid, please re-enter')
@@ -239,6 +240,12 @@ class LoginScreen extends Component {
 			alert('Invalid phone number or password format entered')
 			this.setState({ isLoading: false })
 		}
+	}
+
+	signingIn = async (data) => {
+		await userCache.set('data', data)
+		const value = userCache.get('data')
+		this.props.signIn(value)
 	}
 
 	render() {
@@ -496,7 +503,7 @@ const styles = StyleSheet.create({
 		marginBottom: normalize(10),
 		alignSelf: 'center',
 		width: '80%',
-		height: normalize(42)
+		height: normalize(42),
 	},
 	modalContainer: {
 		backgroundColor: '#f2f2f2',

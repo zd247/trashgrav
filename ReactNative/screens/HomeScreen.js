@@ -34,6 +34,8 @@ import 'firebase/storage'
 import NumericInput from 'react-native-numeric-input'
 import SelectPicker from 'react-native-form-select-picker'
 
+import { userCache } from '../helpers/cacheHelper'
+
 class HomeScreen extends Component {
 	constructor() {
 		super()
@@ -72,16 +74,21 @@ class HomeScreen extends Component {
 	}
 
 	componentDidMount = async () => {
+		// const user = await userCache.get('data')
 		const user = this.props.currentUser
+
+		console.log('mounted')
+		
 
 		const currentUserData = await firebase
 			.database()
 			.ref('Users')
-			.child(user.key)
+			.child(user.uid)
 			.once('value')
 
 		const recycleItems = await firebase.database().ref('Items').once('value')
 		let recycleItemsArray = snapshotToArray(recycleItems)
+
 
 		let temp = currentUserData.val()
 		delete temp['password']
@@ -325,7 +332,6 @@ class HomeScreen extends Component {
 					<Text style={styles.headerTitle}>
 						Hello {this.props.recycleItemList.user.first_name} ~
 					</Text>
-					
 				</View>
 
 				{/* ------------body content------------- */}
