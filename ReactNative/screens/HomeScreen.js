@@ -34,8 +34,6 @@ import 'firebase/storage'
 import NumericInput from 'react-native-numeric-input'
 import SelectPicker from 'react-native-form-select-picker'
 
-import { userCache } from '../helpers/cacheHelper'
-
 class HomeScreen extends Component {
 	constructor() {
 		super()
@@ -43,7 +41,6 @@ class HomeScreen extends Component {
 			recycleItemListTemp: [],
 			search: '',
 			recycleCart: [],
-			currentUser: {},
 			isModalVisible: false,
 			totalWeight: 0,
 			totalPrice: 0,
@@ -74,31 +71,17 @@ class HomeScreen extends Component {
 	}
 
 	componentDidMount = async () => {
-		// const user = await userCache.get('data')
 		const user = this.props.currentUser
 
 		console.log('mounted')
-		
-
-		const currentUserData = await firebase
-			.database()
-			.ref('Users')
-			.child(user.uid)
-			.once('value')
 
 		const recycleItems = await firebase.database().ref('Items').once('value')
 		let recycleItemsArray = snapshotToArray(recycleItems)
 
-
-		let temp = currentUserData.val()
-		delete temp['password']
-
 		this.setState({
-			currentUser: temp,
 			recycleItemListTemp: recycleItemsArray,
 		})
-
-		this.props.loadUser(temp)
+		
 		this.props.loadRecycleItem(recycleItemsArray)
 
 		//reset cart and list state
@@ -108,6 +91,7 @@ class HomeScreen extends Component {
 		this.props.updateOrderPrice(0)
 		this.setState({ isLoading: false })
 		this.props.toggleIsLoadingItems(false)
+		
 	}
 
 	onRefreshData = async () => {
@@ -330,7 +314,7 @@ class HomeScreen extends Component {
 						/>
 					</TouchableOpacity>
 					<Text style={styles.headerTitle}>
-						Hello {this.props.recycleItemList.user.first_name} ~
+						Hello {this.props.currentUser.first_name} ~
 					</Text>
 				</View>
 

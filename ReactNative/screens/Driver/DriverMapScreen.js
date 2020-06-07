@@ -203,7 +203,7 @@ class DriverMapScreen extends Component {
         .child(key)
         .update({
           status: 1,
-          driver: this.props.recycleItemList.user,
+          driver: this.props.currentUser,
           driverLocation: {
             latitude: this.state.latitude,
             longitude: this.state.longitude,
@@ -257,7 +257,7 @@ class DriverMapScreen extends Component {
     //console.log(this.props.recycleItemList.order.user.uid);
     let uid = this.props.recycleItemList.order.user.uid;
     let order = this.props.recycleItemList.order;
-    order.driver = this.props.recycleItemList.user;
+    order.driver = this.props.currentUser;
     console.log(order);
 
     try {

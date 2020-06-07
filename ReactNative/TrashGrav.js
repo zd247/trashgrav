@@ -8,7 +8,7 @@ import LoginScreen from './screens/LoginScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import HomeScreen from './screens/HomeScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
-import NotificationScreen from './screens/NotificationScreen'
+import HistoryScreen from './screens/History/HistoryScreen'
 
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
 import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
@@ -37,7 +37,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { connect } from 'react-redux'
 
-import {userCache} from './helpers/cacheHelper'
+import { userCache } from './helpers/cacheHelper'
 
 import * as firebase from 'firebase/app'
 
@@ -51,20 +51,23 @@ class TrashGrav extends Component {
 		this.state = {}
 	}
 
-	componentDidMount= () => {
+	componentDidMount = () => {
 		this.checkIfLoggedIn()
+	}
+
+	componentWillUnmount = () => {
+		console.log('[TrashGrav] unmounted')
 	}
 
 	checkIfLoggedIn = async () => {
 		let user = await userCache.get('data')
-		
+
 		if (user) {
-			await this.props.signIn(user)
-		}else {
+			this.props.signIn(user)
+		} else {
 			console.log('No user Sign In')
 			this.props.signOut()
 		}
-		
 	}
 
 	render() {
@@ -180,13 +183,13 @@ const CustomerDrawerNavigator = () => (
 			/>
 			<Drawer.Screen
 				options={{
-					drawerIcon: () => <Ionicons name='ios-chatbubbles' size={24} />,
+					drawerIcon: () => <Ionicons name='ios-bookmark' size={24} />,
 					headerBackTitleVisible: false,
 					headerTransparent: true,
 					headerTitle: '',
 				}}
-				name='Notification'
-				component={NotificationScreen}
+				name='History'
+				component={HistoryScreen}
 			/>
 			<Drawer.Screen
 				options={{ drawerIcon: () => <Ionicons name='ios-person' size={24} /> }}
@@ -203,7 +206,6 @@ const CustomerDrawerNavigator = () => (
 				name='Setting'
 				component={SettingScreen}
 			/>
-			
 		</Drawer.Navigator>
 	</ActionSheetProvider>
 )
@@ -216,7 +218,7 @@ const DriverStackNavigator = ({ navigation }) => (
 			component={DriverHomeScreen}
 		/>
 		<Stack.Screen
-		options={{ headerShown: false }}
+			options={{ headerShown: false }}
 			name='Driver Order Detail Screen'
 			component={DriverOrderDetailScreen}
 		/>

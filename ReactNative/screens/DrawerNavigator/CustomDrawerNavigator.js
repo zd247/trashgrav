@@ -38,9 +38,9 @@ class CustomDrawerNavigator extends Component {
         >
           <View style={styles.userInfoSection}>
             <TouchableOpacity disabled={true} style={{ flex: 1 }}>
-              {this.props.recycleItemList.user.image ? (
+              {this.props.currentUser.image ? (
                 <Image
-                  source={{ uri: this.props.recycleItemList.user.image }}
+                  source={{ uri: this.props.currentUser.image }}
                   style={styles.image}
                   // indicator={ProgressPie}
                   indicatorProps={{
@@ -59,8 +59,8 @@ class CustomDrawerNavigator extends Component {
               )}
             </TouchableOpacity>
             <Text style={styles.title}>
-              {this.props.recycleItemList.user.first_name}{" "}
-              {this.props.recycleItemList.user.last_name}
+              {this.props.currentUser.first_name}{" "}
+              {this.props.currentUser.last_name}
             </Text>
           </View>
           <DrawerItemList {...this.props} />

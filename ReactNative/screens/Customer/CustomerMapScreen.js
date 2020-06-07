@@ -226,7 +226,7 @@ class CustomerMapScreen extends Component {
     try {
       this.props.toggleIsLoadingItems(true);
       const response = await firebase.database().ref("Requests").push({
-        user: this.props.recycleItemList.user,
+        user: this.props.currentUser,
         item: this.props.recycleItemList.recycleCart,
         totalPrice: this.props.recycleItemList.totalPrice,
         totalWeight: this.props.recycleItemList.totalWeight,

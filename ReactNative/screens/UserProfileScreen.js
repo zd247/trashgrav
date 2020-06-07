@@ -48,14 +48,14 @@ class UserProfileScreen extends Component {
 
   componentDidMount = async () => {
     this.setState({
-      currentUser: this.props.recycleItemList.user,
-      firstName: this.props.recycleItemList.user.first_name,
-      lastName: this.props.recycleItemList.user.last_name,
-      email: this.props.recycleItemList.user.email,
-      image: this.props.recycleItemList.user.image,
-      uid: this.props.recycleItemList.user.uid,
-      phone: this.props.recycleItemList.user.phone,
-      rating: this.props.recycleItemList.user.rating.average,
+      currentUser: this.props.currentUser,
+      firstName: this.props.currentUser.first_name,
+      lastName: this.props.currentUser.last_name,
+      email: this.props.currentUser.email,
+      image: this.props.currentUser.image,
+      uid: this.props.currentUser.uid,
+      phone: this.props.currentUser.phone,
+      rating: this.props.currentUser.rating.average,
     });
     this.props.toggleIsLoadingItems(false);
   };
@@ -70,7 +70,7 @@ class UserProfileScreen extends Component {
         first_name: this.state.firstName,
         last_name: this.state.lastName,
         email: this.state.email,
-        image: this.props.recycleItemList.user.image,
+        image: this.props.currentUser.image,
         uid: this.state.uid,
       },
     ];
@@ -252,9 +252,9 @@ class UserProfileScreen extends Component {
                   style={{ flex: 1 }}
                   onPress={() => this.changePicture()}
                 >
-                  {this.props.recycleItemList.user.image ? (
+                  {this.props.currentUser.image ? (
                     <Image
-                      source={{ uri: this.props.recycleItemList.user.image }}
+                      source={{ uri: this.props.currentUser.image }}
                       style={styles.image}
                       // indicator={ProgressPie}
                       indicatorProps={{

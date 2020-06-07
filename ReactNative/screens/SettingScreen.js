@@ -39,6 +39,7 @@ class SettingScreen extends Component {
 			await firebase.auth().signOut()
 			this.props.signOut()
 			await userCache.clearAll()
+			await userCache.remove('data')
 		} catch (error) {
 			alert('Unable to sign out right now')
 		}

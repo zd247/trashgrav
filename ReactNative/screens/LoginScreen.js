@@ -244,7 +244,7 @@ class LoginScreen extends Component {
 
 	signingIn = async (data) => {
 		await userCache.set('data', data)
-		const value = userCache.get('data')
+		const value = await userCache.get('data')
 		this.props.signIn(value)
 	}
 
