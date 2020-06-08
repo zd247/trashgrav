@@ -8,7 +8,10 @@ import LoginScreen from './screens/LoginScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import HomeScreen from './screens/HomeScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
+
 import HistoryScreen from './screens/History/HistoryScreen'
+import ChatScreen from './screens/History/ChatScreen'
+import HistoryDetails from './screens/History/HistoryDetails'
 
 import AdminLoginScreen from './screens/Admin/AdminLoginScreen'
 import AdminHomeScreen from './screens/Admin/AdminHomeScreen'
@@ -152,6 +155,26 @@ class TrashGrav extends Component {
 	}
 }
 
+const HistoryStackNavigator = ({ navigation }) => (
+	<Stack.Navigator>
+		<Stack.Screen
+			options={{ headerShown: false }}
+			name='HistoryScreen'
+			component={HistoryScreen}
+		/>
+		<Stack.Screen
+			options={{ headerShown: false }}
+			name='ChatScreen'
+			component={ChatScreen}
+		/>
+		<Stack.Screen
+			options={{ headerShown: false }}
+			name='HistoryDetails'
+			component={HistoryDetails}
+		/>
+	</Stack.Navigator>
+)
+
 const CustomerStackNavigator = ({ navigation }) => (
 	<Stack.Navigator>
 		<Stack.Screen
@@ -189,7 +212,7 @@ const CustomerDrawerNavigator = () => (
 					headerTitle: '',
 				}}
 				name='History'
-				component={HistoryScreen}
+				component={HistoryStackNavigator}
 			/>
 			<Drawer.Screen
 				options={{ drawerIcon: () => <Ionicons name='ios-person' size={24} /> }}

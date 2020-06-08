@@ -30,6 +30,7 @@
 - `npm install --save react-native-ratings`
 - `npm install react-native-maps-directions`
 - `npm install --save react-native-cache`
+- `npm install react-native-gifted-chat --save`
 
 
 ### Overview technical requirements

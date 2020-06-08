@@ -50,8 +50,8 @@ class HistoryList extends React.Component {
 		})
 
 		this.setState({ data: tempDataArray })
-	}
-
+   }
+   
 	renderData = (request, index) => (
 		<View style={styles.listContainer}>
 			<View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -119,7 +119,11 @@ class HistoryList extends React.Component {
 							color={colors.bgUserLogin}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.itemButton}>
+					<TouchableOpacity
+						style={styles.itemButton}
+						onPress={() => {
+                     this.props.navigation.navigate('ChatScreen', {request})
+                  }}>
 						<Ionicons
 							name='ios-chatbubbles'
 							size={normalize(30)}
@@ -164,7 +168,7 @@ class HistoryList extends React.Component {
 				</View>
 			)}
 		</View>
-	)
+   )
 
 	render() {
 		return (
