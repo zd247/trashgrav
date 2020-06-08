@@ -41,32 +41,45 @@ class HistoryList extends React.Component {
 		let tempDataArray = []
 		requestsArray.forEach(child => {
 			if (child.driver != null && this.props.isActive) {
+				child.isActive = true
 				tempDataArray.push(child)
 			} else if (child.driver == null && !this.props.isActive) {
+				child.isActive = false
 				tempDataArray.push(child)
 			}
-      })
-      
+		})
+
 		this.setState({ data: tempDataArray })
 	}
 
 	renderData = (request, index) => (
-		<TouchableOpacity style={styles.listContainer} onPress={() => {}}>
-			<Text
-				style={{
-					color: colors.bgUserLogin,
-					alignSelf: 'center',
-					fontWeight: 'bold',
-				}}>
-				{request.key}
-			</Text>
+		<View style={styles.listContainer}>
+			<View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+				<Text
+					style={{
+						color: colors.bgUserLogin,
+						alignSelf: 'center',
+						fontWeight: 'bold',
+					}}>
+					ID:{' '}
+				</Text>
+				<Text
+					style={{
+						color: colors.bgUserLogin,
+						alignSelf: 'center',
+						fontWeight: 'bold',
+					}}>
+					{request.key}
+				</Text>
+			</View>
+
 			<View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
 				<Text style={{ fontWeight: 'bold', color: 'silver' }}>
-					Destination:{' '}
+					Pick up location :{' '}
 				</Text>
 				<Text>
-					{request.destination.length > 36
-						? request.destination.substring(0, 36 - 3) + '...'
+					{request.destination.length > 30
+						? request.destination.substring(0, 30 - 3) + '...'
 						: request.destination}
 				</Text>
 			</View>
@@ -88,17 +101,77 @@ class HistoryList extends React.Component {
 				</Text>
 				<Text>{request.paymentMethod}</Text>
 			</View>
-		</TouchableOpacity>
+
+			{request.isActive ? (
+				<View
+					style={{
+						flex: 1,
+						flexDirection: 'row',
+						alignItems: 'center',
+						borderTopWidth: 0.5,
+						borderColor: colors.bgUserLogin,
+						marginTop: normalize(20),
+					}}>
+					<TouchableOpacity style={styles.itemButton}>
+						<Ionicons
+							name='ios-call'
+							size={normalize(30)}
+							color={colors.bgUserLogin}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.itemButton}>
+						<Ionicons
+							name='ios-chatbubbles'
+							size={normalize(30)}
+							color={colors.bgUserLogin}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.itemButton}>
+						<Ionicons
+							name='ios-alert'
+							size={normalize(30)}
+							color={colors.bgUserLogin}
+						/>
+					</TouchableOpacity>
+				</View>
+			) : (
+				<View
+					style={{
+						flex: 1,
+						flexDirection: 'row',
+						alignItems: 'center',
+						borderTopWidth: 0.5,
+						borderColor: colors.bgUserLogin,
+						marginTop: normalize(20),
+					}}>
+					<View style={styles.itemButton}>
+						<Ionicons name='ios-call' size={normalize(30)} color='silver' />
+					</View>
+					<View style={styles.itemButton}>
+						<Ionicons
+							name='ios-chatbubbles'
+							size={normalize(30)}
+							color='silver'
+						/>
+					</View>
+					<TouchableOpacity style={styles.itemButton}>
+						<Ionicons
+							name='ios-alert'
+							size={normalize(30)}
+							color={colors.bgUserLogin}
+						/>
+					</TouchableOpacity>
+				</View>
+			)}
+		</View>
 	)
 
 	render() {
 		return (
-			<View style = {{flex: 1, backgroundColor: 'white'}}>
+			<View style={{ flex: 1, backgroundColor: 'white' }}>
 				<FlatList
 					data={this.state.data}
-					renderItem={({ item, index }) =>
-						this.renderData(item, index)
-					}
+					renderItem={({ item, index }) => this.renderData(item, index)}
 					ListEmptyComponent={
 						<View style={{ marginTop: normalize(50), alignItems: 'center' }}>
 							<Text style={{ fontWeight: 'bold' }}>
@@ -114,13 +187,14 @@ class HistoryList extends React.Component {
 export default HistoryList
 
 const styles = StyleSheet.create({
-   listContainer: {
+	listContainer: {
 		flex: 1,
 		minHeight: normalize(100),
 		flexDirection: 'row',
-		backgroundColor: '#fbfbf1',
-		borderWidth: 0.15,
-		borderRadius: normalize(10),
+		backgroundColor: 'white',
+		borderWidth: 0.3,
+		borderColor: colors.bgUserLogin,
+		borderRadius: normalize(5),
 		padding: normalize(20),
 		shadowColor: 'black',
 		shadowOffset: { width: 0, height: 2 },
@@ -130,5 +204,12 @@ const styles = StyleSheet.create({
 		marginVertical: normalize(5),
 		marginHorizontal: normalize(10),
 		flexDirection: 'column',
+	},
+	itemButton: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginHorizontal: normalize(15),
+		marginTop: normalize(20),
 	},
 })
