@@ -3,8 +3,8 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://y3-nc6.anonymous.reactnative.exp.direct",
+  "packagerNgrokUrl": "https://packager.y3-nc6.anonymous.reactnative.exp.direct",
+  "ngrokPid": 3141,
   "webpackServerPort": null
 }
