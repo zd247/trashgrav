@@ -29,8 +29,8 @@ class SplashActivity : AppCompatActivity() {
 
                 Prevalent.startActivity(this@SplashActivity, SliderActivity::class.java, true)
             }else {
-//                Prevalent.startActivity(this@SplashActivity,WelcomeActivity::class.java, true)
-                Prevalent.startActivity(this@SplashActivity,RegisterProfileActivity::class.java, true)
+                Prevalent.startActivity(this@SplashActivity,WelcomeActivity::class.java, true)
+//                Prevalent.startActivity(this@SplashActivity,RegisterProfileActivity::class.java, true)
             }
             handler.postDelayed(runnable, 2000)
         }

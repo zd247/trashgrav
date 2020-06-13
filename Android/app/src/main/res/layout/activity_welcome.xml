@@ -4,98 +4,121 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".welcome.WelcomeActivity"
-    android:id="@+id/welcome_layout"
-    android:background="@drawable/register_background">
-
+    android:id="@+id/welcome_layout">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/welcome_cont_logo"
         android:layout_width="0dp"
-        android:layout_height="120dp"
-
+        android:layout_height="0dp"
+        android:layout_marginStart="28dp"
         android:elevation="20dp"
-        android:src="@drawable/web_hi_res_512"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintVertical_bias="0.041"
+        app:layout_constraintWidth_percent=".17" />
 
     <TextView
         android:id="@+id/welcome_cont_slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
         android:text="@string/welcome_login"
         android:textColor="#405A05"
-        android:textSize="25dp"
+        android:textScaleX="1"
+        android:textSize="23sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcome_cont_logo"
-        app:layout_constraintVertical_bias="0.021" />
+        app:layout_constraintVertical_bias="0.015" />
 
     <TextView
-        android:id="@+id/welcome_text_view"
+        android:id="@+id/welcome_phone_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_baseline_smartphone_24"
-        android:drawablePadding="7dp"
-        android:text="Phone number"
-        android:textSize="15sp"
+        android:layout_marginStart="30dp"
+        android:text="@string/welcome_text_phone"
+        android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.328"
-        android:layout_marginStart="35dp"/>
+        app:layout_constraintVertical_bias="0.237" />
 
-    <LinearLayout
+    <com.hbb20.CountryCodePicker
+        android:id="@+id/welcome_ccp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        app:ccpDialog_allowSearch="true"
+        app:ccpDialog_showCloseIcon="true"
+        app:ccpDialog_showFastScroller="true"
+        app:ccpDialog_showPhoneCode="true"
+        app:ccpDialog_showTitle="false"
+        app:ccp_defaultPhoneCode="84"
+        app:ccp_showArrow="true"
+        app:ccp_showFullName="true"
+        app:ccp_showNameCode="true"
+        app:ccp_showPhoneCode="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.382"
-        android:layout_marginStart="30dp">
+        app:layout_constraintVertical_bias="0.269" />
 
-        <com.hbb20.CountryCodePicker
-            android:id="@+id/welcome_ccp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:ccpDialog_allowSearch="true"
-            app:ccpDialog_showCloseIcon="true"
-            app:ccp_defaultPhoneCode="84"
-            app:ccp_showNameCode="true"
-            app:ccp_showPhoneCode="true" />
+    <EditText
+        android:id="@+id/welcome_phone_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:drawableStart="@drawable/ic_baseline_smartphone_24"
+        android:drawablePadding="5dp"
+        android:hint="Ex: (012)-345 6789"
+        android:inputType="number"
+        android:maxLength="13"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.33" />
 
-        <EditText
-            android:id="@+id/welcome_phone_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Ex: (012)-345 6789"
-            android:inputType="number"
-            android:maxLength="13"
-            android:maxLines="1" />
+    <TextView
+        android:id="@+id/welcome_text_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="70dp"
+        android:text="@string/welcome_text_note"
+        android:textSize="11.5sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.396" />
 
-    </LinearLayout>
-
+    <!--    continue -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/welcome_cont_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="30dp"
         android:background="@drawable/continue_color_fade_btn"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".07"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.884"
-        android:layout_marginHorizontal="50dp">
+        app:layout_constraintVertical_bias="0.477">
+
         <ProgressBar
             android:id="@+id/welcome_cont_btn_pbar"
             android:layout_width="wrap_content"
@@ -103,27 +126,193 @@
             android:layout_marginHorizontal="16dp"
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/welcome_cont_btn_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/welcome_cont_btn"
-            android:textStyle="bold"
             android:textColor="@color/white"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <RelativeLayout
+        android:id="@+id/welcome_text_or"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.54">
 
-    <!--    Verification fields-->
+        <TextView
+            android:id="@+id/welcome_tvText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/welcome_text_or" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/welcome_tvText"
+            android:background="#878181"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/welcome_tvText"
+            android:background="#878181"
+            />
+
+    </RelativeLayout>
+
+    <!--    google-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/welcome_google_cont_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/continue_google_color_btn"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".07"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.62">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_icons8_google"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/welcome_google_cont_btn_pbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/welcome_google_cont_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_google_cont_btn"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--    facebook-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/welcome_facebook_cont_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/continue_facebook_color_btn"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.72">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_icons8_facebook"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/welcome_facebook_cont_btn_pbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/welcome_facebook_cont_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_facebook_cont_btn"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/welcome_language_viet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icons8_vietnam_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias=".98"
+        app:layout_constraintHorizontal_bias="0.87"/>
+
+    <ImageView
+        android:id="@+id/welcome_language_english"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icons8_great_britain_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.958"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.98" />
+
+
+    <!--  ..........Verification fields........... -->
+
 
     <LinearLayout
         android:id="@+id/welcome_verification_linear_layout"
@@ -155,20 +344,21 @@
     </LinearLayout>
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/welcome_verification_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="30dp"
         android:background="@drawable/continue_color_fade_btn"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.884"
-        android:layout_marginHorizontal="50dp"
+        app:layout_constraintVertical_bias="0.896"
         android:visibility="gone">
+
         <ProgressBar
             android:id="@+id/welcome_verification_btn_pbar"
             android:layout_width="wrap_content"
@@ -176,22 +366,23 @@
             android:layout_marginHorizontal="16dp"
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/welcome_verification_btn_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/welcome_verify_btn"
-            android:textStyle="bold"
             android:textColor="@color/white"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -203,14 +394,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/colorSignInSignUp"
+        android:textColor="@color/half_black"
         android:textStyle="italic"
         android:textSize="15sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.46"
         android:visibility="gone"/>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

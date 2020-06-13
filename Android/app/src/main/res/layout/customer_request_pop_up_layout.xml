@@ -51,7 +51,7 @@
                 android:text="Calculate earning"
                 android:layout_marginStart="25dp"
                 android:layout_marginVertical="12dp"
-                android:background="@drawable/color_accent_btn"
+                android:background="@drawable/continue_google_color_btn"
                 android:gravity="center"/>
             <TextView
                 android:id="@+id/request_total_earning"

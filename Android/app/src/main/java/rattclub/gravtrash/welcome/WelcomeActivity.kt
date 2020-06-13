@@ -116,6 +116,7 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_phone_edit_text.setText("")
             welcome_verification_input.code = ""
             welcome_cont_btn_text.visibility = View.VISIBLE
+            handler.removeCallbacks(runnable)
             welcome_verification_resend_txt.text = "01:00"
         }
 
@@ -307,10 +308,14 @@ class WelcomeActivity : AppCompatActivity() {
     private fun displayVerifyFields(flag :Boolean) {
         if (flag) {
             // Gone
-            welcome_text_view.visibility = View.GONE
+            welcome_phone_text.visibility = View.GONE
             welcome_ccp.visibility = View.GONE
             welcome_phone_edit_text.visibility = View.GONE
             welcome_cont_btn.visibility = View.GONE
+            welcome_text_note.visibility = View.GONE
+            welcome_text_or.visibility = View.GONE
+            welcome_google_cont_btn.visibility = View.GONE
+            welcome_facebook_cont_btn.visibility = View.GONE
 
             // Visible
             welcome_verification_linear_layout.visibility = View.VISIBLE
@@ -323,10 +328,14 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_verification_cancel_txt.visibility = View.GONE
 
             // Visible
-            welcome_text_view.visibility = View.VISIBLE
+            welcome_phone_text.visibility = View.VISIBLE
             welcome_ccp.visibility = View.VISIBLE
             welcome_phone_edit_text.visibility = View.VISIBLE
             welcome_cont_btn.visibility = View.VISIBLE
+            welcome_text_note.visibility = View.VISIBLE
+            welcome_text_or.visibility = View.VISIBLE
+            welcome_google_cont_btn.visibility = View.VISIBLE
+            welcome_facebook_cont_btn.visibility = View.VISIBLE
 
             veriCodeSent = false
         }

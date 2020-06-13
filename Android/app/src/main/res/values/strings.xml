@@ -3,11 +3,16 @@
     <string name="app_name">TrashGrav</string>
     <string name="app_slogan">Welcome to TrashGrav community,
         are you ready to make a change to the environment and earn ? </string>
-    <string name="welcome_login">Let\'s join us</string>
+    <string name="welcome_text_note">We\'ll text you to confirm your number. Standard message and data rates apply.</string>
+    <string name="welcome_text_phone">Phone number</string>
+    <string name="welcome_text_or">or</string>
+    <string name="welcome_login">Let\'s join our community</string>
     <string name="welcome_cont_btn">Continue</string>
+    <string name="welcome_google_cont_btn">Continue with Google</string>
+    <string name="welcome_facebook_cont_btn">Continue with Facebook</string>
     <string name="welcome_verify_btn">Verify</string>
     <string name="welcome_verify_resend_text">Resend</string>
-    <string name="welcome_verify_cancel_text">Want to change your phone number ?</string>
+    <string name="welcome_verify_cancel_text">Change your phone number</string>
     <string name="welcome_snackbar_cont_error">Something went wrong..</string>
     <string name="snackbar_detail_text">Details</string>
 
