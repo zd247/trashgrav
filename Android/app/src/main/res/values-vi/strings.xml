@@ -9,19 +9,22 @@
     <string name="welcome_cont_btn">Đăng nhập</string>
     <string name="welcome_google_cont_btn">Đăng nhập với Google</string>
     <string name="welcome_facebook_cont_btn">Đăng nhập với Facebook</string>
+
     <string name="welcome_verify_title">Xác minh số điện thoại</string>
     <string name="welcome_verify_btn">Xác minh</string>
     <string name="welcome_verify_cancel_text">Sai số điện thoại?</string>
     <string name="welcome_verify_cancel_text_btn">Thay đổi</string>
-    <string name="welcome_snackbar_cont_error">Đã xảy ra lỗi..</string>
+    <string name="snackbar_error_text">Đã xảy ra lỗi..</string>
     <string name="snackbar_detail_text">Chi tiết</string>
     <string name="welcome_resend_toast_msg">Mã xác minh đã được gửi lại</string>
 
-    <string name="register_first_name">First name …</string>
-    <string name="register_last_name">Last name …</string>
-    <string name="register_email">Email …</string>
-    <string name="register_cont_btn_text">Continue</string>
-    <string name="register_continue_text">Continue with</string>
+    <string name="register_profile_picture_hint_text">Ấn vào ảnh đại diện để thay đổi</string>
+    <string name="register_first_name_text">Tên</string>
+    <string name="register_last_name_text">Họ</string>
+    <string name="register_first_name_hint">VD: Thư</string>
+    <string name="register_last_name_hint">VD: Nguyễn</string>
+    <string name="register_cont_btn_text">Đăng ký</string>
+
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

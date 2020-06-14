@@ -17,19 +17,18 @@
     <string name="welcome_verify_cancel_text">Wrong number?</string>
     <string name="welcome_verify_cancel_text_btn">Change</string>
 
-    <string name="welcome_snackbar_cont_error">Something went wrong..</string>
+    <string name="snackbar_error_text">Something went wrong..</string>
     <string name="snackbar_detail_text">Details</string>
     <string name="welcome_resend_toast_msg">Resent verification code</string>
 
-
-
-
-
-    <string name="register_first_name">First name …</string>
-    <string name="register_last_name">Last name …</string>
-    <string name="register_email">Email …</string>
-    <string name="register_cont_btn_text">Continue</string>
-    <string name="register_continue_text">Continue with</string>
+    <string name="register_profile_picture_hint_text">Click the profile picture to change</string>
+    <string name="register_first_name_text">First name</string>
+    <string name="register_last_name_text">Last name</string>
+    <string name="register_email" translatable="false">Email</string>
+    <string name="register_first_name_hint">Ex: Marcus</string>
+    <string name="register_last_name_hint">Ex: Aurelius</string>
+    <string name="register_email_hint" translatable="false">Ex: example@trash.grav</string>
+    <string name="register_cont_btn_text">Register</string>
 
 
 

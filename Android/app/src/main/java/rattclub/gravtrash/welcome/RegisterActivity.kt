@@ -10,23 +10,22 @@ import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.android.synthetic.main.activity_account_settings.*
-import kotlinx.android.synthetic.main.activity_register_profile.*
+import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_welcome.*
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.CustomerMainActivity
 import rattclub.gravtrash.model.Prevalent
-import java.util.concurrent.TimeUnit
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class RegisterProfileActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var checker = false
     private var validateInputArr = arrayOf(false,false,false)
@@ -47,7 +46,8 @@ class RegisterProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_profile)
+        setContentView(R.layout.activity_register)
+        Prevalent.loadLocale(this)
 
         handleOnClickListeners()
         observeInputButtonState()
@@ -164,17 +164,26 @@ class RegisterProfileActivity : AppCompatActivity() {
         var profileSettingMap = HashMap<String, Any?>()
         profileSettingMap["first_name"] = firstName
         profileSettingMap["last_name"] = lastName
-        profileSettingMap["email"] = lastName
+        profileSettingMap["email"] = email
         profileSettingMap["phone"] = intent.getStringExtra("phoneNumber")
         rootRef.child("Users").child(mAuth.currentUser!!.uid)
             .updateChildren(profileSettingMap)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful){
-                    Toast.makeText(this, "User profile updated", Toast.LENGTH_SHORT).show()
-                    Prevalent.startActivity(this@RegisterProfileActivity,
+                    Toast.makeText(this, "Welcome $firstName", Toast.LENGTH_SHORT).show()
+                    Prevalent.startActivity(this@RegisterActivity,
                         CustomerMainActivity::class.java, true)
                 }else {
-                    Toast.makeText(this, "User profile update failed", Toast.LENGTH_SHORT).show()
+                    @Suppress("DEPRECATION")
+                    Snackbar.make(register_layout, R.string.snackbar_error_text, SNACKBAR_ERROR_DISPLAY_TIME)
+                        .setAction(R.string.snackbar_detail_text) {
+                            val alert = AlertDialog.Builder(this@RegisterActivity)
+                            alert.setMessage(task.exception?.message)
+                            alert.setPositiveButton("OK", null)
+                            alert.create().show()
+                        }
+                        .setActionTextColor(resources.getColor(R.color.colorAccent))
+                        .show()
                 }
             }
 
@@ -189,7 +198,16 @@ class RegisterProfileActivity : AppCompatActivity() {
         // upload image to firebase storage
         var uploadTask= fileRef.putFile(imageUri!!)
         uploadTask.addOnFailureListener {
-            Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
+            @Suppress("DEPRECATION")
+            Snackbar.make(register_layout, R.string.snackbar_error_text, SNACKBAR_ERROR_DISPLAY_TIME)
+                .setAction(R.string.snackbar_detail_text) {
+                    val alert = AlertDialog.Builder(this@RegisterActivity)
+                    alert.setMessage(uploadTask.exception?.message)
+                    alert.setPositiveButton("OK", null)
+                    alert.create().show()
+                }
+                .setActionTextColor(resources.getColor(R.color.colorAccent))
+                .show()
         }
 
         // save download url of the image to firebase database
@@ -205,9 +223,16 @@ class RegisterProfileActivity : AppCompatActivity() {
                     .child("image")
                     .setValue(myUrl)
             }else {
-                Toast.makeText(this,
-                    "Failed to retrieve image download URL",
-                    Toast.LENGTH_SHORT).show()
+                @Suppress("DEPRECATION")
+                Snackbar.make(register_layout, R.string.snackbar_error_text, SNACKBAR_ERROR_DISPLAY_TIME)
+                    .setAction(R.string.snackbar_detail_text) {
+                        val alert = AlertDialog.Builder(this@RegisterActivity)
+                        alert.setMessage(task.exception?.message)
+                        alert.setPositiveButton("OK", null)
+                        alert.create().show()
+                    }
+                    .setActionTextColor(resources.getColor(R.color.colorAccent))
+                    .show()
             }
         }
     }
@@ -227,5 +252,6 @@ class RegisterProfileActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_CHECK_INTERVAL: Long = 400
+        private const val SNACKBAR_ERROR_DISPLAY_TIME: Int = 5500
     }
 }

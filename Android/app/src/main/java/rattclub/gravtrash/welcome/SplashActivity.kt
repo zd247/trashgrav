@@ -22,6 +22,8 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         launcherManager = LauncherManager(this)
+        Prevalent.loadLocale(this)
+        Prevalent.setLocale("vi", this)
 
         runnable = Runnable {
             if (launcherManager.isFirstTime()) {

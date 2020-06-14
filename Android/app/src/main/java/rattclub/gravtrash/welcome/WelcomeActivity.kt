@@ -1,6 +1,5 @@
 package rattclub.gravtrash.welcome
 
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -61,6 +60,11 @@ class WelcomeActivity : AppCompatActivity() {
         observeInputButtonState()
         handleOnClicks()
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        handler.removeCallbacks(runnable)
     }
 
     private fun observeInputButtonState() {
@@ -218,7 +222,7 @@ class WelcomeActivity : AppCompatActivity() {
 
                 //snackbar fail indicator with stacktrace
                 @Suppress("DEPRECATION")
-                Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, SNACKBAR_ERROR_DISPLAY_TIME)
+                Snackbar.make(welcome_layout, R.string.snackbar_error_text, SNACKBAR_ERROR_DISPLAY_TIME)
                     .setAction(R.string.snackbar_detail_text) {
                         val alert = AlertDialog.Builder(this@WelcomeActivity)
                         alert.setMessage(p0.message)
@@ -243,7 +247,7 @@ class WelcomeActivity : AppCompatActivity() {
 
 
                 // start re-send counter
-                currentInterval = 5000
+                currentInterval = RESET_TOTAL_INTERVAL
                 runnable = Runnable {
                     currentInterval -= RESET_COUNT_INTERVAL
                     welcome_verification_resend_txt.text = "00:${String.format("%02d", currentInterval/1000)}"
@@ -287,10 +291,10 @@ class WelcomeActivity : AppCompatActivity() {
                                             Toast.LENGTH_LONG).show();
                                     }else {
                                         val intent = Intent(this@WelcomeActivity,
-                                            RegisterProfileActivity::class.java)
+                                            RegisterActivity::class.java)
                                         intent.putExtra("phoneNumber", phone)
                                         Prevalent.startActivity(this@WelcomeActivity,
-                                        RegisterProfileActivity::class.java, false, intent)
+                                        RegisterActivity::class.java, false, intent)
 
                                         // reset this activity state
                                         welcome_verification_input.code = ""
@@ -314,11 +318,9 @@ class WelcomeActivity : AppCompatActivity() {
 
                     welcome_verification_btn.setBackgroundResource(R.drawable.continue_color_fade_btn)
 
-                    currentInterval = RESET_TOTAL_INTERVAL
-
                     //Snackbar here
                     @Suppress("DEPRECATION")
-                    Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, SNACKBAR_ERROR_DISPLAY_TIME)
+                    Snackbar.make(welcome_layout, R.string.snackbar_error_text, SNACKBAR_ERROR_DISPLAY_TIME)
                         .setAction(R.string.snackbar_detail_text) {
                             val alert = AlertDialog.Builder(this@WelcomeActivity)
                             alert.setMessage(task.exception?.message)
