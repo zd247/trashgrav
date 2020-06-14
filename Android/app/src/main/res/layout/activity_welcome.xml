@@ -35,6 +35,8 @@
         app:layout_constraintTop_toBottomOf="@+id/welcome_cont_logo"
         app:layout_constraintVertical_bias="0.015" />
 
+    <!--    continue -->
+
     <TextView
         android:id="@+id/welcome_phone_text"
         android:layout_width="wrap_content"
@@ -42,68 +44,69 @@
         android:layout_marginStart="30dp"
         android:text="@string/welcome_text_phone"
         android:textSize="13sp"
+        android:drawableStart="@drawable/ic_baseline_smartphone_24"
+        android:drawablePadding="7dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.237" />
+        app:layout_constraintVertical_bias="0.263" />
 
-    <com.hbb20.CountryCodePicker
-        android:id="@+id/welcome_ccp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        app:ccpDialog_allowSearch="true"
-        app:ccpDialog_showCloseIcon="true"
-        app:ccpDialog_showFastScroller="true"
-        app:ccpDialog_showPhoneCode="true"
-        app:ccpDialog_showTitle="false"
-        app:ccp_defaultPhoneCode="84"
-        app:ccp_showArrow="true"
-        app:ccp_showFullName="true"
-        app:ccp_showNameCode="true"
-        app:ccp_showPhoneCode="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.269" />
+        app:layout_constraintVertical_bias="0.317">
 
-    <EditText
-        android:id="@+id/welcome_phone_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:drawableStart="@drawable/ic_baseline_smartphone_24"
-        android:drawablePadding="5dp"
-        android:hint="Ex: (012)-345 6789"
-        android:inputType="number"
-        android:maxLength="13"
-        android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.33" />
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/welcome_ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:ccpDialog_allowSearch="true"
+            app:ccpDialog_showCloseIcon="true"
+            app:ccpDialog_showFastScroller="true"
+            app:ccpDialog_showPhoneCode="true"
+            app:ccpDialog_showTitle="false"
+            app:ccp_defaultPhoneCode="84"
+            app:ccp_showFlag="true"
+            app:ccp_showNameCode="false"
+            app:ccp_showPhoneCode="true"
+            app:ccpDialog_keyboardAutoPopup="false" />
+
+        <EditText
+            android:id="@+id/welcome_phone_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:hint="Ex: (012)-345 6789"
+            android:inputType="number"
+            android:maxLength="13"
+            android:maxLines="1" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/welcome_text_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="70dp"
+        android:layout_marginHorizontal="30dp"
         android:text="@string/welcome_text_note"
         android:textSize="11.5sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.396" />
+        app:layout_constraintVertical_bias="0.451" />
 
-    <!--    continue -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/welcome_cont_btn"
         android:layout_width="match_parent"
@@ -114,12 +117,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".07"
-        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.477">
+        app:layout_constraintVertical_bias="0.56">
 
-        <ProgressBar
+        <com.eyalbira.loadingdots.LoadingDots
             android:id="@+id/welcome_cont_btn_pbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,6 +130,10 @@
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
             android:visibility="invisible"
+            app:LoadingDots_dots_color="#ECF8CD"
+            app:LoadingDots_dots_count="3"
+            app:LoadingDots_dots_size="6dp"
+            app:LoadingDots_dots_space="1.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -156,7 +163,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54">
+        app:layout_constraintVertical_bias="0.64">
 
         <TextView
             android:id="@+id/welcome_tvText"
@@ -169,7 +176,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.3dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/welcome_tvText"
             android:background="#878181"
@@ -177,7 +184,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.3dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/welcome_tvText"
             android:background="#878181"
@@ -186,6 +193,9 @@
     </RelativeLayout>
 
     <!--    google-->
+
+    <!--    facebook-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/welcome_google_cont_btn"
         android:layout_width="match_parent"
@@ -196,10 +206,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".07"
-        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.62">
+        app:layout_constraintVertical_bias="0.728">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -209,7 +219,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
+        <com.eyalbira.loadingdots.LoadingDots
             android:id="@+id/welcome_google_cont_btn_pbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -217,6 +227,10 @@
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
             android:visibility="invisible"
+            app:LoadingDots_dots_color="#ECF8CD"
+            app:LoadingDots_dots_count="3"
+            app:LoadingDots_dots_size="6dp"
+            app:LoadingDots_dots_space="1.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -236,7 +250,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--    facebook-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/welcome_facebook_cont_btn"
         android:layout_width="match_parent"
@@ -247,9 +260,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".07"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.72">
+        app:layout_constraintVertical_bias="0.851">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -259,7 +273,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
+        <com.eyalbira.loadingdots.LoadingDots
             android:id="@+id/welcome_facebook_cont_btn_pbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -267,6 +281,10 @@
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
             android:visibility="invisible"
+            app:LoadingDots_dots_color="#ECF8CD"
+            app:LoadingDots_dots_count="3"
+            app:LoadingDots_dots_size="6dp"
+            app:LoadingDots_dots_space="1.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -312,7 +330,21 @@
 
 
     <!--  ..........Verification fields........... -->
-
+    <TextView
+        android:id="@+id/welcome_verification_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="@string/welcome_verify_title"
+        android:textColor="#405A05"
+        android:textScaleX="1"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_cont_logo"
+        app:layout_constraintVertical_bias="0.015"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/welcome_verification_linear_layout"
@@ -337,9 +369,42 @@
             android:id="@+id/welcome_verification_resend_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="01:00"
+            android:text="00:59"
             android:textSize="17sp"
             android:layout_marginHorizontal="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/welcome_verification_cancel_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.46"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_verify_cancel_text"
+            android:textColor="@color/half_black"
+            android:textStyle="italic"
+            android:textSize="15sp"
+            />
+        <TextView
+            android:id="@+id/welcome_verification_cancel_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_verify_cancel_text_btn"
+            android:textColor="@color/half_black"
+            android:textStyle="bold"
+            android:layout_marginStart="5dp"
+            android:textSize="15.5sp"
+            />
 
     </LinearLayout>
 
@@ -359,7 +424,7 @@
         app:layout_constraintVertical_bias="0.896"
         android:visibility="gone">
 
-        <ProgressBar
+        <com.eyalbira.loadingdots.LoadingDots
             android:id="@+id/welcome_verification_btn_pbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -367,6 +432,10 @@
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
             android:visibility="invisible"
+            app:LoadingDots_dots_color="#ECF8CD"
+            app:LoadingDots_dots_size="6dp"
+            app:LoadingDots_dots_count="3"
+            app:LoadingDots_dots_space="1.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -386,20 +455,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/welcome_verification_cancel_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/welcome_verify_cancel_text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/half_black"
-        android:textStyle="italic"
-        android:textSize="15sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.46"
-        android:visibility="gone"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

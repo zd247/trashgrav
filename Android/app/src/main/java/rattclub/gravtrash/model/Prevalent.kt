@@ -1,9 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package rattclub.gravtrash.model
 
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,6 +21,7 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import rattclub.gravtrash.ChatActivity
 import rattclub.gravtrash.R
+import java.util.*
 
 object Prevalent {
     const val REQUEST_LOCATION_PERMISSION = 1
@@ -152,6 +156,22 @@ object Prevalent {
         if (isFinished) {
             (context as Activity).finish()
         }
+    }
 
+    fun setLocale(lang: String, baseContext: Context) {
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.setLocale(locale)
+        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+        val editor = baseContext.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit()
+        editor.putString("My_Lang", lang)
+        editor.apply()
+    }
+
+    fun loadLocale(baseContext: Context) {
+        val prefs = baseContext.getSharedPreferences("Settings", Activity.MODE_PRIVATE)
+        val language = prefs.getString("My_Lang", "")
+        language?.let { setLocale(it, baseContext) }
     }
 }

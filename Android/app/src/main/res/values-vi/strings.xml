@@ -1,37 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TrashGrav</string>
-    <string name="app_slogan" translatable="false">Welcome to TrashGrav community,
-        are you ready to make a change to the environment and earn ? </string>
-    <string name="welcome_text_note">We\'ll text you to confirm your number. Standard message and data rates apply.</string>
-    <string name="welcome_text_phone">Phone number</string>
-    <string name="welcome_text_or">or</string>
-    <string name="welcome_login">Let\'s join our community</string>
-    <string name="welcome_cont_btn">Continue</string>
-    <string name="welcome_google_cont_btn">Continue with Google</string>
-    <string name="welcome_facebook_cont_btn">Continue with Facebook</string>
 
-    <string name="welcome_verify_title">Verify your number</string>
-    <string name="welcome_verify_btn">Verify</string>
-    <string name="welcome_verify_resend_text" translatable="false">↺</string>
-    <string name="welcome_verify_cancel_text">Wrong number?</string>
-    <string name="welcome_verify_cancel_text_btn">Change</string>
-
-    <string name="welcome_snackbar_cont_error">Something went wrong..</string>
-    <string name="snackbar_detail_text">Details</string>
-    <string name="welcome_resend_toast_msg">Resent verification code</string>
-
-
-
-
+    <string name="welcome_text_note">Chúng tôi sẽ gửi tin nhắn xác minh vào số điện thoại của bạn. Lưu ý sẽ áp dụng mức giá tin nhắn và dữ liệu tiêu chuẩn</string>
+    <string name="welcome_text_phone">Số điện thoại</string>
+    <string name="welcome_text_or">hoặc</string>
+    <string name="welcome_login">Chung tay vì cộng đồng</string>
+    <string name="welcome_cont_btn">Đăng nhập</string>
+    <string name="welcome_google_cont_btn">Đăng nhập với Google</string>
+    <string name="welcome_facebook_cont_btn">Đăng nhập với Facebook</string>
+    <string name="welcome_verify_title">Xác minh số điện thoại</string>
+    <string name="welcome_verify_btn">Xác minh</string>
+    <string name="welcome_verify_cancel_text">Sai số điện thoại?</string>
+    <string name="welcome_verify_cancel_text_btn">Thay đổi</string>
+    <string name="welcome_snackbar_cont_error">Đã xảy ra lỗi..</string>
+    <string name="snackbar_detail_text">Chi tiết</string>
+    <string name="welcome_resend_toast_msg">Mã xác minh đã được gửi lại</string>
 
     <string name="register_first_name">First name …</string>
     <string name="register_last_name">Last name …</string>
     <string name="register_email">Email …</string>
     <string name="register_cont_btn_text">Continue</string>
     <string name="register_continue_text">Continue with</string>
-
-
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -54,7 +44,4 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="home_second">Home Second</string>
-
-
-
 </resources>

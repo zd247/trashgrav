@@ -1,5 +1,6 @@
 package rattclub.gravtrash.welcome
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
 
+@Suppress("DEPRECATION")
 class WelcomeActivity : AppCompatActivity() {
     // firebase database
     private val mAuth = FirebaseAuth.getInstance()
@@ -52,6 +55,7 @@ class WelcomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
+        Prevalent.loadLocale(this)
 
         initVerificationCallBack()
         observeInputButtonState()
@@ -117,7 +121,7 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_verification_input.code = ""
             welcome_cont_btn_text.visibility = View.VISIBLE
             handler.removeCallbacks(runnable)
-            welcome_verification_resend_txt.text = "01:00"
+            welcome_verification_resend_txt.text = "00:59"
         }
 
         welcome_verification_input.setOnClickListener { welcome_verification_input.setEditable(true) }
@@ -129,6 +133,7 @@ class WelcomeActivity : AppCompatActivity() {
                     welcome_verification_btn.setBackgroundResource(R.drawable.continue_color_btn)
                 }else {
                     welcome_verification_btn.setBackgroundResource(R.drawable.continue_color_fade_btn)
+
                 }
             }
 
@@ -168,8 +173,24 @@ class WelcomeActivity : AppCompatActivity() {
                     .verifyPhoneNumber(
                         phone, 60, TimeUnit.SECONDS,
                         this@WelcomeActivity, callbacks, mResendToken)
-                Toast.makeText(this, "Resent verification code", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.welcome_resend_toast_msg, Toast.LENGTH_SHORT).show()
+                welcome_verification_input.code = ""
+                handler.removeCallbacks(runnable)
+
+                welcome_verification_btn.setBackgroundResource(R.drawable.continue_color_fade_btn)
+                veriBtnIsEnabled = welcome_verification_input.code.length == 6
+
             }
+        }
+
+        welcome_language_viet.setOnClickListener {
+            Prevalent.setLocale("vi", this@WelcomeActivity)
+            recreate()
+        }
+
+        welcome_language_english.setOnClickListener {
+            Prevalent.setLocale("", this@WelcomeActivity)
+            recreate()
         }
     }
 
@@ -194,13 +215,15 @@ class WelcomeActivity : AppCompatActivity() {
                 welcome_cont_btn_text.visibility = View.VISIBLE
                 welcome_phone_edit_text.setText("")
 
+
                 //snackbar fail indicator with stacktrace
                 @Suppress("DEPRECATION")
-                Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, Snackbar.LENGTH_LONG)
+                Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, SNACKBAR_ERROR_DISPLAY_TIME)
                     .setAction(R.string.snackbar_detail_text) {
-                        Toast.makeText(this@WelcomeActivity,
-                            p0.message,
-                            Toast.LENGTH_LONG).show();
+                        val alert = AlertDialog.Builder(this@WelcomeActivity)
+                        alert.setMessage(p0.message)
+                        alert.setPositiveButton("OK", null)
+                        alert.create().show()
                     }
                     .setActionTextColor(resources.getColor(R.color.colorAccent))
                     .show()
@@ -220,7 +243,7 @@ class WelcomeActivity : AppCompatActivity() {
 
 
                 // start re-send counter
-                currentInterval = RESET_TOTAL_INTERVAL
+                currentInterval = 5000
                 runnable = Runnable {
                     currentInterval -= RESET_COUNT_INTERVAL
                     welcome_verification_resend_txt.text = "00:${String.format("%02d", currentInterval/1000)}"
@@ -289,15 +312,18 @@ class WelcomeActivity : AppCompatActivity() {
                     welcome_verification_btn_pbar.visibility = View.INVISIBLE
                     welcome_verification_btn_text.visibility = View.VISIBLE
 
+                    welcome_verification_btn.setBackgroundResource(R.drawable.continue_color_fade_btn)
+
                     currentInterval = RESET_TOTAL_INTERVAL
 
                     //Snackbar here
                     @Suppress("DEPRECATION")
-                    Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, Snackbar.LENGTH_LONG)
+                    Snackbar.make(welcome_layout, R.string.welcome_snackbar_cont_error, SNACKBAR_ERROR_DISPLAY_TIME)
                         .setAction(R.string.snackbar_detail_text) {
-                            Toast.makeText(this@WelcomeActivity,
-                                task.exception?.message,
-                                Toast.LENGTH_LONG).show();
+                            val alert = AlertDialog.Builder(this@WelcomeActivity)
+                            alert.setMessage(task.exception?.message)
+                            alert.setPositiveButton("Ok", null)
+                            alert.create().show()
                         }
                         .setActionTextColor(resources.getColor(R.color.colorAccent))
                         .show()
@@ -308,6 +334,7 @@ class WelcomeActivity : AppCompatActivity() {
     private fun displayVerifyFields(flag :Boolean) {
         if (flag) {
             // Gone
+            welcome_cont_slogan.visibility = View.GONE
             welcome_phone_text.visibility = View.GONE
             welcome_ccp.visibility = View.GONE
             welcome_phone_edit_text.visibility = View.GONE
@@ -316,18 +343,24 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_text_or.visibility = View.GONE
             welcome_google_cont_btn.visibility = View.GONE
             welcome_facebook_cont_btn.visibility = View.GONE
+            welcome_language_english.visibility = View.GONE
+            welcome_language_viet.visibility = View.GONE
 
             // Visible
+            welcome_verification_title.visibility = View.VISIBLE
             welcome_verification_linear_layout.visibility = View.VISIBLE
             welcome_verification_btn.visibility = View.VISIBLE
-            welcome_verification_cancel_txt.visibility = View.VISIBLE
+            welcome_verification_cancel_layout.visibility = View.VISIBLE
+
         }else {
             // Gone
+            welcome_verification_title.visibility = View.GONE
             welcome_verification_linear_layout.visibility = View.GONE
             welcome_verification_btn.visibility = View.GONE
-            welcome_verification_cancel_txt.visibility = View.GONE
+            welcome_verification_cancel_layout.visibility = View.GONE
 
             // Visible
+            welcome_cont_slogan.visibility = View.VISIBLE
             welcome_phone_text.visibility = View.VISIBLE
             welcome_ccp.visibility = View.VISIBLE
             welcome_phone_edit_text.visibility = View.VISIBLE
@@ -336,6 +369,9 @@ class WelcomeActivity : AppCompatActivity() {
             welcome_text_or.visibility = View.VISIBLE
             welcome_google_cont_btn.visibility = View.VISIBLE
             welcome_facebook_cont_btn.visibility = View.VISIBLE
+            welcome_language_english.visibility = View.VISIBLE
+            welcome_language_viet.visibility = View.VISIBLE
+
 
             veriCodeSent = false
         }
@@ -346,5 +382,6 @@ class WelcomeActivity : AppCompatActivity() {
         private const val PHONE_NUMBER_LIMIT = 10
         private const val RESET_COUNT_INTERVAL: Long = 1000
         private const val RESET_TOTAL_INTERVAL: Long = 59000
+        private const val SNACKBAR_ERROR_DISPLAY_TIME: Int = 5500
     }
 }
