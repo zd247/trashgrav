@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@android:color/holo_blue_light</item>
+        <item name="colorPrimary">#67A341</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorAccent">#8EF4EA</item>
+        <item name="colorAccent">#67A341</item>
     </style>
 
     <style name="ButtonStyle1" parent="Widget.AppCompat.Button.Colored">
