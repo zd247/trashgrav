@@ -26,9 +26,9 @@
     <string name="register_cont_btn_text">Đăng ký</string>
 
 
-    <string name="title_home">Home</string>
-    <string name="title_notifications">Thông báo</string>
-    <string name="title_settings">Ứng dụng</string>
+    <string name="title_home">Trang Chủ</string>
+    <string name="title_notifications">Thông Báo</string>
+    <string name="title_settings">Ứng Dụng</string>
     <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>
