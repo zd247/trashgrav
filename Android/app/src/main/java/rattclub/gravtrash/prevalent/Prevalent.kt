@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package rattclub.gravtrash.model
+package rattclub.gravtrash.prevalent
 
 import android.app.Activity
 import android.app.Dialog
@@ -10,7 +10,6 @@ import android.content.res.Configuration
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

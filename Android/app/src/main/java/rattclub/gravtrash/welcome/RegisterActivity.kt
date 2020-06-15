@@ -18,10 +18,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.activity_welcome.*
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.CustomerMainActivity
-import rattclub.gravtrash.model.Prevalent
+import rattclub.gravtrash.prevalent.Prevalent
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

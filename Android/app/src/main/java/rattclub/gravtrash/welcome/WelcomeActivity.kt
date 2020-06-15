@@ -23,7 +23,7 @@ import com.raycoarana.codeinputview.OnDigitInputListener
 import kotlinx.android.synthetic.main.activity_welcome.*
 import rattclub.gravtrash.R
 import rattclub.gravtrash.customers.CustomerMainActivity
-import rattclub.gravtrash.model.Prevalent
+import rattclub.gravtrash.prevalent.Prevalent
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
@@ -62,9 +62,10 @@ class WelcomeActivity : AppCompatActivity() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        handler.removeCallbacks(runnable)
+    override fun onStart() {
+        super.onStart()
+        if (mAuth.currentUser != null)
+            Prevalent.startActivity(this@WelcomeActivity, CustomerMainActivity::class.java, true)
     }
 
     private fun observeInputButtonState() {
@@ -288,7 +289,8 @@ class WelcomeActivity : AppCompatActivity() {
                                             CustomerMainActivity::class.java, true)
                                         Toast.makeText(this@WelcomeActivity,
                                             "Welcome ${p0.child("first_name").value}",
-                                            Toast.LENGTH_LONG).show();
+                                            Toast.LENGTH_LONG).show()
+                                        handler.removeCallbacks(runnable)
                                     }else {
                                         val intent = Intent(this@WelcomeActivity,
                                             RegisterActivity::class.java)
@@ -303,6 +305,7 @@ class WelcomeActivity : AppCompatActivity() {
                                         welcome_verification_btn_pbar.visibility = View.INVISIBLE
                                         welcome_verification_btn_text.visibility = View.VISIBLE
                                         displayVerifyFields(false)
+                                        handler.removeCallbacks(runnable)
                                     }
                                 }
 

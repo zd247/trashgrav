@@ -1,4 +1,4 @@
-package rattclub.gravtrash.model;
+package rattclub.gravtrash.prevalent;
 
 public class Message {
     public String messageID, message, from, to, date, time;

@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import rattclub.gravtrash.R;
-import rattclub.gravtrash.model.RecyclerClickListener;
+import rattclub.gravtrash.prevalent.RecyclerClickListener;
 
 public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView itemCategory, itemPrice;

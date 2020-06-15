@@ -1,4 +1,4 @@
-package rattclub.gravtrash.model;
+package rattclub.gravtrash.prevalent;
 
 import android.view.View;
 import android.widget.TextView;

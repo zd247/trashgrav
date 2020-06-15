@@ -6,14 +6,20 @@
     app:startDestination="@+id/navigation_home">
 
     <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="rattclub.gravtrash.customers.nav.CustomerNotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/customer_fragment_notifications" />
+
+    <fragment
         android:id="@+id/navigation_home"
         android:name="rattclub.gravtrash.customers.nav.CustomerHomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/customer_fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="rattclub.gravtrash.customers.nav.CustomerDashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/customer_fragment_dashboard" />
+        android:id="@+id/navigation_settings"
+        android:name="rattclub.gravtrash.customers.nav.CustomerSettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/customer_fragment_settings" />
 </navigation>

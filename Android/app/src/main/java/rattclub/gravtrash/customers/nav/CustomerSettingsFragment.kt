@@ -19,7 +19,7 @@ import rattclub.gravtrash.*
 import rattclub.gravtrash.drivers.DriverMainActivity
 import rattclub.gravtrash.welcome.WelcomeActivity
 
-class CustomerDashboardFragment : Fragment() {
+class CustomerSettingsFragment : Fragment() {
     private lateinit var root: View
 
     // firebase
@@ -28,7 +28,7 @@ class CustomerDashboardFragment : Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        root = inflater.inflate(R.layout.customer_fragment_dashboard, container, false)
+        root = inflater.inflate(R.layout.customer_fragment_settings, container, false)
         initOnClickListeners()
 
         return root

@@ -18,7 +18,7 @@
     <string name="snackbar_detail_text">Chi tiết</string>
     <string name="welcome_resend_toast_msg">Mã xác minh đã được gửi lại</string>
 
-    <string name="register_profile_picture_hint_text">Ấn vào ảnh đại diện để thay đổi</string>
+    <string name="register_profile_picture_hint_text">Nhấn vào ảnh đại diện để thay đổi</string>
     <string name="register_first_name_text">Tên</string>
     <string name="register_last_name_text">Họ</string>
     <string name="register_first_name_hint">VD: Thư</string>
@@ -27,8 +27,8 @@
 
 
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_settings">Settings</string>
+    <string name="title_notifications">Thông báo</string>
+    <string name="title_settings">Ứng dụng</string>
     <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>

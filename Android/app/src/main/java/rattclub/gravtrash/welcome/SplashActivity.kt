@@ -1,13 +1,12 @@
 package rattclub.gravtrash.welcome
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
 import rattclub.gravtrash.R
-import rattclub.gravtrash.model.Prevalent
+import rattclub.gravtrash.prevalent.Prevalent
 import rattclub.gravtrash.welcome.slider.SliderActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -32,11 +31,10 @@ class SplashActivity : AppCompatActivity() {
                 Prevalent.startActivity(this@SplashActivity, SliderActivity::class.java, true)
             }else {
                 Prevalent.startActivity(this@SplashActivity,WelcomeActivity::class.java, true)
-//                Prevalent.startActivity(this@SplashActivity,RegisterProfileActivity::class.java, true)
             }
-            handler.postDelayed(runnable, 2000)
+            handler.postDelayed(runnable, 1500)
         }
-        handler.postDelayed(runnable, 2000)
+        handler.postDelayed(runnable, 1500)
     }
 
     override fun onDestroy() {

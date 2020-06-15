@@ -4,7 +4,6 @@ package rattclub.gravtrash.drivers
 
 import android.Manifest
 import android.app.Dialog
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -14,7 +13,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,13 +40,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.driver_fragment_home.*
-import rattclub.gravtrash.ChatActivity
-import rattclub.gravtrash.model.Prevalent
+import rattclub.gravtrash.prevalent.Prevalent
 import rattclub.gravtrash.R
-import rattclub.gravtrash.model.Message
 import rattclub.gravtrash.drivers.model.Request
 import rattclub.gravtrash.drivers.model.RequestViewHolder
-import rattclub.gravtrash.model.InboxViewHolder
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
