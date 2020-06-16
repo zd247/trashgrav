@@ -10,6 +10,21 @@ import UIKit
 
 class LoginVC: UIViewController {
 
+    let logoContainerView: UIView = {
+        let view = UIView()
+        // Have to add Image manually by hand
+        let imageTemp = UIImage(named: "logo.jpg")
+        let logoImageView = UIImageView(image: imageTemp )
+        logoImageView.contentMode = .scaleAspectFill
+        
+        view.addSubview(logoImageView)
+        logoImageView.anchor(top: nil, left: nil, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 100, height: 100)
+        // How to make image looks round in Swift 5
+        logoImageView.layer.cornerRadius = 50
+        logoImageView.clipsToBounds = true
+        
+        return view
+    }()
     
     let phoneTextField: UITextField = {
         let tf = UITextField()
@@ -32,6 +47,14 @@ class LoginVC: UIViewController {
         return button
     }()
     
+    let welcomeString: UILabel = {
+       let wS = UILabel()
+        wS.text = "Let's join our community"
+        wS.textColor = .green
+        wS.font = UIFont.systemFont(ofSize: 14)
+       return wS
+    }()
+    
     let dontHaveAccountButton: UIButton = {
         let button = UIButton(type: .system)
         
@@ -51,6 +74,12 @@ class LoginVC: UIViewController {
         // Change background color
         view.backgroundColor = .white
         // Do any additional setup after loading the view.
+        
+        navigationController?.navigationBar.isHidden = true
+        
+        view.addSubview(logoContainerView)
+        logoContainerView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 100, paddingLeft: 50, paddingBottom: 0, paddingRight: 0, width: 0, height: 100)
+        //logoContainerView.layer.cornerRadius = 200 / 2
         
         configureViewComponents()
         
@@ -87,14 +116,14 @@ class LoginVC: UIViewController {
     
     func configureViewComponents() {
            
-           let stackView = UIStackView(arrangedSubviews: [phoneTextField, loginButton])
+        let stackView = UIStackView(arrangedSubviews: [welcomeString, phoneTextField, loginButton])
            
-           stackView.axis = .vertical
-           stackView.spacing = 10
-           stackView.distribution = .fillEqually
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
            
-           view.addSubview(stackView)
-        stackView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 140, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 140)
+        view.addSubview(stackView)
+        stackView.anchor(top: logoContainerView.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 140)
        }
     
 
