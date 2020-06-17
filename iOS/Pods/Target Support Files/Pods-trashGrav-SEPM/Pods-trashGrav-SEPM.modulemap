@@ -1,0 +1,6 @@
+framework module Pods_trashGrav_SEPM {
+  umbrella header "Pods-trashGrav-SEPM-umbrella.h"
+
+  export *
+  module * { export * }
+}

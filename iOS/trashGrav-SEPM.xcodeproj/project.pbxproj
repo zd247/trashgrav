@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E4DEFF8D052ABC6B14DF850 /* Pods_trashGrav_SEPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FED084AFB23BB201254129B /* Pods_trashGrav_SEPM.framework */; };
 		D7086D4824976E5C00FA7ED9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7086D4724976E5C00FA7ED9 /* AppDelegate.swift */; };
 		D7086D4A24976E5C00FA7ED9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7086D4924976E5C00FA7ED9 /* SceneDelegate.swift */; };
 		D7086D4F24976E5C00FA7ED9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7086D4D24976E5C00FA7ED9 /* Main.storyboard */; };
@@ -16,9 +17,13 @@
 		D7086D632497704200FA7ED9 /* SignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7086D622497704200FA7ED9 /* SignUpVC.swift */; };
 		D7086D652497720300FA7ED9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7086D642497720300FA7ED9 /* Extensions.swift */; };
 		D731E8B52498CC5D000F1315 /* logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D731E8B42498CC5D000F1315 /* logo.jpg */; };
+		D788B76D249A12C500A8A37E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D788B76C249A12C500A8A37E /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1FED084AFB23BB201254129B /* Pods_trashGrav_SEPM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_trashGrav_SEPM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		20DE75BB8D92FA9B800A2C89 /* Pods-trashGrav-SEPM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-trashGrav-SEPM.release.xcconfig"; path = "Target Support Files/Pods-trashGrav-SEPM/Pods-trashGrav-SEPM.release.xcconfig"; sourceTree = "<group>"; };
+		818948B60CD6304C29D507CD /* Pods-trashGrav-SEPM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-trashGrav-SEPM.debug.xcconfig"; path = "Target Support Files/Pods-trashGrav-SEPM/Pods-trashGrav-SEPM.debug.xcconfig"; sourceTree = "<group>"; };
 		D7086D4424976E5C00FA7ED9 /* trashGrav-SEPM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "trashGrav-SEPM.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7086D4724976E5C00FA7ED9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D7086D4924976E5C00FA7ED9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -30,6 +35,7 @@
 		D7086D622497704200FA7ED9 /* SignUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpVC.swift; sourceTree = "<group>"; };
 		D7086D642497720300FA7ED9 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D731E8B42498CC5D000F1315 /* logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo.jpg; sourceTree = "<group>"; };
+		D788B76C249A12C500A8A37E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,17 +43,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E4DEFF8D052ABC6B14DF850 /* Pods_trashGrav_SEPM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7133F8138293B784F576BF65 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				818948B60CD6304C29D507CD /* Pods-trashGrav-SEPM.debug.xcconfig */,
+				20DE75BB8D92FA9B800A2C89 /* Pods-trashGrav-SEPM.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		D7086D3B24976E5C00FA7ED9 = {
 			isa = PBXGroup;
 			children = (
 				D7086D4624976E5C00FA7ED9 /* trashGrav-SEPM */,
 				D7086D4524976E5C00FA7ED9 /* Products */,
+				7133F8138293B784F576BF65 /* Pods */,
+				EE7079AC03EC22EF6CB3299A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +88,7 @@
 				D7086D5B24976ED400FA7ED9 /* Utils */,
 				D7086D4724976E5C00FA7ED9 /* AppDelegate.swift */,
 				D7086D4924976E5C00FA7ED9 /* SceneDelegate.swift */,
+				D788B76C249A12C500A8A37E /* GoogleService-Info.plist */,
 				D7086D4D24976E5C00FA7ED9 /* Main.storyboard */,
 				D7086D5024976E5E00FA7ED9 /* Assets.xcassets */,
 				D7086D5224976E5E00FA7ED9 /* LaunchScreen.storyboard */,
@@ -124,6 +144,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		EE7079AC03EC22EF6CB3299A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1FED084AFB23BB201254129B /* Pods_trashGrav_SEPM.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,9 +159,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D7086D5824976E5E00FA7ED9 /* Build configuration list for PBXNativeTarget "trashGrav-SEPM" */;
 			buildPhases = (
+				BD8525DC4609933CCE2976C2 /* [CP] Check Pods Manifest.lock */,
 				D7086D4024976E5C00FA7ED9 /* Sources */,
 				D7086D4124976E5C00FA7ED9 /* Frameworks */,
 				D7086D4224976E5C00FA7ED9 /* Resources */,
+				3E078C5EF04713A9DA532C7C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -184,12 +214,55 @@
 			files = (
 				D731E8B52498CC5D000F1315 /* logo.jpg in Resources */,
 				D7086D5424976E5E00FA7ED9 /* LaunchScreen.storyboard in Resources */,
+				D788B76D249A12C500A8A37E /* GoogleService-Info.plist in Resources */,
 				D7086D5124976E5E00FA7ED9 /* Assets.xcassets in Resources */,
 				D7086D4F24976E5C00FA7ED9 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3E078C5EF04713A9DA532C7C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-trashGrav-SEPM/Pods-trashGrav-SEPM-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-trashGrav-SEPM/Pods-trashGrav-SEPM-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-trashGrav-SEPM/Pods-trashGrav-SEPM-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD8525DC4609933CCE2976C2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-trashGrav-SEPM-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D7086D4024976E5C00FA7ED9 /* Sources */ = {
@@ -342,6 +415,7 @@
 		};
 		D7086D5924976E5E00FA7ED9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 818948B60CD6304C29D507CD /* Pods-trashGrav-SEPM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -359,6 +433,7 @@
 		};
 		D7086D5A24976E5E00FA7ED9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20DE75BB8D92FA9B800A2C89 /* Pods-trashGrav-SEPM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
