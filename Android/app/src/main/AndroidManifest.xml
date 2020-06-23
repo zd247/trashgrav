@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".welcome.RegisterActivity"></activity>
+        <activity android:name=".customers.VoucherDetailActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity android:name=".welcome.RegisterActivity" />
         <activity
             android:name=".welcome.SplashActivity"
             android:screenOrientation="portrait">

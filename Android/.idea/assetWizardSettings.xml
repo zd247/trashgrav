@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/snap/android-studio/90/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/description/baseline_description_24.xml" />
+                                      <entry key="url" value="jar:file:/snap/android-studio/90/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/language/baseline_language_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,7 +28,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_baseline_description_24" />
+                            <entry key="outputName" value="ic_baseline_language_24" />
                           </map>
                         </option>
                       </PersistentState>

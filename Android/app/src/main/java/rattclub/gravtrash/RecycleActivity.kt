@@ -55,7 +55,7 @@ class RecycleActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: ItemViewHolder, position: Int, model: Item) {
                 holder.itemCategory.text = model.category
-                holder.itemPrice.text = "${model.price.toString()}$/kg"
+                holder.itemPrice.text = "${model.price}$/kg"
                 Picasso.get().load(model.image).into(holder.itemImage)
 
                 holder.itemQuantity.visibility = View.GONE

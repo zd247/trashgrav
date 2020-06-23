@@ -25,10 +25,21 @@
     <string name="register_last_name_hint">VD: Nguyễn</string>
     <string name="register_cont_btn_text">Đăng ký</string>
 
-
     <string name="title_home">Trang Chủ</string>
     <string name="title_notifications">Thông Báo</string>
     <string name="title_settings">Ứng Dụng</string>
+
+    <string name="voucher_detail_point">Điểm</string>
+    <string name="voucher_detail_validity">Thời hạn</string>
+    <string name="voucher_detail_highlight">Điểm nổi bật</string>
+    <string name="voucher_detail_description">Chi tiết</string>
+    <string name="voucher_detail_terms">Các điều khoản và Điều kiện</string>
+    <string name="voucher_detail_contacts">Liên hệ</string>
+    <string name="voucher_detail_redeem">Đổi thưởng</string>
+
+
+
+
     <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>

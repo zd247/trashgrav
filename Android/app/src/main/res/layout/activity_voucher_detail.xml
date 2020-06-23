@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".customers.VoucherDetailActivity">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:focusableInTouchMode="false"
+        android:layout_marginBottom="80.88dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:descendantFocusability="blocksDescendants">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_weight="50">
+
+                <ImageView
+                    android:id="@+id/voucher_detail_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/splash_background"/>
+
+                <ImageView
+                    android:id="@+id/voucher_detail_sponsor_icon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/logo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.38"
+                    app:layout_constraintHorizontal_bias="0.048"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.857"
+                    app:layout_constraintWidth_percent="0.16" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/voucher_detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="title"
+                    android:textAlignment="center"
+                    android:textSize="22sp"
+                    android:layout_marginVertical="10dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:weightSum="1"
+                    android:background="@drawable/layout_border">
+                    <LinearLayout
+                        android:layout_weight="0.5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/layout_border_secondary"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/voucher_detail_point"/>
+                        <TextView
+                            android:id="@+id/voucher_detail_points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginVertical="7dp"
+                            android:text="600"
+                            android:textColor="#8AC645"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="0.5"
+                        android:layout_width="0dp"
+                        android:paddingStart="20dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/voucher_detail_validity"/>
+                        <TextView
+                            android:id="@+id/voucher_detail_validity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginVertical="7dp"
+                            android:text="12/06/2020 - 24/08/2021"
+                            android:textColor="#8AC645"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/layout_border">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/voucher_detail_highlight"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/detail_voucher_highlight"
+                        android:layout_marginVertical="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The wolves stopped in their tracks, sizing up the mother and her cubs. It had been over a week since their last meal and they were getting desperate. The cubs would make a good meal, but there were high risks taking on the mother Grizzly. A decision had to be made and the wrong choice could signal the end of the pack." />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/layout_border">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/voucher_detail_description"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/details_item_description"
+                        android:layout_marginVertical="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The wolves stopped in their tracks, sizing up the mother and her cubs. It had been over a week since their last meal and they were getting desperate. The cubs would make a good meal, but there were high risks taking on the mother Grizzly. A decision had to be made and the wrong choice could signal the end of the pack." />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/layout_border">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/voucher_detail_terms"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/details_item_terms"
+                        android:layout_marginVertical="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The wolves stopped in their tracks, sizing up the mother and her cubs. It had been over a week since their last meal and they were getting desperate. The cubs would make a good meal, but there were high risks taking on the mother Grizzly. A decision had to be made and the wrong choice could signal the end of the pack." />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/voucher_detail_contacts"
+                        android:layout_marginBottom="10dp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/voucher_detail_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0912345678"
+                        android:layout_marginBottom="4dp"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_baseline_smartphone_24" />
+                    <TextView
+                        android:id="@+id/voucher_detail_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="email@abcd.com"
+                        android:layout_marginBottom="4dp"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_baseline_email_24" />
+                    <TextView
+                        android:id="@+id/voucher_detail_website"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="www.abcd.com"
+                        android:layout_marginBottom="4dp"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_baseline_language_24" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/voucher_detail_btm_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/continue_color_btn"
+            android:text="@string/voucher_detail_redeem"/>
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,11 +2,11 @@ package rattclub.gravtrash.customers.model;
 
 public class Item {
     private String category, image, description;
-    private Double price;
+    private String price;
 
     public Item() { }
 
-    public Item(String category, Double price, String image, String description) {
+    public Item(String category, String price, String image, String description) {
         this.category = category;
         this.price = price;
         this.image = image;
@@ -21,11 +21,11 @@ public class Item {
         this.category = category;
     }
 
-    public Double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
