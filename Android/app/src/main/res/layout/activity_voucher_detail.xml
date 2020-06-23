@@ -19,8 +19,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_weight="50">
+                android:layout_height="180dp">
 
                 <ImageView
                     android:id="@+id/voucher_detail_background"
@@ -42,6 +41,21 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.857"
                     app:layout_constraintWidth_percent="0.16" />
+
+                <TextView
+                    android:id="@+id/voucher_detail_sponsor_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="sponsor_name"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.133"
+                    app:layout_constraintStart_toEndOf="@+id/voucher_detail_sponsor_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.803" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -124,7 +138,7 @@
                         android:text="@string/voucher_detail_highlight"
                         android:textStyle="bold"/>
                     <TextView
-                        android:id="@+id/detail_voucher_highlight"
+                        android:id="@+id/voucher_detail_highlight"
                         android:layout_marginVertical="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -143,7 +157,7 @@
                         android:text="@string/voucher_detail_description"
                         android:textStyle="bold"/>
                     <TextView
-                        android:id="@+id/details_item_description"
+                        android:id="@+id/voucher_details_description"
                         android:layout_marginVertical="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -162,7 +176,7 @@
                         android:text="@string/voucher_detail_terms"
                         android:textStyle="bold"/>
                     <TextView
-                        android:id="@+id/details_item_terms"
+                        android:id="@+id/voucher_detail_terms"
                         android:layout_marginVertical="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -216,6 +230,7 @@
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground">
         <Button
+            android:id="@+id/voucher_detail_redeem_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"

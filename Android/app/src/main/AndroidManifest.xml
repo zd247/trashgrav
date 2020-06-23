@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
         <activity android:name=".customers.VoucherDetailActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+            android:theme="@style/Theme"/>
         <activity android:name=".welcome.RegisterActivity" />
         <activity
             android:name=".welcome.SplashActivity"

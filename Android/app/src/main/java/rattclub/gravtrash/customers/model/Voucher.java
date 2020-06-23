@@ -16,7 +16,7 @@ public class Voucher {
 
     public Voucher() {}
 
-    public Voucher(String background, String terms, String email, String phone, String website, String description, String highlight, String points, String sponsor_icon, String sponsor_name, String title, String validity) {
+    public Voucher(String background, String email, String phone, String website, String description, String highlight, String points, String sponsor_icon, String sponsor_name, String terms, String title, String validity) {
         this.background = background;
         this.email = email;
         this.phone = phone;
@@ -26,17 +26,9 @@ public class Voucher {
         this.points = points;
         this.sponsor_icon = sponsor_icon;
         this.sponsor_name = sponsor_name;
+        this.terms = terms;
         this.title = title;
         this.validity = validity;
-        this.terms = terms;
-    }
-
-    public String getTerms() {
-        return terms;
-    }
-
-    public void setTerms(String terms) {
-        this.terms = terms;
     }
 
     public String getBackground() {
@@ -109,6 +101,14 @@ public class Voucher {
 
     public void setSponsor_name(String sponsor_name) {
         this.sponsor_name = sponsor_name;
+    }
+
+    public String getTerms() {
+        return terms;
+    }
+
+    public void setTerms(String terms) {
+        this.terms = terms;
     }
 
     public String getTitle() {

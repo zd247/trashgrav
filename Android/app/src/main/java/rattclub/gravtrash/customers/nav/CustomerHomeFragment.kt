@@ -2,6 +2,7 @@
 
 package rattclub.gravtrash.customers.nav
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import rattclub.gravtrash.customers.VoucherDetailActivity
 import rattclub.gravtrash.customers.model.Voucher
 import rattclub.gravtrash.customers.model.VoucherViewHolder
 import rattclub.gravtrash.prevalent.Prevalent
+import rattclub.gravtrash.welcome.RegisterActivity
 
 class CustomerHomeFragment: Fragment(){
     private lateinit var root: View
@@ -48,7 +50,21 @@ class CustomerHomeFragment: Fragment(){
                 holder.title.text = model.title
                 Picasso.get().load(model.background).placeholder(R.drawable.splash_background).into(holder.image)
                 holder.itemView.setOnClickListener {
-                    Prevalent.startActivity(root.context, VoucherDetailActivity::class.java, false)
+                    val intent = Intent(root.context,
+                        VoucherDetailActivity::class.java)
+                    intent.putExtra("background", model.background)
+                    intent.putExtra("description", model.description)
+                    intent.putExtra("email", model.email)
+                    intent.putExtra("highlight", model.highlight)
+                    intent.putExtra("phone", model.phone)
+                    intent.putExtra("points", model.points)
+                    intent.putExtra("sponsor_icon", model.sponsor_icon)
+                    intent.putExtra("sponsor_name", model.sponsor_name)
+                    intent.putExtra("terms", model.terms)
+                    intent.putExtra("title", model.title)
+                    intent.putExtra("validity", model.validity)
+                    intent.putExtra("website", model.website)
+                    Prevalent.startActivity(root.context, VoucherDetailActivity::class.java, false, intent)
                 }
             }
         }
