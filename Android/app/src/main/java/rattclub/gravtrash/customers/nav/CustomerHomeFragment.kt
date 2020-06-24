@@ -20,12 +20,12 @@ import rattclub.gravtrash.customers.VoucherDetailActivity
 import rattclub.gravtrash.customers.model.Voucher
 import rattclub.gravtrash.customers.model.VoucherViewHolder
 import rattclub.gravtrash.prevalent.Prevalent
-import rattclub.gravtrash.welcome.RegisterActivity
+
 
 class CustomerHomeFragment: Fragment(){
     private lateinit var root: View
     private lateinit var voucherRecyclerView: RecyclerView
-    private val rootRef = FirebaseDatabase.getInstance().reference
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         root = inflater.inflate(R.layout.customer_fragment_home, container, false)
@@ -35,10 +35,12 @@ class CustomerHomeFragment: Fragment(){
         voucherRecyclerView.setHasFixedSize(true)
         voucherRecyclerView.itemAnimator = DefaultItemAnimator()
 
-        val options = FirebaseRecyclerOptions.Builder<Voucher>()
-            .setQuery(rootRef.child("Vouchers"), Voucher::class.java)
-            .build()
+        return root
 
+
+    }
+
+    private fun bindVoucherRecyclerView() {
         val adapter = object: FirebaseRecyclerAdapter<Voucher, VoucherViewHolder>(options) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherViewHolder {
                 val view = LayoutInflater.from(parent.context)
@@ -71,10 +73,21 @@ class CustomerHomeFragment: Fragment(){
 
         voucherRecyclerView.adapter = adapter
         adapter.startListening()
+    }
 
-        return root
 
+    override fun onStart() {
+        super.onStart()
+        bindVoucherRecyclerView()
 
+    }
+
+    // whenever is recreated will retain it's previous value
+    companion object {
+        private val rootRef = FirebaseDatabase.getInstance().reference
+        private val options = FirebaseRecyclerOptions.Builder<Voucher>()
+            .setQuery(rootRef.child("Vouchers"), Voucher::class.java)
+            .build()
     }
 
 }
