@@ -56,8 +56,3 @@
 	+ view fastest route custom location marker
 	+ Get prompted with notification when customer call
 	+ become a customer
-
-
-### Miscellaneous
-- The effort of this project is from team 12 SEPM-RMIT
-- I dips on the Android version :p
