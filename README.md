@@ -57,7 +57,7 @@
 	+ Get prompted with notification when customer call
 	+ become a customer
 	
-[image](https://user-images.githubusercontent.com/50768929/110783619-455a0000-829b-11eb-9486-750362ccd52b.png)
+![image](https://user-images.githubusercontent.com/50768929/110783619-455a0000-829b-11eb-9486-750362ccd52b.png)
 ![image](https://user-images.githubusercontent.com/50768929/110783685-586cd000-829b-11eb-8a28-274387cb88e4.png)
 ![image](https://user-images.githubusercontent.com/50768929/110783763-6de1fa00-829b-11eb-8fe0-fbe512a842bb.png)
 ![image](https://user-images.githubusercontent.com/50768929/110783801-7b977f80-829b-11eb-992f-5cc3b9acbdc9.png)
