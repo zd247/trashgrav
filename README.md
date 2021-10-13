@@ -58,7 +58,6 @@
 	+ become a customer
 	
 ![image](https://user-images.githubusercontent.com/50768929/110783619-455a0000-829b-11eb-9486-750362ccd52b.png)
-
 ![image](https://user-images.githubusercontent.com/50768929/110783801-7b977f80-829b-11eb-992f-5cc3b9acbdc9.png)
 
 
